@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:unnati_app/login_page_1.dart';
+import 'package:unnati_app/features/auth/view/login_page_1.dart';
 
 void main() {
-  runApp(const UnnatiApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

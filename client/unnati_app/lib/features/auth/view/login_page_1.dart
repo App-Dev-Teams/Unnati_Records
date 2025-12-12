@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:unnati_app/login_page_student.dart';
-import 'package:unnati_app/login_page_volunteer.dart';
+import 'package:unnati_app/features/auth/view/login_page_student.dart';
+import 'package:unnati_app/features/auth/view/login_page_volunteer.dart';
 
 class LoginPage1 extends StatefulWidget {
   const LoginPage1({super.key});
