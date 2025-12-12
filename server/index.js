@@ -16,6 +16,11 @@ const PORT=process.env.PORT;
 app.use(express.json()); 
 app.use(cors());
 
+//  Root route response
+app.get('/', (req, res) => {
+    res.send('🚀 Server is running successfullyyy!');
+});
+
 app.use('/api/auth',router);
 
 app.listen(PORT , ()=>{
