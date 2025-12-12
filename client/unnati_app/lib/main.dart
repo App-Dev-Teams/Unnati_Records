@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:unnati_app/features/auth/view/login_page_1.dart';
-import 'package:unnati_app/features/auth/view/signup.dart';
+import 'package:unnati_app/features/auth/view/signup_as.dart';
 
 void main() {
   runApp(const MyApp());

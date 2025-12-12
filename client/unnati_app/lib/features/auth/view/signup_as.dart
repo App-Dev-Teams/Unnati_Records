@@ -5,15 +5,17 @@ import 'package:lottie/lottie.dart';
 import 'package:unnati_app/features/auth/view/login_page_student.dart';
 import 'package:unnati_app/features/auth/view/login_page_volunteer.dart';
 import 'package:unnati_app/features/auth/view/signup_as.dart';
+import 'package:unnati_app/features/auth/view/signup_student.dart';
+import 'package:unnati_app/features/auth/view/signup_volunteer.dart';
 
-class LoginPage1 extends StatefulWidget {
-  const LoginPage1({super.key});
+class SignupAs extends StatefulWidget {
+  const SignupAs({super.key});
 
   @override
-  State<LoginPage1> createState() => _LoginPage1State();
+  State<SignupAs> createState() => _SignupAsState();
 }
 
-class _LoginPage1State extends State<LoginPage1> {
+class _SignupAsState extends State<SignupAs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +35,7 @@ class _LoginPage1State extends State<LoginPage1> {
             SizedBox(height: 50.h, width: double.infinity),
             //lottie
             Lottie.asset(
-              'assets/lottie/two-people-thinking.json',
+              'assets/lottie/student.json',
               height: 200.h,
               width: 200.w,
             ),
@@ -47,7 +49,7 @@ class _LoginPage1State extends State<LoginPage1> {
                   //you are?
                   Center(
                     child: Text(
-                      'You are ?',
+                      'Sign Up As ',
                       style: GoogleFonts.oswald(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
@@ -66,7 +68,7 @@ class _LoginPage1State extends State<LoginPage1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPageVolunteer(),
+                          builder: (context) => SignUpVolunteer(),
                         ),
                       );
                     },
@@ -92,7 +94,7 @@ class _LoginPage1State extends State<LoginPage1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPageStudent(),
+                          builder: (context) => SignupStudent(),
                         ),
                       );
                     },
@@ -111,21 +113,7 @@ class _LoginPage1State extends State<LoginPage1> {
               ),
             ),
             SizedBox(height: 10.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                 context,
-                 MaterialPageRoute(
-                   builder: (context) => SignupAs(),
-                  ),
-               );
-              },
-              child: Text(
-                "Don't have an account?",
-                style: TextStyle(color: Colors.red,fontSize: 13.sp
-                ),
-              ),
-            ),
+           
           ],
         ),
       ),
