@@ -8,7 +8,7 @@ class MyCards extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color iconColor;
-   MyCards({super.key, required this.icon,required this.iconColor,required this.title,required this.subtitle});
+   const MyCards({super.key, required this.icon,required this.iconColor,required this.title,required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
