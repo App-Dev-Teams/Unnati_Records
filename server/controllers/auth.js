@@ -28,10 +28,22 @@ const signup = async (req, res) => {
 
     await newUser.save();
 
+    const token = jwt.sign(
+      { _id: newUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "14d" }
+    );
+
     return res.status(200).json({
+      token,
       success: true,
       message: "User registered successfully",
-      data: newUser
+      data: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
     });
 
   } catch (error) {
@@ -39,7 +51,6 @@ const signup = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 
 const login = async (req, res) => {
