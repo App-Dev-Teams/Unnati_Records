@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:unnati_app/features/auth/view/login_page_student.dart';
 import 'package:unnati_app/features/auth/view/login_page_volunteer.dart';
 import 'package:unnati_app/features/auth/view/signup_as.dart';
+import 'package:unnati_app/features/auth/view/signup_volunteer.dart';
 
 class LoginPage1 extends StatefulWidget {
   const LoginPage1({super.key});
@@ -23,7 +24,7 @@ class _LoginPage1State extends State<LoginPage1> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 70.h,),
+            SizedBox(height: 70.h),
             //unnati logo
             Image.asset(
               'assets/images/unnatiLogoColourFix.png',
@@ -38,7 +39,7 @@ class _LoginPage1State extends State<LoginPage1> {
               width: 200.w,
             ),
             SizedBox(height: 70.h, width: double.infinity),
-        
+
             //options
             Container(
               child: Column(
@@ -55,7 +56,7 @@ class _LoginPage1State extends State<LoginPage1> {
                     ),
                   ),
                   SizedBox(height: 10.h, width: double.infinity),
-        
+
                   //volunteer
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -66,7 +67,7 @@ class _LoginPage1State extends State<LoginPage1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPageVolunteer(),
+                          builder: (context) => SignUpVolunteer(),
                         ),
                       );
                     },
@@ -114,16 +115,13 @@ class _LoginPage1State extends State<LoginPage1> {
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                 context,
-                 MaterialPageRoute(
-                   builder: (context) => SignupAs(),
-                  ),
-               );
+                  context,
+                  MaterialPageRoute(builder: (context) => SignupAs()),
+                );
               },
               child: Text(
                 "Don't have an account?",
-                style: TextStyle(color: Colors.red,fontSize: 13.sp
-                ),
+                style: TextStyle(color: Colors.red, fontSize: 13.sp),
               ),
             ),
           ],

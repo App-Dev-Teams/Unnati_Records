@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unnati_app/features/auth/view/login_page_1.dart';
+import 'package:unnati_app/features/auth/view/login_page_student.dart';
 import 'package:unnati_app/features/auth/view/signup_as.dart';
 
 void main() {
@@ -22,8 +24,53 @@ class MyApp extends StatelessWidget {
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // ),
-        home: LoginPage1(),
+        home: AuthCheck(),
       ),
     );
+  }
+}
+
+class AuthCheck extends StatefulWidget {
+  const AuthCheck({super.key});
+
+  @override
+  State<AuthCheck> createState() => _AuthCheckState();
+}
+
+class _AuthCheckState extends State<AuthCheck> {
+  @override
+  void initState() {
+    super.initState();
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+
+    await Future.delayed(const Duration(seconds: 1)); // optional splash delay
+
+    if (!mounted) return;
+
+    if (token != null && token.isNotEmpty) {
+      // ✅ token exists → go to home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const LoginPageStudent() /* HomeScreen() */,
+        ),
+      );
+    } else {
+      // ❌ no token → go to signup/login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginPage1()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
