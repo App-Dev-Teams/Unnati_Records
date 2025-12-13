@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class LoginPageVolunteer extends StatefulWidget {
   const LoginPageVolunteer({super.key});
@@ -12,23 +13,79 @@ class LoginPageVolunteer extends StatefulWidget {
 }
 
 class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
-
-  //controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
-//validation of email
   bool isValidVolunteerEmail(String email) {
     final regex = RegExp(r'^[a-zA-Z]+\.([0-9]+)@iiitbh\.ac\.in$');
     return regex.hasMatch(email);
+  }
+
+  Future<void> handleLogin() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (!isValidVolunteerEmail(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter a valid IIITBH email"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your password"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final result = await ApiService.login(
+      email: email,
+      password: password,
+    );
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Login successful'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Login failed'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white,),//app bar
-      body: SingleChildScrollView(//body
+      appBar: AppBar(backgroundColor: Colors.white),
+      body: SingleChildScrollView(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).unfocus(),
@@ -36,14 +93,11 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // SizedBox(height: 30.h, width: double.infinity),
-              //lottie
               Lottie.asset(
                 'assets/lottie/Login_and_Signup.json',
                 height: 300.h,
                 width: 300.w,
               ),
-              //mid heading
               SizedBox(height: 10.h, width: double.infinity),
               Text(
                 'Volunteer',
@@ -53,10 +107,9 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                 ),
               ),
               SizedBox(height: 10.h, width: double.infinity),
-              //textfields
               SizedBox(
                 width: 300.w,
-                child: TextfieldUtil(//email textfield
+                child: TextfieldUtil(
                   title: 'xxxxx.123@iiitbh.ac.in',
                   controller: emailController,
                 ),
@@ -64,28 +117,14 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
               SizedBox(height: 20.h),
               SizedBox(
                 width: 300.w,
-                child: TextfieldUtil( //password textfield
+                child: TextfieldUtil(
                   title: 'Password',
                   controller: passwordController,
                 ),
               ),
               SizedBox(height: 30.h),
-              ElevatedButton(//login button
-                onPressed: () {
-                  final email = emailController.text.trim();
-                  if (!isValidVolunteerEmail(email)) { //validation and snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Please enter a valid IIITBH email"),
-                        backgroundColor: Colors.red,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                    return;
-                  }
-                  print("logged in as a volunteer");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> VolunteerHomePage   ))
-                },
+              ElevatedButton(
+                onPressed: isLoading ? null : handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                   padding: const EdgeInsets.symmetric(
@@ -96,10 +135,19 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child:  Text(
-                  'Login',
-                  style: TextStyle(fontSize: 18.sp, color: Colors.white),
-                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(
+                        'Login',
+                        style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                      ),
               ),
               SizedBox(height: 30.h),
             ],
