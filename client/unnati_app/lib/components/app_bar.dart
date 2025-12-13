@@ -25,12 +25,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Color.fromARGB(255, 9, 12, 19),
       elevation: 2,
       shadowColor: Colors.black,
-      leading: Row(
+      leadingWidth: 60,
+      leading:  //user profile pic
+      Row(
         children: [
           SizedBox(width: 15),
           CircleAvatar(
-            backgroundImage: AssetImage("assets/images/unnatiLogoColourFix.png"),//if not personal pic-> by default unnati logo
-            foregroundImage: AssetImage("assets/images/$imageName"), // if profile pic change -> new profile pic
+            backgroundImage: AssetImage("assets/images/unnatiLogoColourFix.png"),//if no personal pic-> by default unnati logo
+            foregroundImage: AssetImage("assets/images/$imageName"), // if profile pic -> new profile pic
             radius: 20.r, //user image
           ),
         ],
