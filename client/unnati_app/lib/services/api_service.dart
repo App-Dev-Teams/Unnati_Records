@@ -48,6 +48,18 @@ class ApiService {
 
       if (response.statusCode == 200 && data['success'] == true) {
         print('✅ SIGNUP SUCCESS');
+        
+        final loginResult = await ApiService.login(email: email, password: password);
+        if (loginResult['success'] == true && loginResult['token'] != null) {
+          print('✅ AUTO-LOGIN AFTER SIGNUP: Token saved');
+          return {
+            'success': true,
+            'message': data['message'],
+            'data': data['data'],
+            'token': loginResult['token'],
+          };
+        }
+        
         return {
           'success': true,
           'message': data['message'],
