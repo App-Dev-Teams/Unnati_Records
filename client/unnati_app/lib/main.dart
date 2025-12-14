@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unnati_app/features/auth/view/login_page_1.dart';
 import 'package:unnati_app/features/auth/view/login_page_student.dart';
-import 'package:unnati_app/features/auth/view/student_home_screen.dart';
+import 'package:unnati_app/features/Student_Home/student_home_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child:  MyApp()));
