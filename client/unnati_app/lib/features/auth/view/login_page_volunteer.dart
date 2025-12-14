@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/main.dart';
 
 class LoginPageVolunteer extends StatefulWidget {
   const LoginPageVolunteer({super.key});
@@ -68,6 +69,12 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
         ),
+      );
+      // Navigate to home after successful login
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        (route) => false, // Remove all previous routes
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
