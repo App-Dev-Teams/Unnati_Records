@@ -18,21 +18,19 @@ class _LoginPage1State extends State<LoginPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, //Scaffold backgroud color
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 70.h),
-            //unnati logo
             Image.asset(
               'assets/images/unnatiLogoColourFix.png',
               height: 150.h,
               width: 150.w,
             ),
             SizedBox(height: 50.h, width: double.infinity),
-            //lottie
             Lottie.asset(
               'assets/lottie/two-people-thinking.json',
               height: 200.h,
@@ -40,12 +38,10 @@ class _LoginPage1State extends State<LoginPage1> {
             ),
             SizedBox(height: 70.h, width: double.infinity),
 
-            //options
             Container(
               child: Column(
                 children: [
                   SizedBox(height: 20.h),
-                  //you are?
                   Center(
                     child: Text(
                       'You are ?',
@@ -57,10 +53,9 @@ class _LoginPage1State extends State<LoginPage1> {
                   ),
                   SizedBox(height: 10.h, width: double.infinity),
 
-                  //volunteer
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(200.w, 60.h), /////
+                      fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),
                     onPressed: () {
@@ -83,10 +78,9 @@ class _LoginPage1State extends State<LoginPage1> {
                     ),
                   ),
                   SizedBox(height: 5.h, width: double.infinity),
-                  //student
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(200.w, 60.h), /////
+                      fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),
                     onPressed: () {

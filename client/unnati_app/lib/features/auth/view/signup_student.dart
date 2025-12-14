@@ -113,7 +113,6 @@ class _SignupStudentState extends State<SignupStudent> {
           duration: const Duration(seconds: 2),
         ),
       );
-      // Automatically login after signup - navigate to home
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),

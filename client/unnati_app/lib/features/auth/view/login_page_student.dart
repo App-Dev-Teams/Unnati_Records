@@ -76,7 +76,6 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
           duration: const Duration(seconds: 2),
         ),
       );
-      // Navigate to home after successful login
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),
@@ -106,7 +105,6 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // SizedBox(height: 50.h, width: double.infinity),
               Lottie.asset( //lottie
                 'assets/lottie/Login_and_Signup.json',
                 height: 300.h,

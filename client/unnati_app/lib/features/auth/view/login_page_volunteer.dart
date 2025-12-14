@@ -70,7 +70,6 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
           duration: const Duration(seconds: 2),
         ),
       );
-      // Navigate to home after successful login
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),

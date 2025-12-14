@@ -41,12 +41,10 @@ class _SignupAsState extends State<SignupAs> {
             ),
             SizedBox(height: 70.h, width: double.infinity),
         
-            //options
             Container(
               child: Column(
                 children: [
                   SizedBox(height: 20.h),
-                  //you are?
                   Center(
                     child: Text(
                       'Sign Up As ',
@@ -58,7 +56,6 @@ class _SignupAsState extends State<SignupAs> {
                   ),
                   SizedBox(height: 10.h, width: double.infinity),
         
-                  //volunteer
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(200.w, 60.h), /////
