@@ -8,7 +8,7 @@ class PdfCards extends StatelessWidget {
   final String title;
   final double Height;
   final double width;
-  final bool isLarge; 
+  final bool isLarge;
 
   const PdfCards({
     super.key,
@@ -16,7 +16,7 @@ class PdfCards extends StatelessWidget {
     required this.title,
     required this.Height,
     required this.width,
-    this.isLarge = false, 
+    this.isLarge = false,
   });
 
   @override
@@ -52,10 +52,9 @@ class PdfCards extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-                SizedBox(
-                  height: isLarge ? 120.h : 65.h,
-                  width: isLarge ? 120.h : 65.h,
+                // FLEXIBLE LOTTIE (prevents overflow)
+                Flexible(
+                  flex: isLarge ? 3 : 2,
                   child: Lottie.asset(
                     lottiePath,
                     repeat: true,
@@ -63,18 +62,21 @@ class PdfCards extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: isLarge ? 22.h : 16.h),
+                SizedBox(height: isLarge ? 18.h : 12.h),
 
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: isLarge ? 3 : 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.nunito(
-                    color: const Color.fromARGB(255, 204, 235, 255),
-                    fontSize: isLarge ? 22.sp : 16.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.4,
+                // FLEXIBLE TEXT (prevents text overflow)
+                Flexible(
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    maxLines: isLarge ? 3 : 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.nunito(
+                      color: const Color.fromARGB(255, 204, 235, 255),
+                      fontSize: isLarge ? 22.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.4,
+                    ),
                   ),
                 ),
               ],
