@@ -13,7 +13,7 @@ module.exports = (req,res,next)=>{
         if(err){
             res.status(401).json({error:"you must be logged in"});
         }
-        const {_id} = payload
+        const {_id} = payload  //stored in jwt
         User.findById(_id).then(userdata=>{
             req.user = userdata
              next();
