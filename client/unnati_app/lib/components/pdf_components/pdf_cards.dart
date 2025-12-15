@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class PdfCards extends StatelessWidget {
-  final IconData icon;
+  final String lottiePath;
   final String title;
-  final Color iconColor;
   final double Height;
   final double width;
+  final bool isLarge; 
 
   const PdfCards({
     super.key,
-    required this.icon,
-    required this.iconColor,
+    required this.lottiePath,
     required this.title,
     required this.Height,
     required this.width,
+    this.isLarge = false, 
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -50,33 +51,28 @@ class PdfCards extends StatelessWidget {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Icon
-                Container(
-                  padding: EdgeInsets.all(12.r),
-                  decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                    size: 26.sp,
+
+                SizedBox(
+                  height: isLarge ? 120.h : 65.h,
+                  width: isLarge ? 120.h : 65.h,
+                  child: Lottie.asset(
+                    lottiePath,
+                    repeat: true,
+                    fit: BoxFit.contain,
                   ),
                 ),
 
-                SizedBox(height: 16.h),
+                SizedBox(height: isLarge ? 22.h : 16.h),
 
-                // Title
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  maxLines: 2,
+                  maxLines: isLarge ? 3 : 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.oswald(
-                    color: Colors.white,
-                    fontSize: 18.sp,
+                  style: GoogleFonts.nunito(
+                    color: const Color.fromARGB(255, 204, 235, 255),
+                    fontSize: isLarge ? 22.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.4,
                   ),
@@ -89,7 +85,6 @@ class PdfCards extends StatelessWidget {
     );
   }
 }
-
 
 class PdfModuleCard extends StatelessWidget {
   final IconData icon;
@@ -139,7 +134,6 @@ class PdfModuleCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // ICON
                 Container(
                   padding: EdgeInsets.all(12.r),
                   decoration: BoxDecoration(
@@ -152,16 +146,13 @@ class PdfModuleCard extends StatelessWidget {
                     size: 24.sp,
                   ),
                 ),
-
                 SizedBox(width: 16.w),
-
-                // TITLE
                 Expanded(
                   child: Text(
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.oswald(
+                    style: GoogleFonts.nunito(
                       color: Colors.white,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

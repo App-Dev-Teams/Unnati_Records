@@ -3,44 +3,57 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PdfAppBar extends StatelessWidget implements PreferredSizeWidget {
-  String name = "name";
-  String imageName;
-  PdfAppBar({super.key, required this.imageName, required this.name});
+  final String name;
+  final String imageName;
 
-  
+  const PdfAppBar({
+    super.key,
+    required this.imageName,
+    required this.name,
+  });
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: Color.fromARGB(255, 9, 12, 19),
+      backgroundColor: const Color.fromARGB(255, 9, 12, 19),
       elevation: 2,
       shadowColor: Colors.black,
-      leading: Row(
+
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Navigator.pop(context),
+      ),
+
+
+      title: Row(
+       // mainAxisSize: MainAxisSize.,
+       mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(width: 12.w),
           CircleAvatar(
-            backgroundImage: AssetImage("assets/images/unnatiLogoColourFix.png"),
-            foregroundImage: AssetImage("assets/images/$imageName"), 
-            radius: 14.r, //user image
+            radius: 18.r,
+            backgroundImage:
+                const AssetImage("assets/images/unnatiLogoColourFix.png"),
+            foregroundImage: AssetImage("assets/images/$imageName"),
           ),
-          SizedBox(width: 10.w,),
+          SizedBox(width: 10.w),
+          Flexible(
+            child: Text(
+              name,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.oswald(
+                color: Colors.white,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ],
       ),
-      title: Column(//title
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          
-          Text(
-            "$name",
-            style: GoogleFonts.oswald(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-          ), 
-          
-        ],
-      ),
-      actions: [
-        
-        SizedBox(width: 10.w,)
+
+      centerTitle: true,
+
+      actions: const [
+        SizedBox(width: 12),
       ],
     );
   }
