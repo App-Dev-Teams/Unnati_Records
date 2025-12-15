@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 
 class SignupStudent extends StatefulWidget {
-  SignupStudent({super.key});
+  const SignupStudent({super.key});
 
   @override
   State<SignupStudent> createState() => _SignupStudentState();

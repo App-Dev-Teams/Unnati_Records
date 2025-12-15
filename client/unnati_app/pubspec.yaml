@@ -42,6 +42,8 @@ dependencies:
   google_fonts: ^6.3.3
   http: ^1.1.0
   shared_preferences: ^2.2.2
+  carousel_slider: ^5.1.1
+  url_launcher: ^6.3.2
   syncfusion_flutter_pdfviewer: ^31.2.18
   
 

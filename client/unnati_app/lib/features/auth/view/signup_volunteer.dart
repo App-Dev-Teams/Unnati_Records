@@ -6,7 +6,7 @@ import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class SignUpVolunteer extends StatefulWidget {
-  SignUpVolunteer({super.key});
+  const SignUpVolunteer({super.key});
 
   @override
   State<SignUpVolunteer> createState() => _SignUpVolunteerState();

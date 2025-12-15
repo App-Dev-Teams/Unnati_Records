@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   pdfx
   syncfusion_pdfviewer_windows
   url_launcher_windows
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
