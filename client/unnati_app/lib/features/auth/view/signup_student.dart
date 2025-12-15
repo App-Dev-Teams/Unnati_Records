@@ -7,7 +7,7 @@ import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
 class SignupStudent extends StatefulWidget {
-  SignupStudent({super.key});
+  const SignupStudent({super.key});
 
   @override
   State<SignupStudent> createState() => _SignupStudentState();
