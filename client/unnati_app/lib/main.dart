@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
@@ -10,6 +9,7 @@ import 'package:unnati_app/features/Student_Home/student_home_screen.dart';
 import 'package:unnati_app/features/auth/view/signup_as.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_digiexplore.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
+import 'package:unnati_app/features/volunteer_home/volunteer_home_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child:  ProviderScope(child:  MyApp())));
@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // ),
-        home: SignupAs(),
+
+        home: VolunteerHomeScreen(),
       ),
     );
   }
