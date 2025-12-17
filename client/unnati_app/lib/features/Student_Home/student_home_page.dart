@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/carousel_slider.dart';
 import 'package:unnati_app/components/my_cards.dart';
+import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
+//import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
 
 class StudentHomePage extends StatelessWidget {
   const StudentHomePage({super.key});
@@ -20,6 +22,11 @@ class StudentHomePage extends StatelessWidget {
             SizedBox(
               height: 200.h,
               width: 350.w,
+              child: 
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PdfMainscreen()));
+                },
               child: Card(
                 elevation: 8,
                 shape: RoundedRectangleBorder(
@@ -100,7 +107,7 @@ class StudentHomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              ),)
             ),
   
             //bottom part
