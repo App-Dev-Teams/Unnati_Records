@@ -47,8 +47,10 @@ class ApiService {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      // Check if request was successful
-      if (response.statusCode == 200 && data['success'] == true) {
+      // Treat any 2xx + success:true as successful
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
         // Save token if present
         final token = data['token'] as String?;
         if (token != null && token.isNotEmpty) {
@@ -161,6 +163,42 @@ class ApiService {
         'password': password,
       },
       operation: 'LOGIN',
+    );
+  }
+
+  static Future<Map<String, dynamic>> studentSignup({
+    required String name,
+    required String email,
+    required String password,
+    required String phoneNo,
+    required String studentClass,
+    required String school,
+  }) async {
+    return await _makeRequest(
+      endpoint: 'studentSignup',
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'phoneNo': phoneNo,
+        'studentClass': studentClass,
+        'school': school,
+      },
+      operation: 'STUDENT_SIGNUP',
+    );
+  }
+
+  static Future<Map<String, dynamic>> studentLogin({
+    required String email,
+    required String password,
+  }) async {
+    return await _makeRequest(
+      endpoint: 'studentLogin',
+      body: {
+        'email': email,
+        'password': password,
+      },
+      operation: 'STUDENT_LOGIN',
     );
   }
 }

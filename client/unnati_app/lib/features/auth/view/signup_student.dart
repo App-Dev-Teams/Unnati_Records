@@ -17,12 +17,18 @@ class _SignupStudentState extends State<SignupStudent> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController classController = TextEditingController();
+  final TextEditingController schoolController = TextEditingController();
   bool isLoading = false;
 
   Future<void> handleSignup() async {
     final name = usernameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
+    final phoneNo = phoneController.text.trim();
+    final studentClass = classController.text.trim();
+    final school = schoolController.text.trim();
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,15 +96,61 @@ class _SignupStudentState extends State<SignupStudent> {
       return;
     }
 
+    if (phoneNo.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your phone number"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (phoneNo.length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Phone number must be 10 digits"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (studentClass.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your class"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (school.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your school name"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
 
-    final result = await ApiService.signup(
+    final result = await ApiService.studentSignup(
       name: name,
       email: email,
       password: password,
-      role: 'student',
+      phoneNo: phoneNo,
+      studentClass: studentClass,
+      school: school,
     );
 
     setState(() {
@@ -189,6 +241,33 @@ class _SignupStudentState extends State<SignupStudent> {
                 child: TextfieldUtil(
                   title: 'Password',
                   controller: passwordController,
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              SizedBox(
+                width: 300.w,
+                child: TextfieldUtil(
+                  title: 'Phone Number',
+                  controller: phoneController,
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              SizedBox(
+                width: 300.w,
+                child: TextfieldUtil(
+                  title: 'Class',
+                  controller: classController,
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              SizedBox(
+                width: 300.w,
+                child: TextfieldUtil(
+                  title: 'School',
+                  controller: schoolController,
                 ),
               ),
               SizedBox(height: 30.h),

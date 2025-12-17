@@ -59,7 +59,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
       isLoading = true;
     });
 
-    final result = await ApiService.login(
+    final result = await ApiService.studentLogin(
       email: email,
       password: password,
     );
