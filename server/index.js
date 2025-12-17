@@ -1,10 +1,10 @@
 const dotenv= require('dotenv');
 const express= require('express');
 const cors = require('cors');
-
-const User = require('./models/user.js') ;
-const router = require('./routes/auth.js');
 const dbconnect = require('./config/dbConnection.js');
+const folderRouter = require('./routes/folder.js');
+const router = require('./routes/auth.js');
+const fileRouter = require('./routes/file.js');
 
 dotenv.config();
 dbconnect();
@@ -21,8 +21,13 @@ app.get('/', (req, res) => {
     res.send('🚀 Server is running successfullyyy!');
 });
 
-app.use('/api/auth',router);
 
+//================ROUTES=====================
+app.use('/api/auth',router);
+app.use('/api',folderRouter);
+app.use('/api',fileRouter);
+
+//================SERVER======================
 app.listen(PORT , ()=>{
     console.log(`server running at port ${PORT}`);
 })

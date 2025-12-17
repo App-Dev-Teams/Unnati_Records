@@ -68,7 +68,7 @@ const login = async (req, res) => {
     const saveduser = await USER.findOne({ email });
 
     if (!saveduser) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "User does not exist",
       });
@@ -78,7 +78,7 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, saveduser.password);
 
     if (!isMatch) {
-      return res.status(422).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
@@ -194,10 +194,12 @@ const studentLogin = async (req, res) => {
       .findOne({ email })
       .select("+password");
 
+      console.log(student);
+
     if (!student) {
-      return res.status(404).json({
+      return res.status(401).json({
         success: false,
-        message: "Invalid email or password"
+        message: "User does not exist"
       });
     }
 
