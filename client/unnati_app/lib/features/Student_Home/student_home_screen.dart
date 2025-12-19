@@ -11,21 +11,27 @@ class StudentHomeScreen extends ConsumerWidget {
   const StudentHomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    final currentIndex=ref.watch(bottomNavIndexProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex = ref.watch(bottomNavIndexProvider);
 
-    final pages =[
-      const StudentQuizScreen(),  //0 index
-      const StudentHomePage(),  //1 index
-      const StudedntProfileScreen(),  //2 index
+    final pages = [
+      const StudentQuizScreen(), //0 index
+      const StudentHomePage(), //1 index
+      const StudedntProfileScreen(), //2 index
     ];
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: "Priyanshu"),
       body: pages[currentIndex],
-      bottomNavigationBar: MyBottomNavBar(),
+      bottomNavigationBar: BottomNavBar(
+        navIcon1: Icons.fact_check_outlined,
+        navIcon2: Icons.home_outlined,
+        navIcon3: Icons.person_outline,
+        labelName1: "Quiz",
+        labelName2: "Home",
+        labelName3: "Profile",
+      ),
     );
-    
   }
 }

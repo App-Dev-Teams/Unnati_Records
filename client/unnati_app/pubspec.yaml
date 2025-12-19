@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   lottie: ^3.3.2
   font_awesome_flutter: ^10.12.0
-  curved_labeled_navigation_bar: ^2.0.6
   pdfx: ^2.9.2
   flutter_riverpod: ^3.0.3
   # The following adds the Cupertino Icons font to your application.
@@ -45,6 +44,10 @@ dependencies:
   carousel_slider: ^5.1.1
   url_launcher: ^6.3.2
   syncfusion_flutter_pdfviewer: ^31.2.18
+  curved_labeled_navigation_bar: ^2.0.6
+  file_picker: ^10.3.7
+  open_file: ^3.5.10
+  path_provider: ^2.1.5
   
 
 dev_dependencies:
