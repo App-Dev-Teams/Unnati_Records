@@ -5,6 +5,7 @@ const dbconnect = require('./config/dbConnection.js');
 const folderRouter = require('./routes/folder.js');
 const router = require('./routes/auth.js');
 const fileRouter = require('./routes/file.js');
+const adminRoutes = require("./routes/volunteer.js");
 
 dotenv.config();
 dbconnect();
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth',router);
 app.use('/api',folderRouter);
 app.use('/api',fileRouter);
+app.use('/api/admin', adminRoutes);
 
 //================SERVER======================
 app.listen(PORT , ()=>{
