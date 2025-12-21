@@ -5,7 +5,7 @@ const dbconnect = require('./config/dbConnection.js');
 const folderRouter = require('./routes/folder.js');
 const router = require('./routes/auth.js');
 const fileRouter = require('./routes/file.js');
-const adminRoutes = require("./routes/volunteer.js");
+const adminRoutes = require("./routes/volunteer.routes.js");
 const otpRoutes = require("./routes/otp.routes");
 
 dotenv.config();
