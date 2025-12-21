@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unnati_app/Providers/bottom_nav_provider.dart';
 import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/bottom_nav_bar.dart';
 import 'package:unnati_app/features/volunteer_profile/volunteer_profile_page.dart';
 import 'package:unnati_app/features/volunteer_home/volunteer_home_page.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
-import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
+//import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
 
 class VolunteerHomeScreen extends ConsumerWidget {
   const VolunteerHomeScreen({super.key});

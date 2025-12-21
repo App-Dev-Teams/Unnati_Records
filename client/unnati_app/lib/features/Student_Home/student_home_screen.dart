@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unnati_app/Providers/bottom_nav_provider.dart';
 import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/bottom_nav_bar.dart';
 import 'package:unnati_app/features/Student_quiz/student_quiz_screen.dart';
 import 'package:unnati_app/features/Student_profile/studednt_profile_screen.dart';
 import 'package:unnati_app/features/Student_Home/student_home_page.dart';
-import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
+//import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
 
 class StudentHomeScreen extends ConsumerWidget {
   const StudentHomeScreen({super.key});
