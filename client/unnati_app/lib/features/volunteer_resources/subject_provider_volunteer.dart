@@ -9,9 +9,9 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     state = [...state, Subject(name: name, className: className)];
   }
 
-  void addFile(String subjectName, FileItem file) {
+  void addFile(String subjectName, String className, FileItem file) {
     state = state.map((subject) {
-      if (subject.name == subjectName) {
+      if (subject.name == subjectName && subject.className == className) {
         return subject.copyWith(files: [...subject.files, file]);
       }
       return subject;
@@ -21,11 +21,12 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
   // UPDATE SUBJECT NAME & CLASS
   void updateSubject({
     required String oldName,
+    required String oldClass,
     required String newName,
     required String newClass,
   }) {
     state = state.map((subject) {
-      if (subject.name == oldName) {
+      if (subject.name == oldName && subject.className == oldClass) {
         return Subject(
           name: newName,
           className: newClass,
@@ -37,51 +38,54 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
   }
 
   // DELETE SUBJECT
-  void deleteSubject(String name) {
-    state = state.where((subject) => subject.name != name).toList();
+  void deleteSubject(String name, String className) {
+    state = state
+        .where(
+          (subject) =>
+              !(subject.name == name && subject.className == className),
+        )
+        .toList();
   }
 
   //  EDIT FILE NAME
-void renameFile({
-  required String subjectName,
-  required FileItem oldFile,
-  required String newName,
-}) {
-  state = state.map((subject) {
-    if (subject.name == subjectName) {
-      return subject.copyWith(
-        files: subject.files.map((file) {
-          if (file == oldFile) {
-            return FileItem(
-              name: newName,
-              path: file.path,
-              extension: file.extension,
-            );
-          }
-          return file;
-        }).toList(),
-      );
-    }
-    return subject;
-  }).toList();
+  void renameFile({
+    required String subjectName,
+    required String className,
+    required FileItem oldFile,
+    required String newName,
+  }) {
+    state = state.map((subject) {
+      if (subject.name == subjectName && subject.className == className) {
+        return subject.copyWith(
+          files: subject.files.map((file) {
+            if (file == oldFile) {
+              return FileItem(
+                name: newName,
+                path: file.path,
+                extension: file.extension,
+              );
+            }
+            return file;
+          }).toList(),
+        );
+      }
+      return subject;
+    }).toList();
+  }
+
+  // DELETE FILE
+  void deleteFile(String subjectName, String className, FileItem fileToDelete) {
+    state = state.map((subject) {
+      if (subject.name == subjectName) {
+        return subject.copyWith(
+          files: subject.files.where((file) => file != fileToDelete).toList(),
+        );
+      }
+      return subject;
+    }).toList();
+  }
 }
 
-// DELETE FILE
-void deleteFile(String subjectName, FileItem fileToDelete) {
-  state = state.map((subject) {
-    if (subject.name == subjectName) {
-      return subject.copyWith(
-        files: subject.files
-            .where((file) => file != fileToDelete)
-            .toList(),
-      );
-    }
-    return subject;
-  }).toList();
-}
-}
-
-final subjectProvider =
-    StateNotifierProvider<SubjectNotifier, List<Subject>>(
+final subjectProvider = StateNotifierProvider<SubjectNotifier, List<Subject>>(
   (ref) => SubjectNotifier(),
 );

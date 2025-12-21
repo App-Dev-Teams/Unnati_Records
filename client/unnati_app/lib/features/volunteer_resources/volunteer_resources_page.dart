@@ -9,76 +9,129 @@ class VolunteerResourcesPage extends ConsumerWidget {
   const VolunteerResourcesPage({super.key});
 
   void _showAddSubjectSheet(BuildContext context, WidgetRef ref) {
-    //bottom sheet function
     final subjectController = TextEditingController();
-    final classController = TextEditingController();
+    String? selectedClass;
 
     showModalBottomSheet(
-      //bottom sheet
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 16,
-              right: 16,
-              top: 20,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Add Subject",
-                  style: GoogleFonts.oswald(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 20,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Add Subject',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.oswald(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  controller: subjectController,
-                  decoration: InputDecoration(
-                    labelText: 'Subject Name',
-                    border: OutlineInputBorder(),
+                  SizedBox(height: 16.h),
+
+                  //subject name
+                  TextField(
+                    controller: subjectController,
+                    decoration: const InputDecoration(
+                      labelText: 'Subject Name',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  controller: classController,
-                  decoration: InputDecoration(
-                    labelText: 'Class',
-                    border: OutlineInputBorder(),
+
+                  const SizedBox(height: 12),
+
+                  //class dropdown
+                  DropdownButtonFormField<String>(
+                    value: selectedClass,
+                    decoration: const InputDecoration(
+                      labelText: 'Class',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: '6', child: Text('Class 6')),
+                      DropdownMenuItem(value: '7', child: Text('Class 7')),
+                      DropdownMenuItem(value: '8', child: Text('Class 8')),
+                      DropdownMenuItem(value: '9', child: Text('Class 9')),
+                      DropdownMenuItem(value: '10', child: Text('Class 10')),
+                      DropdownMenuItem(value: '11', child: Text('Class 11')),
+                      DropdownMenuItem(value: '12', child: Text('Class 12')),
+                      DropdownMenuItem(
+                        value: 'all',
+                        child: Text('All Classes'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() => selectedClass = value);
+                    },
                   ),
-                ),
-                SizedBox(height: 20.h),
-                ElevatedButton(
-                  //add button
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 9, 12, 19),
-                  ),
-                  onPressed: () {
-                    final subject = subjectController.text.trim();
-                    final cls = classController.text.trim();
-                    if (subject.isNotEmpty && cls.isNotEmpty) {
+
+                  const SizedBox(height: 20),
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 9, 12, 19),
+                    ),
+                    onPressed: () {
+                      final subject = subjectController.text.trim();
+                      final cls = selectedClass;
+
+                      if (subject.isEmpty || cls == null) return;
+
+                      final subjects = ref.read(subjectProvider);
+
+                      final alreadyExists = subjects.any(
+                        (s) =>
+                            s.name.toLowerCase() == subject.toLowerCase() &&
+                            s.className == cls,
+                      );
+
+                      if (alreadyExists) {
+                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(
+                            Navigator.of(context).context, // ✅ ROOT context
+                          )
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                'Subject with same class already exists',
+                              ),
+                            ),
+                          );
+
+                        return;
+                      }
+
                       ref
                           .read(subjectProvider.notifier)
                           .addSubject(subject, cls);
+
                       Navigator.pop(context);
-                    }
-                  },
-                  child: Text(
-                    'Add',
-                    style: GoogleFonts.roboto(color: Colors.white),
+                    },
+
+                    child: const Text(
+                      'Add',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -137,8 +190,10 @@ class VolunteerResourcesPage extends ConsumerWidget {
                       //navigation
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            FileUploadPage(subject: subject.name),
+                        builder: (_) => FileUploadPage(
+                          subject: subject.name,
+                          className: subject.className,
+                        ),
                       ),
                     );
                   },
@@ -152,10 +207,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
                         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                       ),
                       boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6.r,
-                        ),
+                        BoxShadow(color: Colors.black26, blurRadius: 6.r),
                       ],
                     ),
                     child: Padding(
@@ -207,37 +259,66 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                         TextEditingController(
                                           text: subject.name,
                                         );
-                                    final classController =
-                                        TextEditingController(
-                                          text: subject.className,
-                                        );
+                                    String selectedClass = subject.className;
 
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title:
-                                            const Text('Edit Subject'),
+                                        title: const Text('Edit Subject'),
                                         content: Column(
-                                          mainAxisSize:
-                                              MainAxisSize.min,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             TextField(
-                                              controller:
-                                                  subjectController,
-                                              decoration:
-                                                  const InputDecoration(
-                                                labelText:
-                                                    'Subject Name',
+                                              controller: subjectController,
+                                              decoration: const InputDecoration(
+                                                labelText: 'Subject Name',
                                               ),
                                             ),
                                             const SizedBox(height: 12),
-                                            TextField(
-                                              controller:
-                                                  classController,
-                                              decoration:
-                                                  const InputDecoration(
+                                            DropdownButtonFormField<String>(
+                                              value: selectedClass,
+                                              decoration: const InputDecoration(
                                                 labelText: 'Class',
                                               ),
+                                              items: const [
+                                                DropdownMenuItem(
+                                                  value: '6',
+                                                  child: Text('Class 6'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '7',
+                                                  child: Text('Class 7'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '8',
+                                                  child: Text('Class 8'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '9',
+                                                  child: Text('Class 9'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '10',
+                                                  child: Text('Class 10'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '11',
+                                                  child: Text('Class 11'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: '12',
+                                                  child: Text('Class 12'),
+                                                ),
+                                                DropdownMenuItem(
+                                                  value: 'all',
+                                                  child: Text('All classes'),
+                                                ),
+                                              ],
+                                              onChanged: (value) {
+                                                if (value != null) {
+                                                  selectedClass = value;
+                                                }
+                                              },
                                             ),
                                           ],
                                         ),
@@ -245,39 +326,81 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                           TextButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child:
-                                                const Text('Cancel',style: TextStyle(color: Colors.red),),
+                                            child: const Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              final newName =
-                                                  subjectController
-                                                      .text
-                                                      .trim();
-                                              final newClass =
-                                                  classController
-                                                      .text
-                                                      .trim();
+                                              final newName = subjectController
+                                                  .text
+                                                  .trim();
+                                              final newClass = selectedClass;
 
-                                              if (newName.isNotEmpty &&
-                                                  newClass.isNotEmpty) {
-                                                ref
-                                                    .read(
-                                                      subjectProvider
-                                                          .notifier,
-                                                    )
-                                                    .updateSubject(
-                                                      oldName:
-                                                          subject.name,
-                                                      newName: newName,
-                                                      newClass:
-                                                          newClass,
-                                                    );
+                                              if (newName.isEmpty ||
+                                                  newClass.isEmpty)
+                                                return;
+
+                                              final subjects = ref.read(
+                                                subjectProvider,
+                                              );
+
+                                              final alreadyExists = subjects.any(
+                                                (s) =>
+                                                    s.name.toLowerCase() ==
+                                                        newName.toLowerCase() &&
+                                                    s.className == newClass &&
+                                                    !(s.name == subject.name &&
+                                                        s.className ==
+                                                            subject
+                                                                .className), // exclude self
+                                              );
+
+                                              if (alreadyExists) {
+                                                ScaffoldMessenger.of(
+                                                    Navigator.of(
+                                                      context,
+                                                    ).context, // root context
+                                                  )
+                                                  ..hideCurrentSnackBar()
+                                                  ..showSnackBar(
+                                                    const SnackBar(
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      content: Text(
+                                                        'Subject with same class already exists',
+                                                      ),
+                                                    ),
+                                                  );
+                                                Navigator.pop(context);
+                                                return; // ❌ TERMINATE EDIT
                                               }
-                                              Navigator.pop(context);
+
+                                              ref
+                                                  .read(
+                                                    subjectProvider.notifier,
+                                                  )
+                                                  .updateSubject(
+                                                    oldName: subject.name,
+                                                    oldClass: subject.className,
+                                                    newName: newName,
+                                                    newClass: newClass,
+                                                  );
+
+                                              Navigator.pop(
+                                                context,
+                                              ); // ✅ close dialog only on success
                                             },
-                                            child:
-                                                const Text('Save',style: TextStyle(color: Colors.green),),
+
+                                            child: const Text(
+                                              'Save',
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -296,8 +419,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title: const Text(
-                                            'Delete Subject'),
+                                        title: const Text('Delete Subject'),
                                         content: Text(
                                           'Are you sure you want to delete "${subject.name}"?',
                                         ),
@@ -305,27 +427,29 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                           TextButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child:
-                                                const Text('Cancel'),
+                                            child: const Text('Cancel'),
                                           ),
                                           ElevatedButton(
-                                            style: ElevatedButton
-                                                .styleFrom(
-                                              backgroundColor:
-                                                  Colors.red,
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
                                             ),
                                             onPressed: () {
                                               ref
                                                   .read(
-                                                    subjectProvider
-                                                        .notifier,
+                                                    subjectProvider.notifier,
                                                   )
                                                   .deleteSubject(
-                                                      subject.name);
+                                                    subject.name,
+                                                    subject.className,
+                                                  );
                                               Navigator.pop(context);
                                             },
-                                            child:
-                                                const Text('Delete',style: TextStyle(color: Colors.white),),
+                                            child: const Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),

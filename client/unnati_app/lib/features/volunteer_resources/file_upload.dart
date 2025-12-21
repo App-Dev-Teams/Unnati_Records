@@ -13,7 +13,13 @@ import 'package:unnati_app/features/volunteer_resources/subject_provider_volunte
 
 class FileUploadPage extends ConsumerWidget {
   final String subject;
-  const FileUploadPage({super.key, required this.subject});
+  final String className;
+
+  const FileUploadPage({
+    super.key,
+    required this.subject,
+    required this.className,
+  });
 
   //bottom sheet function
   void _showAddFileSheet(BuildContext context, WidgetRef ref) {
@@ -87,16 +93,15 @@ class FileUploadPage extends ConsumerWidget {
                     ElevatedButton(
                       //add button
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 9, 12, 19),
+                        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
                       ),
                       onPressed: pickedFile == null
                           ? null
                           : () async {
                               final name =
                                   fileNameController.text.trim().isEmpty
-                                      ? pickedFile!.name
-                                      : fileNameController.text.trim();
+                                  ? pickedFile!.name
+                                  : fileNameController.text.trim();
 
                               final directory =
                                   await getExternalStorageDirectory();
@@ -105,19 +110,20 @@ class FileUploadPage extends ConsumerWidget {
                               final newPath =
                                   '${directory.path}/${pickedFile!.name}';
 
-                              final newFile =
-                                  await File(pickedFile!.path!).copy(newPath);
+                              final newFile = await File(
+                                pickedFile!.path!,
+                              ).copy(newPath);
 
                               final fileItem = FileItem(
                                 name: name,
                                 path: newFile.path,
-                                extension:
-                                    (pickedFile!.extension ?? '').toLowerCase(),
+                                extension: (pickedFile!.extension ?? '')
+                                    .toLowerCase(),
                               );
 
                               ref
                                   .read(subjectProvider.notifier)
-                                  .addFile(subject, fileItem);
+                                  .addFile(subject, className, fileItem);
 
                               Navigator.pop(context);
                             },
@@ -160,7 +166,10 @@ class FileUploadPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final subjects = ref.watch(subjectProvider);
-    final currentSubject = subjects.firstWhere((s) => s.name == subject);
+    final currentSubject = subjects.firstWhere(
+      (s) => s.name == subject && s.className == className,
+    );
+
     final files = currentSubject.files;
 
     return Scaffold(
@@ -171,7 +180,7 @@ class FileUploadPage extends ConsumerWidget {
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          subject,
+          '$subject - Class $className',
           style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
         ),
       ),
@@ -209,13 +218,12 @@ class FileUploadPage extends ConsumerWidget {
                   onTap: () async {
                     final result = await OpenFile.open(file.path);
                     if (result.type != ResultType.done) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(result.message)),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(result.message)));
                     }
                   },
                   child: Container(
-                  
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
@@ -225,7 +233,7 @@ class FileUploadPage extends ConsumerWidget {
                         ),
                       ],
                       borderRadius: BorderRadius.circular(16),
-                      
+
                       gradient: const LinearGradient(
                         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                       ),
@@ -238,8 +246,7 @@ class FileUploadPage extends ConsumerWidget {
                       ),
                       padding: EdgeInsets.all(12.w),
                       child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _fileIcon(file),
 
@@ -261,10 +268,7 @@ class FileUploadPage extends ConsumerWidget {
                             children: [
                               //EDIT
                               IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  size: 18,
-                                ),
+                                icon: const Icon(Icons.edit, size: 18),
                                 onPressed: () {
                                   final controller = TextEditingController(
                                     text: file.name,
@@ -276,8 +280,7 @@ class FileUploadPage extends ConsumerWidget {
                                       title: const Text('Edit File'),
                                       content: TextField(
                                         controller: controller,
-                                        decoration:
-                                            const InputDecoration(
+                                        decoration: const InputDecoration(
                                           labelText: 'File Name',
                                         ),
                                       ),
@@ -285,12 +288,17 @@ class FileUploadPage extends ConsumerWidget {
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          child: const Text('Cancel',style: TextStyle(color: Colors.black),),
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            final newName =
-                                                controller.text.trim();
+                                            final newName = controller.text
+                                                .trim();
                                             if (newName.isNotEmpty) {
                                               ref
                                                   .read(
@@ -298,13 +306,19 @@ class FileUploadPage extends ConsumerWidget {
                                                   )
                                                   .renameFile(
                                                     subjectName: subject,
+                                                    className: className,
                                                     oldFile: file,
                                                     newName: newName,
                                                   );
                                             }
                                             Navigator.pop(context);
                                           },
-                                          child: const Text('Save',style: TextStyle(color: Colors.green),),
+                                          child: const Text(
+                                            'Save',
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -323,8 +337,7 @@ class FileUploadPage extends ConsumerWidget {
                                   showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                      title:
-                                          const Text('Delete File'),
+                                      title: const Text('Delete File'),
                                       content: Text(
                                         'Are you sure you want to delete "${file.name}"?',
                                       ),
@@ -332,24 +345,33 @@ class FileUploadPage extends ConsumerWidget {
                                         TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          child:  Text('Cancel',style: TextStyle(color: Colors.black),),
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
                                         ElevatedButton(
-                                          style:
-                                              ElevatedButton.styleFrom(
+                                          style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.red,
                                           ),
                                           onPressed: () {
                                             ref
-                                                .read(
-                                                  subjectProvider.notifier,
-                                                )
+                                                .read(subjectProvider.notifier)
                                                 .deleteFile(
-                                                    subject, file);
+                                                  subject,
+                                                  className,
+                                                  file,
+                                                );
                                             Navigator.pop(context);
                                           },
-                                          child:
-                                              const Text('Delete',style: TextStyle(color: Colors.white),),
+                                          child: const Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
