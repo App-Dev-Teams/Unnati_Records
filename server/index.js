@@ -2,9 +2,9 @@ const dotenv= require('dotenv');
 const express= require('express');
 const cors = require('cors');
 const dbconnect = require('./config/dbConnection.js');
-const folderRouter = require('./routes/folder.js');
-const router = require('./routes/auth.js');
-const fileRouter = require('./routes/file.js');
+const folderRouter = require('./routes/folder.routes.js');
+const router = require('./routes/auth.routes.js');
+const fileRouter = require('./routes/file.routes.js');
 const adminRoutes = require("./routes/volunteer.routes.js");
 const otpRoutes = require("./routes/otp.routes");
 

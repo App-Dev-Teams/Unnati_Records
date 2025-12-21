@@ -1,5 +1,5 @@
 const express=require('express');
-const { getAllFolders, createFolder, updateFolder, deleteFolder } = require('../controllers/folder');
+const { getAllFolders, createFolder, updateFolder, deleteFolder } = require('../controllers/folder.controller');
 const folderRouter=express.Router();
 
 folderRouter.get('/folders', getAllFolders);          

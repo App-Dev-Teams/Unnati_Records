@@ -1,8 +1,8 @@
-const USER = require("../models/user.js");
+const USER = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt= require("jsonwebtoken")
-const STUDENT = require("../models/student.js");
+const STUDENT = require("../models/student.model.js");
 
 //=================USER SIGNUP=======================
 const signup = async (req, res) => {
@@ -12,7 +12,7 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password,role, batch, rollNo} = req.body;
+    const { name, email, password, batch, rollNo} = req.body;
 
     const existingUser = await USER.findOne({ email });
     if (existingUser) {
@@ -25,7 +25,7 @@ const signup = async (req, res) => {
     const newUser = new USER({
       name,
       email,
-      role,
+      role:'volunteer',
       password: hashedPassword,
       batch, 
       rollNo

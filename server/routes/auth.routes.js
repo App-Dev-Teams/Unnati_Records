@@ -2,7 +2,7 @@ const express=require('express');
 const bcrypt=require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const requireLogin = require('../middlewares/requireLogin');
-const { login, signup, studentSignup, studentLogin } = require('../controllers/auth');
+const { login, signup, studentSignup, studentLogin } = require('../controllers/auth.controller');
 
 const router=express.Router();
 

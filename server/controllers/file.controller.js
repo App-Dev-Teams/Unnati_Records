@@ -1,4 +1,4 @@
-const FILES = require("../models/file");
+const FILES = require("../models/file.model");
 const ImageKit = require('imagekit');
 const dotenv= require('dotenv');
 dotenv.config();
@@ -68,7 +68,6 @@ const getAllFiles = async (req, res) => {
     const files = await FILES.find()
       .sort({ createdAt: -1 })
       .populate('folder', 'name className'); 
-
     res.status(200).json(files);
   } catch (error) {
     console.error(error);

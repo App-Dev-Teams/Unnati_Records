@@ -1,5 +1,5 @@
 const express=require('express');
-const { getFilesByFolder, createFile, updateFile, deleteFile, getImageKitAuth, getAllFiles } = require('../controllers/file');
+const { getFilesByFolder, createFile, updateFile, deleteFile, getImageKitAuth, getAllFiles } = require('../controllers/file.controller');
 const fileRouter=express.Router();
 
 fileRouter.get('/imagekit/auth', getImageKitAuth);

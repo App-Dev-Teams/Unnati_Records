@@ -1,4 +1,4 @@
-const Folder = require('../models/folder.js');
+const Folder = require('../models/folder.model.js');
 
 // CREATE folder
 const createFolder = async (req,res)=>{
