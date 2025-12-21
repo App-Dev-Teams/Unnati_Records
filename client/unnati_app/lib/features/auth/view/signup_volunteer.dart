@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/main.dart';
 
 class SignUpVolunteer extends StatefulWidget {
   const SignUpVolunteer({super.key});
@@ -106,7 +107,11 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
           duration: const Duration(seconds: 2),
         ),
       );
-      Navigator.pop(context);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        (route) => false, // Remove all previous routes
+      );
     } else {
       String errorMessage = result['message'] ?? 'Signup failed';
       
