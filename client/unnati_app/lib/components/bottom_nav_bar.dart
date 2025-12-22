@@ -2,7 +2,8 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
+import 'package:unnati_app/Providers/bottom_nav_provider.dart';
+// import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
 
 class BottomNavBar extends ConsumerWidget {
   final IconData navIcon1;
