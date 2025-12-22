@@ -37,7 +37,7 @@ class VolunteerHomeCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //title
-                    Container(
+                    SizedBox(
                       height: 40,
                       width: 210,
                       child:Text("EMPOWERING DREAMS",style: GoogleFonts.oswald(fontSize: 25,color: Colors.white,fontWeight:FontWeight.bold),)

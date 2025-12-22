@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/volunteer_resources/file_upload.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
+import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class VolunteerResourcesPage extends ConsumerWidget {
   const VolunteerResourcesPage({super.key});
@@ -18,12 +20,12 @@ class VolunteerResourcesPage extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (modalContext) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (modalContext, setState) {
             return Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+                bottom: MediaQuery.of(modalContext).viewInsets.bottom,
                 left: 16,
                 right: 16,
                 top: 20,
@@ -52,9 +54,8 @@ class VolunteerResourcesPage extends ConsumerWidget {
 
                   const SizedBox(height: 12),
 
-                  //class dropdown
                   DropdownButtonFormField<String>(
-                    value: selectedClass,
+                    initialValue: selectedClass,
                     decoration: const InputDecoration(
                       labelText: 'Class',
                       border: OutlineInputBorder(),
@@ -83,7 +84,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 9, 12, 19),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final subject = subjectController.text.trim();
                       final cls = selectedClass;
 
@@ -98,11 +99,9 @@ class VolunteerResourcesPage extends ConsumerWidget {
                       );
 
                       if (alreadyExists) {
-                        Navigator.pop(context);
+                        Navigator.pop(modalContext);
 
-                        ScaffoldMessenger.of(
-                            Navigator.of(context).context, // ✅ ROOT context
-                          )
+                        ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
                             const SnackBar(
@@ -116,11 +115,34 @@ class VolunteerResourcesPage extends ConsumerWidget {
                         return;
                       }
 
-                      ref
-                          .read(subjectProvider.notifier)
-                          .addSubject(subject, cls);
+                      try {
+                        final folder = await ApiService.createFolder(
+                          name: subject,
+                          className: cls,
+                        );
 
-                      Navigator.pop(context);
+                        ref.read(subjectProvider.notifier).addSubjectFromBackend(
+                              Subject(
+                                id: folder['_id'] as String,
+                                name: folder['name'] as String,
+                                className:
+                                    (folder['className'] ?? '') as String,
+                              ),
+                            );
+
+                        Navigator.pop(modalContext);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                'Failed to create subject: $e',
+                              ),
+                            ),
+                          );
+                      }
                     },
 
                     child: const Text(
@@ -144,7 +166,6 @@ class VolunteerResourcesPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
 
-      //app bar
       appBar: AppBar(
         foregroundColor: Colors.white,
         title: Text(
@@ -158,10 +179,9 @@ class VolunteerResourcesPage extends ConsumerWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
-        //floating action button
         onPressed: () => _showAddSubjectSheet(context, ref),
-        child: Icon(Icons.add, color: Colors.white),
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
+        child: Icon(Icons.add, color: Colors.white),
       ),
 
       body: subjects.isEmpty
@@ -187,7 +207,6 @@ class VolunteerResourcesPage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16.r),
                   onTap: () {
                     Navigator.push(
-                      //navigation
                       context,
                       MaterialPageRoute(
                         builder: (_) => FileUploadPage(
@@ -276,7 +295,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                             ),
                                             const SizedBox(height: 12),
                                             DropdownButtonFormField<String>(
-                                              value: selectedClass,
+                                              initialValue: selectedClass,
                                               decoration: const InputDecoration(
                                                 labelText: 'Class',
                                               ),
@@ -341,8 +360,9 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                               final newClass = selectedClass;
 
                                               if (newName.isEmpty ||
-                                                  newClass.isEmpty)
+                                                  newClass.isEmpty) {
                                                 return;
+                                              }
 
                                               final subjects = ref.read(
                                                 subjectProvider,

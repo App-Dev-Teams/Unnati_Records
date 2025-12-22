@@ -3,11 +3,6 @@ const ImageKit = require('imagekit');
 const dotenv= require('dotenv');
 dotenv.config();
 
-//backend gives token to frontend then frontend sends it to imagekit and then frontend receives the url 
-// which is sent in the post request to backend which further gets saved in mongodb
-//private key will never go in frontend
-
-//IMAGEKIT OBJECT CREATION: it helps you in using imagekit's methods
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
@@ -15,7 +10,6 @@ const imagekit = new ImageKit({
 }); 
 
 
-//IMAGEKIT TOKEN:imagekitauth token generation
 const getImageKitAuth = (req, res) => {
   try {
     const authParams = imagekit.getAuthenticationParameters();
@@ -29,7 +23,6 @@ const getImageKitAuth = (req, res) => {
 };
 
 
-//CREATE: creation of file
 const createFile = async (req, res) => {
   try {
     const { originalName, displayName, link, folder,type ,imagekitFileId} = req.body;
@@ -62,7 +55,6 @@ const createFile = async (req, res) => {
 };
 
 
-// GET: all files
 const getAllFiles = async (req, res) => {
   try {
     const files = await FILES.find()
@@ -78,7 +70,6 @@ const getAllFiles = async (req, res) => {
 };
 
 
-//GET:Folder-wise file fetch
 const getFilesByFolder = async (req, res) => {
   try {
     const { folderId } = req.params;
@@ -87,7 +78,6 @@ const getFilesByFolder = async (req, res) => {
       return res.status(400).json({ message: "Folder ID is required" });
     }
 
-    // find files with given folderId
     const files = await FILES.find({ folder: folderId }).sort({ createdAt: -1 });
 
     res.status(200).json(files);
@@ -98,20 +88,17 @@ const getFilesByFolder = async (req, res) => {
 };
 
 
-//UPDATE: displayname can be edited.
 const updateFile = async (req, res) => {
   try {
     const { id } = req.params;
     const { displayName } = req.body;
 
-    // displayName field must be present
     if (displayName === undefined) {
       return res.status(400).json({
         message: "displayName is required"
       });
     }
 
-    // empty string not allowed
     if (displayName.trim() === "") {
       return res.status(400).json({
         message: "displayName cannot be empty"
@@ -140,21 +127,16 @@ const updateFile = async (req, res) => {
 };
 
 
-//DELETE: delete file from both imagekit and mongodb
 const deleteFile = async (req, res) => {
   try {
-    const { id } = req.params; // MongoDB file id
+    const { id } = req.params;
 
-    //  Fetch file record from DB
     const file = await FILES.findById(id);
     if (!file) {
       return res.status(404).json({ message: "File not found" });
     }
 
-    //async has been used with promise just to make sure first file gets deleted from imagekit and then from mongodb
-    //promise will give the result(pass/fail) of a work being executed in future
-    // 1. Delete file from ImageKit
-    const fileId = file.imagekitFileId; 
+    const fileId = file.imagekitFileId;
     if (fileId) {
       await new Promise((resolve, reject) => {
         imagekit.deleteFile(fileId, function (error, result) {
@@ -164,7 +146,6 @@ const deleteFile = async (req, res) => {
       });
     }
 
-    // 2. Delete file from MongoDB
     await FILES.findByIdAndDelete(id);
 
     res.status(200).json({ message: "File deleted successfully" });

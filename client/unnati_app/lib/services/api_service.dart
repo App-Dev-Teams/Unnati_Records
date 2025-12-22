@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
+  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -200,5 +201,87 @@ class ApiService {
       },
       operation: 'STUDENT_LOGIN',
     );
+  }
+
+  // ================== FOLDER / FILE APIs (Volunteer resources) ==================
+
+  /// Fetch all folders (courses/subjects)
+  static Future<List<Map<String, dynamic>>> fetchFolders() async {
+    final res = await http.get(Uri.parse('$coreBaseUrl/folders'));
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      final data = json.decode(res.body) as List;
+      return data.cast<Map<String, dynamic>>();
+    }
+    throw Exception('Failed to fetch folders: ${res.body}');
+  }
+
+  /// Create a new folder (course/subject)
+  static Future<Map<String, dynamic>> createFolder({
+    required String name,
+    required String className,
+  }) async {
+    final res = await http.post(
+      Uri.parse('$coreBaseUrl/folders'),
+      headers: _headers,
+      body: json.encode({
+        'name': name,
+        'className': className,
+      }),
+    );
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body) as Map<String, dynamic>;
+    }
+    throw Exception('Failed to create folder: ${res.body}');
+  }
+
+  /// Get ImageKit auth parameters from backend
+  static Future<Map<String, dynamic>> getImageKitAuth() async {
+    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body) as Map<String, dynamic>;
+    }
+    throw Exception('Failed to get ImageKit auth: ${res.body}');
+  }
+
+  /// Fetch all files for a folder
+  static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
+    String folderId,
+  ) async {
+    final res =
+        await http.get(Uri.parse('$coreBaseUrl/files/folder/$folderId'));
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      final data = json.decode(res.body) as List;
+      return data.cast<Map<String, dynamic>>();
+    }
+    throw Exception('Failed to fetch files: ${res.body}');
+  }
+
+  /// Create a file metadata entry in backend after uploading to ImageKit
+  static Future<Map<String, dynamic>> createFile({
+    required String originalName,
+    required String displayName,
+    required String link,
+    required String folderId,
+    required String type,
+    required String imagekitFileId,
+  }) async {
+    final res = await http.post(
+      Uri.parse('$coreBaseUrl/files'),
+      headers: _headers,
+      body: json.encode({
+        'originalName': originalName,
+        'displayName': displayName,
+        'link': link,
+        'folder': folderId,
+        'type': type,
+        'imagekitFileId': imagekitFileId,
+      }),
+    );
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body) as Map<String, dynamic>;
+    }
+    throw Exception('Failed to create file: ${res.body}');
   }
 }

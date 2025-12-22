@@ -5,10 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
 import 'package:unnati_app/features/auth/view/login_page_1.dart';
 import 'package:unnati_app/features/auth/view/login_page_student.dart';
-import 'package:unnati_app/features/Student_Home/student_home_screen.dart';
-import 'package:unnati_app/features/auth/view/signup_as.dart';
-import 'package:unnati_app/features/pdf_feature/pdf_digiexplore.dart';
-import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
 import 'package:unnati_app/features/volunteer_home/volunteer_home_screen.dart';
 
 void main() {
@@ -56,20 +52,18 @@ class _AuthCheckState extends State<AuthCheck> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
 
-    await Future.delayed(const Duration(seconds: 1)); // optional splash delay
+    await Future.delayed(const Duration(seconds: 1)); 
 
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      // ✅ token exists → go to home
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const LoginPageStudent() /* HomeScreen() */,
+          builder: (_) => const LoginPageStudent() ,
         ),
       );
     } else {
-      // ❌ no token → go to signup/login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => LoginPage1()),

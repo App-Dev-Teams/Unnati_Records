@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 
 class PdfAssignments extends StatefulWidget {
+  const PdfAssignments({super.key});
+
   @override
   _PdfAssignmentsState createState() => _PdfAssignmentsState();
   }

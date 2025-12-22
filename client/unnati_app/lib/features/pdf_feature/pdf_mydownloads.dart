@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/Providers/download_provider.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
-import 'package:unnati_app/components/pdf_components/pdf_chaptercard.dart';
 import 'package:unnati_app/components/pdf_components/pdf_downloadcard.dart';
 import 'package:unnati_app/components/pdf_components/pdf_viewer_page.dart';
 
