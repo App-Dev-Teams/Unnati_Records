@@ -5,13 +5,24 @@ import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/features/forgot_pass/otp_verification.dart';
 
-class EmailVerification extends StatelessWidget {
+class EmailVerification extends StatefulWidget {
   const EmailVerification({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<EmailVerification> createState() => _EmailVerificationState();
+}
 
-    TextEditingController _emailController = TextEditingController(); //email data
+class _EmailVerificationState extends State<EmailVerification> {
+
+      TextEditingController emailController = TextEditingController(); //email data
+
+      @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
 
 
     return Scaffold(
@@ -55,7 +66,7 @@ class EmailVerification extends StatelessWidget {
               Padding(
                 padding:  EdgeInsets.only(left: 30.w,right: 30.w),
                 child: TextField(
-                   controller: _emailController,
+                   controller: emailController,
                    decoration: InputDecoration(
                     label: Text('email'),
                     labelStyle: TextStyle(color: Colors.grey,fontSize: 12),
@@ -82,7 +93,7 @@ class EmailVerification extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtpVerification(emailSent: _emailController.text,),
+                            builder: (context) => OtpVerification(emailSent: emailController.text,),
                           ),
                         );
                       },
