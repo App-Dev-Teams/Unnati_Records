@@ -242,6 +242,47 @@ const studentLogin = async (req, res) => {
   }
 };
 
-module.exports = { studentSignup, studentLogin,signup,login};
+//================== Volunteer UPDATE PASSWORD ======================
+
+const updatePassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        error: "Email and new password are required"
+      });
+    }
+
+    // hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // update password in DB
+    const user = await USER.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found"
+      });
+    }
+
+    return res.json({
+      message: "Password updated successfully"
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: "Failed to update password"
+    });
+  }
+};
+
+
+module.exports = { studentSignup, studentLogin,signup,login , updatePassword};
 
 

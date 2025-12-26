@@ -14,7 +14,7 @@ const sendOtpMail = async (email, otp) => {
   const payload = {
     sender: {
       email: process.env.EMAIL_FROM,
-      name: "Unnati"
+      name: "Test Unnati"
     },
     to: [
       {
@@ -23,7 +23,7 @@ const sendOtpMail = async (email, otp) => {
     ],
     subject: "OTP Verification - Unnati",
     htmlContent: `
-      <h2>Email Verification</h2>
+      <h2>This is a test of Email Verification backend , please ignore (lol) </h2>
       <p>Your OTP is:</p>
       <h1>${otp}</h1>
       <p>Valid for 5 minutes.</p>

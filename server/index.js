@@ -38,5 +38,3 @@ app.use("/api/otp", otpRoutes);
 app.listen(PORT , ()=>{
     console.log(`server running at port ${PORT}`);
 })
-
-console.log("BREVO KEY:", process.env.BREVO_API_KEY);
