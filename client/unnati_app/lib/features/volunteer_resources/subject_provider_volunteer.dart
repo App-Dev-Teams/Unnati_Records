@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 
@@ -7,6 +6,14 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
 
   void addSubject(String name, String className) {
     state = [...state, Subject(name: name, className: className)];
+  }
+
+  void addSubjectFromBackend(Subject subject) {
+    state = [...state, subject];
+  } 
+
+  void setSubjects(List<Subject> subjects) {
+    state = subjects;
   }
 
   void addFile(String subjectName, String className, FileItem file) {
@@ -18,7 +25,6 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     }).toList();
   }
 
-  // UPDATE SUBJECT NAME & CLASS
   void updateSubject({
     required String oldName,
     required String oldClass,
@@ -27,17 +33,15 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
   }) {
     state = state.map((subject) {
       if (subject.name == oldName && subject.className == oldClass) {
-        return Subject(
+        return subject.copyWith(
           name: newName,
           className: newClass,
-          files: subject.files, // files remain same
         );
       }
       return subject;
     }).toList();
   }
 
-  // DELETE SUBJECT
   void deleteSubject(String name, String className) {
     state = state
         .where(
@@ -47,7 +51,6 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
         .toList();
   }
 
-  //  EDIT FILE NAME
   void renameFile({
     required String subjectName,
     required String className,
@@ -73,7 +76,6 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     }).toList();
   }
 
-  // DELETE FILE
   void deleteFile(String subjectName, String className, FileItem fileToDelete) {
     state = state.map((subject) {
       if (subject.name == subjectName) {

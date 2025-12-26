@@ -3,7 +3,6 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/Providers/bottom_nav_provider.dart';
-// import 'package:unnati_app/providers.dart/bottom_nav_provider.dart';
 
 class BottomNavBar extends ConsumerWidget {
   final IconData navIcon1;
@@ -26,8 +25,8 @@ class BottomNavBar extends ConsumerWidget {
     required this.labelName1,
     required this.labelName2,
     required this.labelName3,
-    this.navColor  = Colors.white,
-    this.navBackgroundColor =Colors.transparent,
+    this.navColor = Colors.white,
+    this.navBackgroundColor = Colors.transparent,
     this.navButtonColor = const Color.fromARGB(255, 114, 155, 208),
   });
 
@@ -45,7 +44,7 @@ class BottomNavBar extends ConsumerWidget {
       ],
       backgroundColor: navBackgroundColor,
       buttonBackgroundColor: navButtonColor,
-      
+
       onTap: (index) {
         ref.read(bottomNavIndexProvider.notifier).state = index;
       },

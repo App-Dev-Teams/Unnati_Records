@@ -8,6 +8,8 @@ import 'package:unnati_app/components/pdf_components/pdf_viewer_page.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mydownloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PdfDxscreen extends ConsumerStatefulWidget{
+  const PdfDxscreen({super.key});
+
   @override
   ConsumerState<PdfDxscreen> createState() => _PdfDxscreenState();
 }
@@ -41,6 +43,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen>{
   );
 }
 
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "DigiExplore Syllabus"),

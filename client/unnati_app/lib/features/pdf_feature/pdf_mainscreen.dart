@@ -9,6 +9,8 @@ import 'package:unnati_app/features/pdf_feature/pdf_mydownloads.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_quizzes.dart';
 
 class PdfMainscreen extends StatefulWidget {
+  const PdfMainscreen({super.key});
+
   @override
   _PdfMainscreenState createState() => _PdfMainscreenState();
 }

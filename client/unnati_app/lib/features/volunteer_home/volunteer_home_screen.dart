@@ -35,6 +35,5 @@ class VolunteerHomeScreen extends ConsumerWidget {
         navColor: const Color.fromARGB(255, 211, 211, 211),
       ),
     );
-    ;
   }
 }

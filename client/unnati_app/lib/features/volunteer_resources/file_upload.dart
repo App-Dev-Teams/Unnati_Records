@@ -1,15 +1,18 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class FileUploadPage extends ConsumerWidget {
   final String subject;
@@ -22,27 +25,27 @@ class FileUploadPage extends ConsumerWidget {
   });
 
   //bottom sheet function
-  void _showAddFileSheet(BuildContext context, WidgetRef ref) {
+  void _showAddFileSheet(BuildContext scaffoldContext, WidgetRef ref) {
     final fileNameController = TextEditingController();
     PlatformFile? pickedFile;
 
     showModalBottomSheet(
       //bottom sheet
-      context: context,
+      context: scaffoldContext,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (modalContext) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (modalContext, setState) {
             return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(scaffoldContext).size.height * 0.6,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ListView(
                   padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                    bottom: MediaQuery.of(modalContext).viewInsets.bottom,
                     top: 20,
                   ),
                   children: [
@@ -71,7 +74,8 @@ class FileUploadPage extends ConsumerWidget {
                       //pick file
                       onPressed: () async {
                         final result = await FilePicker.platform.pickFiles(
-                          type: FileType.any,
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf'],
                         );
 
                         if (result != null) {
@@ -100,32 +104,127 @@ class FileUploadPage extends ConsumerWidget {
                           : () async {
                               final name =
                                   fileNameController.text.trim().isEmpty
-                                  ? pickedFile!.name
-                                  : fileNameController.text.trim();
+                                      ? pickedFile!.name
+                                      : fileNameController.text.trim();
 
-                              final directory =
-                                  await getExternalStorageDirectory();
-                              if (directory == null) return;
+                              if (pickedFile!.extension?.toLowerCase() != 'pdf') {
+                                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Only PDF files are allowed for upload.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
 
-                              final newPath =
-                                  '${directory.path}/${pickedFile!.name}';
+                              try {
+                                final auth =
+                                    await ApiService.getImageKitAuth();
 
-                              final newFile = await File(
-                                pickedFile!.path!,
-                              ).copy(newPath);
+                                final uploadRequest = http.MultipartRequest(
+                                  'POST',
+                                  Uri.parse(
+                                      'https://upload.imagekit.io/api/v1/files/upload'),
+                                )
+                                  ..fields['fileName'] = pickedFile!.name
+                                  ..fields['token'] =
+                                      auth['token'].toString()
+                                  ..fields['signature'] =
+                                      auth['signature'].toString()
+                                  ..fields['expire'] =
+                                      auth['expire'].toString();
 
-                              final fileItem = FileItem(
-                                name: name,
-                                path: newFile.path,
-                                extension: (pickedFile!.extension ?? '')
-                                    .toLowerCase(),
-                              );
+                                if (pickedFile!.path != null) {
+                                  uploadRequest.files.add(
+                                    await http.MultipartFile.fromPath(
+                                      'file',
+                                      pickedFile!.path!,
+                                    ),
+                                  );
+                                } else {
+                                  uploadRequest.files.add(
+                                    http.MultipartFile.fromBytes(
+                                      'file',
+                                      pickedFile!.bytes!,
+                                      filename: pickedFile!.name,
+                                    ),
+                                  );
+                                }
 
-                              ref
-                                  .read(subjectProvider.notifier)
-                                  .addFile(subject, className, fileItem);
+                                final streamed =
+                                    await uploadRequest.send();
+                                final uploadResponse =
+                                    await http.Response.fromStream(streamed);
 
-                              Navigator.pop(context);
+                                if (uploadResponse.statusCode < 200 ||
+                                    uploadResponse.statusCode >= 300) {
+                                  throw Exception(
+                                    'ImageKit upload failed: ${uploadResponse.body}',
+                                  );
+                                }
+
+                                final uploadData =
+                                    json.decode(uploadResponse.body)
+                                        as Map<String, dynamic>;
+
+                                final imageUrl =
+                                    uploadData['url'] as String;
+                                final imagekitFileId =
+                                    uploadData['fileId'] as String;
+
+                                final subjects =
+                                    ref.read(subjectProvider);
+                                final subjectObj = subjects.firstWhere(
+                                  (s) =>
+                                      s.name == subject &&
+                                      s.className == className,
+                                );
+
+                                if (subjectObj.id == null) {
+                                  throw Exception(
+                                    'No backend folder id found for this subject',
+                                  );
+                                }
+
+                                final fileMeta =
+                                    await ApiService.createFile(
+                                  originalName: pickedFile!.name,
+                                  displayName: name,
+                                  link: imageUrl,
+                                  folderId: subjectObj.id!,
+                                  type: (pickedFile!.extension ?? '')
+                                      .toLowerCase(),
+                                  imagekitFileId: imagekitFileId,
+                                );
+
+                                final fileItem = FileItem(
+                                  id: fileMeta['_id'] as String,
+                                  name: fileMeta['displayName'] as String,
+                                  path: '',
+                                  extension:
+                                      (fileMeta['type'] ?? '').toString(),
+                                  url: fileMeta['link'] as String,
+                                );
+
+                                ref
+                                    .read(subjectProvider.notifier)
+                                    .addFile(
+                                      subject,
+                                      className,
+                                      fileItem,
+                                    );
+
+                                Navigator.pop(modalContext);
+                              } catch (e) {
+                                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Failed to upload file: $e',
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             },
                       child: Text(
                         'Add File',

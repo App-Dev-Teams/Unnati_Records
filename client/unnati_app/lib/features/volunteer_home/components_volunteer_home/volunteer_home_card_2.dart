@@ -44,7 +44,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //Unnati logo
-                    Container(
+                    SizedBox(
                       height: 40,
                       width: 40,
                       child: Image.asset(

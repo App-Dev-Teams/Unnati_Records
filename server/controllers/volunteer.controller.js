@@ -1,6 +1,5 @@
 const USER = require("../models/user.model");
 
-// ================= GET ALL USERS =================
 const getAllUsers = async (req, res) => {
   try {
     const users = await USER.find({}, "name email role");

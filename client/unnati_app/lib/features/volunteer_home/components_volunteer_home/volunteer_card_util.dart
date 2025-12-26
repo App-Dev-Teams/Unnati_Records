@@ -69,6 +69,5 @@ class VolunteerCardUtil extends StatelessWidget {
     ],
   ),
 );
-;
   }
 }

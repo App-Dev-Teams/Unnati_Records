@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 
 class PdfQuizzes extends StatefulWidget {
+  const PdfQuizzes({super.key});
+
   @override
   _PdfQuizzesState createState() => _PdfQuizzesState();
   }
