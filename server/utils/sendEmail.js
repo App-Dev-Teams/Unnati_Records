@@ -1,28 +1,40 @@
-const nodemailer = require("nodemailer");
+const axios = require("axios");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER, // your gmail
-    pass: process.env.EMAIL_PASS  // app password
-  }
-});
+const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 
 const generateOtp = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 const sendOtpMail = async (email, otp) => {
-  await transporter.sendMail({
-    from: `"Unnati" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: "Your OTP for Verification",
-    html: `
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY missing");
+  }
+
+  const payload = {
+    sender: {
+      email: process.env.EMAIL_FROM,
+      name: "Unnati"
+    },
+    to: [
+      {
+        email: email
+      }
+    ],
+    subject: "OTP Verification - Unnati",
+    htmlContent: `
       <h2>Email Verification</h2>
       <p>Your OTP is:</p>
       <h1>${otp}</h1>
-      <p>This OTP is valid for 5 minutes.</p>
+      <p>Valid for 5 minutes.</p>
     `
+  };
+
+  await axios.post(BREVO_URL, payload, {
+    headers: {
+      "api-key": process.env.BREVO_API_KEY,
+      "Content-Type": "application/json"
+    }
   });
 };
 

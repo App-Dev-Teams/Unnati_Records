@@ -7,6 +7,8 @@ const router = require('./routes/auth.routes.js');
 const fileRouter = require('./routes/file.routes.js');
 const adminRoutes = require("./routes/volunteer.routes.js");
 const otpRoutes = require("./routes/otp.routes");
+require("dotenv").config();
+
 
 dotenv.config();
 dbconnect();
@@ -30,8 +32,11 @@ app.use('/api',folderRouter);
 app.use('/api',fileRouter);
 app.use('/api/admin', adminRoutes);
 app.use("/api/otp", otpRoutes);
+//app.use("/api/otp", require("./routes/otp.routes"));
 
 //================SERVER======================
 app.listen(PORT , ()=>{
     console.log(`server running at port ${PORT}`);
 })
+
+console.log("BREVO KEY:", process.env.BREVO_API_KEY);

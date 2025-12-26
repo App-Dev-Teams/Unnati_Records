@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:unnati_admin/features/admin_homescreen.dart';
 import 'package:unnati_admin/features/auth/login_page.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const LoginPage(),
+          home: const AdminHomePage(),
         );
       },
     );

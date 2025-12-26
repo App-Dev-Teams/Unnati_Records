@@ -12,11 +12,11 @@ import 'package:unnati_app/features/forgot_pass/pass_reset_screen.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_digiexplore.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
 import 'package:unnati_app/features/volunteer_home/volunteer_home_screen.dart';
+import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
 
 void main() {
-  runApp(const ProviderScope(child:  ProviderScope(child:  MyApp())));
+  runApp(const ProviderScope(child: ProviderScope(child: MyApp())));
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,12 +29,12 @@ class MyApp extends StatelessWidget {
 
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+
         // title: 'Flutter Demo',
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // ),
-
-        home: PasswordResetScreen(),
+        home: VolunteerResourcesPage(),
       ),
     );
   }
@@ -58,16 +58,14 @@ class _AuthCheckState extends State<AuthCheck> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
 
-    await Future.delayed(const Duration(seconds: 1)); 
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const LoginPageStudent() ,
-        ),
+        MaterialPageRoute(builder: (_) => const LoginPageStudent()),
       );
     } else {
       Navigator.pushReplacement(

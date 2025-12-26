@@ -1,40 +1,35 @@
 const OTP = require("../models/otp.model");
 const { generateOtp, sendOtpMail } = require("../utils/sendEmail");
 
-// ================= SEND OTP =================
+// SEND OTP
 exports.sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-
     if (!email) {
-      return res.status(400).json({ error: "Email is required" });
+      return res.status(400).json({ error: "Email required" });
     }
 
-    // delete old OTP
     await OTP.deleteMany({ email });
 
     const otp = generateOtp();
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
     await OTP.create({ email, otp, expiresAt });
 
     await sendOtpMail(email, otp);
 
-    res.status(200).json({
-      message: "OTP sent to email"
-    });
+    res.json({ message: "OTP sent successfully" });
 
   } catch (err) {
-    console.error(err);
+    console.error(err.response?.data || err.message);
     res.status(500).json({ error: "Failed to send OTP" });
   }
 };
 
-// ================= VERIFY OTP =================
+// VERIFY OTP
 exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-
     if (!email || !otp) {
       return res.status(400).json({ error: "Email & OTP required" });
     }
@@ -52,12 +47,9 @@ exports.verifyOtp = async (req, res) => {
 
     await OTP.deleteOne({ _id: record._id });
 
-    res.status(200).json({
-      message: "OTP verified successfully"
-    });
+    res.json({ message: "OTP verified successfully" });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "OTP verification failed" });
   }
 };
