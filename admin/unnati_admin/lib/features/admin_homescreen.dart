@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/features/adminappbar.dart';
-
+import 'package:unnati_admin/features/assign_leads.dart';
+import 'package:unnati_admin/features/leadcard.dart';
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
 
@@ -44,20 +45,30 @@ class AdminHomePage extends StatelessWidget {
                 SizedBox(
                   height: 180,
                   width: MediaQuery.of(context).size.width / 2 - 30 ,
-                  child: _AdminActionCard(
-                    icon: Icons.groups_outlined,
-                    title: "Manage Volunteers",
-                    subtitle: "View, approve, remove",
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push( context, MaterialPageRoute(builder: (context) =>  AssignLeadsPage(),) );
+                    },
+                    child: _AdminActionCard(
+                      icon: Icons.groups_outlined,
+                      title: "Manage Volunteers",
+                      subtitle: "View, approve, remove",
+                    ),
                   ),
                 ),
                 const SizedBox(width: 20),
                 SizedBox(
                   height: 180,
                   width: MediaQuery.of(context).size.width / 2 - 30 ,
-                  child: _AdminActionCard(
-                    icon: Icons.admin_panel_settings_outlined,
-                    title: "Assign Leads",
-                    subtitle: "Promote & change roles",
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push( context, MaterialPageRoute(builder: (context) =>  AssignLeadsPage(),) );
+                    },
+                    child: _AdminActionCard(
+                      icon: Icons.admin_panel_settings_outlined,
+                      title: "Assign Leads",
+                      subtitle: "Promote & change roles",
+                    ),
                   ),
                 ),
               ],
@@ -77,17 +88,23 @@ class AdminHomePage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            _LeadCard(
+            LeadCard(
               name: "Anuj Sah",
               role: "Education Lead",
+              onEdit: () {},
+              onDelete: () {},
             ),
-            _LeadCard(
+            LeadCard(
               name: "Thakur Ayush",
               role: "Operations Lead",
+              onEdit: () {},
+              onDelete: () {},
             ),
-            _LeadCard(
+            LeadCard(
               name: "Sukrit Aryan",
               role: "Design Lead",
+              onEdit: () {},
+              onDelete: () {},
             ),
           ],
         ),
@@ -154,71 +171,71 @@ class _AdminActionCard extends StatelessWidget {
     );
   }
 }
-class _LeadCard extends StatelessWidget {
-  final String name;
-  final String role;
+// // class _LeadCard extends StatelessWidget {
+//   final String name;
+//   final String role;
 
-  const _LeadCard({
-    required this.name,
-    required this.role,
-  });
+//   const _LeadCard({
+//     required this.name,
+//     required this.role,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: const Color.fromARGB(255, 14, 22, 33),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-            child: Text(
-              name[0],
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 12),
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(14),
+//         color: const Color.fromARGB(255, 14, 22, 33),
+//         border: Border.all(color: Colors.white10),
+//       ),
+//       child: Row(
+//         children: [
+//           CircleAvatar(
+//             backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+//             child: Text(
+//               name[0],
+//               style: const TextStyle(color: Colors.white),
+//             ),
+//           ),
 
-          const SizedBox(width: 14),
+//           const SizedBox(width: 14),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.nunito(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  role,
-                  style: GoogleFonts.nunito(
-                    fontSize: 13,
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   name,
+//                   style: GoogleFonts.nunito(
+//                     fontSize: 15,
+//                     color: Colors.white,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 2),
+//                 Text(
+//                   role,
+//                   style: GoogleFonts.nunito(
+//                     fontSize: 13,
+//                     color: Colors.white70,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
 
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white70),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-}
+//           IconButton(
+//             icon: const Icon(Icons.edit, color: Colors.white70),
+//             onPressed: () {},
+//           ),
+//           IconButton(
+//             icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+//             onPressed: () {},
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
