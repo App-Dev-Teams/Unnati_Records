@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
+import 'package:unnati_app/features/forgot_pass/email_verification.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
@@ -128,7 +129,12 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                   controller: passwordController,
                 ),
               ),
-              SizedBox(height: 30.h),
+
+              TextButton(onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerification()));
+              }, child: Text('Forgot password?',style: TextStyle(color: Colors.blue),)),
+              
+              SizedBox(height: 25.h),
               ElevatedButton(
                 onPressed: isLoading ? null : handleLogin,
                 style: ElevatedButton.styleFrom(

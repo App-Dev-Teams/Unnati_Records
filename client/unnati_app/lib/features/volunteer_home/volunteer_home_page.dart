@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
@@ -16,7 +17,12 @@ class VolunteerHomePage extends StatefulWidget {
 class _VolunteerHomePageState extends State<VolunteerHomePage> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+
+      appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: "Priyanshu"),
+      
+      body: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,6 +72,10 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
 
         ],
       ),
+    ),
     );
+    
+    
+    
   }
 }
