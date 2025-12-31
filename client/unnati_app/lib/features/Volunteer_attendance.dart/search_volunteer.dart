@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provider.dart';
@@ -8,9 +7,9 @@ class SearchVolunteer extends ConsumerStatefulWidget {
   final DateTime selectedDate;
 
   const SearchVolunteer({
-    Key? key,
+    super.key,
     required this.selectedDate,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<SearchVolunteer> createState() => _SearchVolunteerState();
@@ -20,10 +19,10 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
   String? selectedProgram;
   String searchText = '';
 
-  //programs list
+  // programs list
   final List<String> programs = ['DigiXplore', 'Netritva', 'Akshar', 'All'];
 
-  //all volunteers
+  // static volunteers list
   final List<Volunteer> allVolunteers = [
     Volunteer(name: 'Rahul Sharma', program: 'DigiXplore'),
     Volunteer(name: 'Priyanshu Kumar', program: 'DigiXplore'),
@@ -32,44 +31,102 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
     Volunteer(name: 'Aman Gupta', program: 'Netritva'),
   ];
 
-  // ===== FIXED =====
-  // check for marked present (date normalized)
-  bool _isMarkedPresent(
+  // get attendance status of a volunteer for selected date
+  AttendanceStatus? _getStatus(
     Volunteer volunteer,
-    Map<DateTime, List<Volunteer>> attendanceData,
+    Map<DateTime, AttendanceDay> attendanceData,
   ) {
-    final normalized = DateTime(
+    final date = DateTime(
       widget.selectedDate.year,
       widget.selectedDate.month,
       widget.selectedDate.day,
     );
 
-    final list = attendanceData[normalized] ?? [];
-    return list.any((v) => v.name == volunteer.name);
+    final day = attendanceData[date];
+    if (day == null) return null;
+
+    if (day.present.any((v) => v.name == volunteer.name)) {
+      return AttendanceStatus.present;
+    }
+    if (day.absent.any((v) => v.name == volunteer.name)) {
+      return AttendanceStatus.absent;
+    }
+    if (day.deferred.any((v) => v.name == volunteer.name)) {
+      return AttendanceStatus.deferred;
+    }
+    return null;
+  }
+
+  // bottom sheet to mark attendance
+  void _showAttendanceOptions(Volunteer volunteer) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.check_circle, color: Colors.green),
+            title: const Text('Present'),
+            onTap: () {
+              ref.read(attendanceProvider.notifier).markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.present,
+                  );
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.cancel, color: Colors.red),
+            title: const Text('Absent'),
+            onTap: () {
+              ref.read(attendanceProvider.notifier).markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.absent,
+                  );
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.access_time, color: Colors.orange),
+            title: const Text('Deferred'),
+            onTap: () {
+              ref.read(attendanceProvider.notifier).markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.deferred,
+                  );
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final attendanceData = ref.watch(attendanceProvider);
 
-    //filter list
-    final filteredVolunteers = allVolunteers.where((volunteer) {
-      final matchesProgram =
-          selectedProgram == 'All' || volunteer.program == selectedProgram;
+    // filter volunteers by program and name
+    final filteredVolunteers = allVolunteers.where((v) {
+      final programMatch =
+          selectedProgram == null ||
+          selectedProgram == 'All' ||
+          v.program == selectedProgram;
 
-      final matchesName = volunteer.name.toLowerCase().contains(
-        searchText.toLowerCase(),
-      );
+      final nameMatch =
+          v.name.toLowerCase().contains(searchText.toLowerCase());
 
-      return matchesProgram && matchesName;
+      return programMatch && nameMatch;
     }).toList();
 
     return Column(
       children: [
-        //drop down menu for program
-        DropdownButtonFormField(
+        // program dropdown
+        DropdownButtonFormField<String>(
           dropdownColor: Colors.grey,
-          initialValue: selectedProgram,
           hint: const Text('Select Program'),
           decoration: InputDecoration(
             filled: true,
@@ -78,9 +135,14 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          items: programs.map((program) {
-            return DropdownMenuItem(value: program, child: Text(program));
-          }).toList(),
+          items: programs
+              .map(
+                (p) => DropdownMenuItem<String>(
+                  value: p,
+                  child: Text(p),
+                ),
+              )
+              .toList(),
           onChanged: (value) {
             setState(() {
               selectedProgram = value;
@@ -90,7 +152,7 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
 
         const SizedBox(height: 16),
 
-        //search bar
+        // search field
         TextField(
           enabled: selectedProgram != null,
           decoration: InputDecoration(
@@ -111,40 +173,32 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
 
         const SizedBox(height: 16),
 
-        //filtered list after search
+        // volunteers list
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: filteredVolunteers.length,
           itemBuilder: (context, index) {
             final volunteer = filteredVolunteers[index];
-            final isPresent =
-                _isMarkedPresent(volunteer, attendanceData);
+            final status = _getStatus(volunteer, attendanceData);
+
+            Color iconColor = Colors.grey;
+            if (status == AttendanceStatus.present) {
+              iconColor = Colors.green;
+            } else if (status == AttendanceStatus.absent) {
+              iconColor = Colors.red;
+            } else if (status == AttendanceStatus.deferred) {
+              iconColor = Colors.orange;
+            }
 
             return ListTile(
               title: Text(volunteer.name),
               subtitle: Text(volunteer.program),
 
+              // edit attendance button
               trailing: IconButton(
-                icon: Icon(
-                  Icons.check_circle,
-                  color: isPresent ? Colors.green : Colors.grey,
-                ),
-                onPressed: () {
-                  if (!isPresent) {
-                    ref
-                        .read(attendanceProvider.notifier)
-                        .markPresent(widget.selectedDate, volunteer);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${volunteer.name} marked present',
-                        ),
-                      ),
-                    );
-                  }
-                },
+                icon: Icon(Icons.circle, color: iconColor),
+                onPressed: () => _showAttendanceOptions(volunteer),
               ),
             );
           },

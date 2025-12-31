@@ -6,8 +6,6 @@ import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provide
 import 'package:unnati_app/features/Volunteer_attendance.dart/search_volunteer.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
 
-
-
 class VolunteerAttendancePage extends ConsumerStatefulWidget {
   const VolunteerAttendancePage({super.key});
 
@@ -23,55 +21,69 @@ class _VolunteerAttendancePageState
 
   TextEditingController namecontroller = TextEditingController();
 
-  // ===== FIXED =====
   // normalize date (must match provider)
   DateTime _normalize(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
 
   // show dialog for marked attendance
-  void _showAttendanceDialog(DateTime date, List<Volunteer> list) {
+  void _showAttendanceDialog(DateTime date, AttendanceDay day) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Marked Present'),
-        content: list.isEmpty
-            ? const Text('No attendance marked')
-            : SizedBox(
-                width: double.maxFinite,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    final volunteer = list[index];
-
-                    return ListTile(
-                      title: Text(volunteer.name),
-                      subtitle: Text(volunteer.program),
-
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          ref
-                              .read(attendanceProvider.notifier)
-                              .removePresent(date, volunteer);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    );
-                  },
+        backgroundColor: Colors.white,
+        title: const Text('Attendance Summary',style: TextStyle(fontWeight: FontWeight.bold),),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // PRESENT LIST
+              const Text(
+                'Present',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
                 ),
               ),
+              ...day.present.map(
+                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+              ),
+
+              const SizedBox(height: 10),
+
+              // ABSENT LIST
+              const Text(
+                'Absent',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
+              ...day.absent.map(
+                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+              ),
+
+              const SizedBox(height: 10),
+
+              // DEFERRED LIST
+              const Text(
+                'Deferred',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              ...day.deferred.map(
+                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 42, 42, 42),
-            ),
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Close',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('Close',style: TextStyle(color: Colors.white),),
           ),
         ],
       ),
@@ -125,7 +137,6 @@ class _VolunteerAttendancePageState
                         return isSameDay(_selectedDay, day);
                       },
 
-                      // ===== FIXED =====
                       onDaySelected: (selectedDay, focusedDay) {
                         final normalized = _normalize(selectedDay);
 
@@ -134,9 +145,9 @@ class _VolunteerAttendancePageState
                           _focusedDay = focusedDay;
                         });
 
-                        final list = attendanceData[normalized];
-                        if (list != null && list.isNotEmpty) {
-                          _showAttendanceDialog(normalized, list);
+                        final dayData = attendanceData[normalized];
+                        if (dayData != null) {
+                          _showAttendanceDialog(normalized, dayData);
                         }
                       },
 
@@ -150,10 +161,8 @@ class _VolunteerAttendancePageState
                           color: Colors.green,
                           shape: BoxShape.circle,
                         ),
-                        defaultTextStyle:
-                            const TextStyle(color: Colors.white),
-                        weekendTextStyle:
-                            const TextStyle(color: Colors.yellow),
+                        defaultTextStyle: const TextStyle(color: Colors.white),
+                        weekendTextStyle: const TextStyle(color: Colors.yellow),
                         outsideTextStyle: const TextStyle(
                           color: Color.fromARGB(255, 160, 160, 160),
                         ),
@@ -165,10 +174,14 @@ class _VolunteerAttendancePageState
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-                        leftChevronIcon:
-                            Icon(Icons.chevron_left, color: Colors.white),
-                        rightChevronIcon:
-                            Icon(Icons.chevron_right, color: Colors.white),
+                        leftChevronIcon: Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                        ),
                         formatButtonVisible: false,
                       ),
 
@@ -185,9 +198,7 @@ class _VolunteerAttendancePageState
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SearchVolunteer(
-                  selectedDate: _selectedDay,
-                ),
+                child: SearchVolunteer(selectedDate: _selectedDay),
               ),
             ],
           ),
@@ -196,5 +207,3 @@ class _VolunteerAttendancePageState
     );
   }
 }
-
-
