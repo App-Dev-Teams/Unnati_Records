@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/features/admin_homescreen.dart';
 import 'package:unnati_admin/features/auth/forgot_password.dart';
+import 'package:unnati_admin/features/auth/signup_page.dart';
+import 'package:unnati_admin/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +16,14 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
   bool showPassword = false;
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,34 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                           width: double.infinity,
                           height: 48,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (passwordCtrl.text.isEmpty ||
-                                  emailCtrl.text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "Please enter email and password"),
-                                  ),
-                                );
-                                return;
-                              } else if (emailCtrl.text !=
-                                  "divyanshu.230101051@iiitbh.ac.in") {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text("You do not have admin access"),
-                                  ),
-                                );
-                                return;
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const AdminHomePage(),
-                                  ),
-                                );
-                              }
-                            },
+                            onPressed: isLoading ? null : () => _handleLogin(),
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(255, 9, 75, 128),
@@ -180,18 +163,57 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: Text(
-                              "Login",
-                              style: GoogleFonts.nunito(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : Text(
+                                    "Login",
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
 
                         const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const SignupPage(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Sign Up",
+                                style: GoogleFonts.nunito(
+                                  color: const Color.fromARGB(255, 140, 200, 255),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              "as an admin",
+                              style: GoogleFonts.nunito(
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -202,6 +224,38 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
     );
+  }
+
+  Future<void> _handleLogin() async {
+    if (emailCtrl.text.isEmpty || passwordCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter email and password")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final result = await AdminApiService.login(emailCtrl.text, passwordCtrl.text);
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (result['success']) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdminHomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'] ?? 'Login failed')),
+      );
+    }
   }
 
   Widget _inputField({

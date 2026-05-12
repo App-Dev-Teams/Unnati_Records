@@ -14,14 +14,15 @@ class PdfViewerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isNetwork =
+        pdfPath.startsWith('http://') || pdfPath.startsWith('https://');
+
     return Scaffold(
       appBar: PdfAppBar(
         imageName: "unnatiLogoColourFix.png",
         name: title,
       ),
-      body: SfPdfViewer.asset(
-        pdfPath,
-      ),
+      body: isNetwork ? SfPdfViewer.network(pdfPath) : SfPdfViewer.asset(pdfPath),
     );
   }
 }

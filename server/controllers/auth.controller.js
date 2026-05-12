@@ -4,6 +4,29 @@ const { validationResult } = require("express-validator");
 const jwt= require("jsonwebtoken")
 const STUDENT = require("../models/student.model.js");
 
+
+const extractFromEmail = (email) => {
+  const regex = /^([a-zA-Z0-9]+)\.(\d{2}[a-zA-Z0-9]*)@iiitbh\.ac\.in$/;
+
+  const match = email.match(regex);
+
+  if (!match) return null;
+
+  const rollNo = match[2];
+
+  // first 2 digits → batch start year
+  const startYear = Number("20" + rollNo.substring(0, 2));
+  const endYear = startYear + 4; // assuming 4-year course
+
+  return {
+    rollNo,
+    batch: {
+      startYear,
+      endYear
+    }
+  };
+};
+
 //=================USER SIGNUP=======================
 const signup = async (req, res) => {
   const errors = validationResult(req);  // if validation conditions are not follwed then store errors here
@@ -12,7 +35,17 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password, batch, rollNo} = req.body;
+    const { name, email, password} = req.body;
+
+    const extracted = extractFromEmail(email);
+
+    if (!extracted) {
+      return res.status(400).json({
+        error: "Invalid institute email format"
+      });
+    }
+
+    const { rollNo, batch } = extracted;
 
     const existingUser = await USER.findOne({ email });
     if (existingUser) {
@@ -60,8 +93,11 @@ const signup = async (req, res) => {
   }
 };
 
+
+
 //===================USER LOGIN======================
 const login = async (req, res) => {
+  
   try {
     const { email, password } = req.body;
 
@@ -113,6 +149,8 @@ const login = async (req, res) => {
     });
   }
 };
+
+
 
 //==================STUDENT SIGNUP======================
 const studentSignup = async (req, res) => {

@@ -1,20 +1,21 @@
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class FileUploadPage extends ConsumerWidget {
+  static const List<String> _allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+
   final String subject;
   final String className;
 
@@ -75,7 +76,7 @@ class FileUploadPage extends ConsumerWidget {
                       onPressed: () async {
                         final result = await FilePicker.platform.pickFiles(
                           type: FileType.custom,
-                          allowedExtensions: ['pdf'],
+                          allowedExtensions: _allowedExtensions,
                         );
 
                         if (result != null) {
@@ -107,10 +108,13 @@ class FileUploadPage extends ConsumerWidget {
                                       ? pickedFile!.name
                                       : fileNameController.text.trim();
 
-                              if (pickedFile!.extension?.toLowerCase() != 'pdf') {
+                              final ext = pickedFile!.extension?.toLowerCase() ?? '';
+                              if (!_allowedExtensions.contains(ext)) {
                                 ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Only PDF files are allowed for upload.'),
+                                    content: Text(
+                                      'Only PDF and image files (jpg, png) are allowed.',
+                                    ),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -315,11 +319,23 @@ class FileUploadPage extends ConsumerWidget {
                 return InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () async {
-                    final result = await OpenFile.open(file.path);
-                    if (result.type != ResultType.done) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(result.message)));
+                    if (file.path.isNotEmpty) {
+                      final result = await OpenFile.open(file.path);
+                      if (result.type != ResultType.done) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result.message)),
+                        );
+                      }
+                    } else if (file.url != null &&
+                        file.url!.isNotEmpty &&
+                        await canLaunchUrl(Uri.parse(file.url!))) {
+                      await launchUrl(Uri.parse(file.url!));
+                    } else if (file.url != null && file.url!.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Could not open file'),
+                        ),
+                      );
                     }
                   },
                   child: Container(

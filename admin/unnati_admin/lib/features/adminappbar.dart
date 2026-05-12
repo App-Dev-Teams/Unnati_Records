@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_admin/services/api_service.dart';
+import 'package:unnati_admin/services/auth_gate.dart';
 
 class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
@@ -78,6 +80,18 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
         PopupMenuButton<String>(
           icon: const Icon(Icons.account_circle, color: Colors.white),
           color: const Color.fromARGB(255, 14, 22, 33),
+          onSelected: (value) async {
+            if (value == "Logout") {
+              await AdminApiService.logout();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AuthGate()),
+                  (route) => false,
+                );
+              }
+            }
+          },
           itemBuilder: (context) => [
             _menuItem("Profile", Icons.person_outline),
             _menuItem("Settings", Icons.settings_outlined),

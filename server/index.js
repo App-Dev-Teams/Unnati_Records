@@ -7,6 +7,7 @@ const router = require('./routes/auth.routes.js');
 const fileRouter = require('./routes/file.routes.js');
 const adminRoutes = require("./routes/volunteer.routes.js");
 const otpRoutes = require("./routes/otp.routes");
+const attendanceRouter = require('./routes/attendance.routes.js');
 require("dotenv").config();
 
 
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth',router);
 app.use('/api',folderRouter);
 app.use('/api',fileRouter);
+app.use('/api/attendance',attendanceRouter);
 app.use('/api/admin', adminRoutes);
 app.use("/api/otp", otpRoutes);
 //app.use("/api/otp", require("./routes/otp.routes"));

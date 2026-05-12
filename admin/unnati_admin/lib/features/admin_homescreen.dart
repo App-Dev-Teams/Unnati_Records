@@ -2,15 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/features/adminappbar.dart';
 import 'package:unnati_admin/features/assign_leads.dart';
+import 'package:unnati_admin/features/file_upload_admin.dart';
 import 'package:unnati_admin/features/leadcard.dart';
-class AdminHomePage extends StatelessWidget {
+import 'package:unnati_admin/services/api_service.dart';
+
+class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
+
+  @override
+  State<AdminHomePage> createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  String adminName = "Admin";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAdminName();
+  }
+
+  Future<void> _loadAdminName() async {
+    final storedName = await AdminApiService.getAdminName();
+    if (!mounted) return;
+    setState(() {
+      adminName = (storedName != null && storedName.isNotEmpty) ? storedName : "Admin";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AdminAppBar(
-        name: "Admin Name",
+        name: adminName,
         imageName: "unnatiLogoColourFix.png",
       ),
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
@@ -47,12 +71,12 @@ class AdminHomePage extends StatelessWidget {
                   width: MediaQuery.of(context).size.width / 2 - 30 ,
                   child: InkWell(
                     onTap: (){
-                      Navigator.push( context, MaterialPageRoute(builder: (context) =>  AssignLeadsPage(),) );
+                      Navigator.push( context, MaterialPageRoute(builder: (context) => const AdminFileUploadPage(),) );
                     },
                     child: _AdminActionCard(
-                      icon: Icons.groups_outlined,
-                      title: "Manage Volunteers",
-                      subtitle: "View, approve, remove",
+                      icon: Icons.file_copy,
+                      title: "Upload Files",
+                      subtitle: "Provide students the study materials.",
                     ),
                   ),
                 ),
