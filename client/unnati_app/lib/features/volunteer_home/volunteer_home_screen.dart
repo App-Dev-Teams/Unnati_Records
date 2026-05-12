@@ -22,8 +22,6 @@ class VolunteerHomeScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
-      appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: "Priyanshu"),
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavBar(
         navIcon1: Icons.add_to_photos_outlined,

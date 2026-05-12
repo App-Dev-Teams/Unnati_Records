@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_page.dart';
 import 'package:unnati_app/features/volunteer_profile/volunteer_profile_page.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
 
@@ -62,7 +63,7 @@ class VolunteerHomeCard extends StatelessWidget {
                       children: [
                         InkWell( //attendance
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>VolunteerProfilePage())); //for testing it is kept at profile page
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>VolunteerAttendancePage())); //for testing it is kept at profile page
                           },
                           child: Container(
                             height: 30,
