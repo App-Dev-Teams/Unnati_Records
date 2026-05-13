@@ -54,10 +54,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
       isLoading = true;
     });
 
-    final result = await ApiService.login(
-      email: email,
-      password: password,
-    );
+    final result = await ApiService.login(email: email, password: password);
 
     setState(() {
       isLoading = false;
@@ -71,6 +68,19 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
           duration: const Duration(seconds: 2),
         ),
       );
+      // Ensure role and user data are saved (defensive)
+      try {
+        final data = result['data'] as Map<String, dynamic>?;
+        final role = data != null ? data['role'] as String? : null;
+        if (role != null && role.isNotEmpty) {
+          await ApiService.saveRole(role);
+        }
+        if (data != null) {
+          await ApiService.saveUserData(data);
+        }
+      } catch (e) {
+        // ignore
+      }
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),
@@ -130,10 +140,21 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                 ),
               ),
 
-              TextButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerification()));
-              }, child: Text('Forgot password?',style: TextStyle(color: Colors.blue),)),
-              
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EmailVerification(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Forgot password?',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+
               SizedBox(height: 25.h),
               ElevatedButton(
                 onPressed: isLoading ? null : handleLogin,
@@ -153,7 +174,9 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(

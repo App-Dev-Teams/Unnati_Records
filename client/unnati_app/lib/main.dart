@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unnati_app/services/api_service.dart';
 //import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
 import 'package:unnati_app/features/auth/view/login_page_1.dart';
 import 'package:unnati_app/features/auth/view/login_page_student.dart';
@@ -29,12 +30,7 @@ class MyApp extends StatelessWidget {
 
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
-        // title: 'Flutter Demo',
-        // theme: ThemeData(
-        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        // ),
-        home: StudentHomeScreen(),
+        home: const AuthCheck(),
       ),
     );
   }
@@ -55,17 +51,43 @@ class _AuthCheckState extends State<AuthCheck> {
   }
 
   Future<void> _checkToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token = await ApiService.getToken();
+    String? role = await ApiService.getRole();
 
-    await Future.delayed(const Duration(seconds: 1));
+    if ((role == null || role.isEmpty)) {
+      try {
+        final user = await ApiService.getUserData();
+        if (user != null) {
+          if (user.containsKey('role') && (user['role'] as String).isNotEmpty) {
+            role = user['role'] as String;
+          } else if (user.containsKey('studentClass') ||
+              user.containsKey('studentClass')) {
+            role = 'student';
+          } else if (user.containsKey('rollNo') || user.containsKey('batch')) {
+            role = 'volunteer';
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
+      if (role == 'volunteer') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const VolunteerHomeScreen()),
+        );
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginPageStudent()),
+        MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
       );
     } else {
       Navigator.pushReplacement(
