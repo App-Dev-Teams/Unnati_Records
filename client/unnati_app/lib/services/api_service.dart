@@ -31,6 +31,43 @@ class ApiService {
     await prefs.remove('auth_token');
   }
 
+  static Future<void> saveRole(String role) async {
+    final prefs = await _preferences;
+    await prefs.setString('user_role', role);
+  }
+
+  static Future<String?> getRole() async {
+    final prefs = await _preferences;
+    return prefs.getString('user_role');
+  }
+
+  static Future<void> clearAllData() async {
+    final prefs = await _preferences;
+    await prefs.clear();
+  }
+
+  static Future<void> saveUserData(Map<String, dynamic> user) async {
+    final prefs = await _preferences;
+    try {
+      await prefs.setString('user_data', json.encode(user));
+    } catch (e) {
+      print('❌ saveUserData error: ${e.toString()}');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getUserData() async {
+    final prefs = await _preferences;
+    final str = prefs.getString('user_data');
+    if (str == null) return null;
+    try {
+      final Map<String, dynamic> data = json.decode(str);
+      return data;
+    } catch (e) {
+      print('❌ getUserData parse error: ${e.toString()}');
+      return null;
+    }
+  }
+
   static Future<Map<String, dynamic>> _handleResponse(
     http.Response response,
     String operation,
@@ -40,10 +77,7 @@ class ApiService {
       print('📥 $operation Response Body: ${response.body}');
 
       if (response.body.isEmpty) {
-        return {
-          'success': false,
-          'message': 'Empty response from server',
-        };
+        return {'success': false, 'message': 'Empty response from server'};
       }
 
       final data = json.decode(response.body) as Map<String, dynamic>;
@@ -56,10 +90,20 @@ class ApiService {
         final token = data['token'] as String?;
         if (token != null && token.isNotEmpty) {
           await saveToken(token);
-          final tokenPreview = token.length > 20 
-              ? '${token.substring(0, 20)}...' 
+          final tokenPreview = token.length > 20
+              ? '${token.substring(0, 20)}...'
               : token;
           print('✅ TOKEN SAVED: $tokenPreview');
+        }
+
+        // Save role if present in response data
+        final responseData = data['data'] as Map<String, dynamic>?;
+        if (responseData != null) {
+          final role = responseData['role'] as String?;
+          if (role != null && role.isNotEmpty) {
+            await saveRole(role);
+            print('✅ ROLE SAVED: $role');
+          }
         }
 
         print('✅ $operation SUCCESS');
@@ -70,11 +114,12 @@ class ApiService {
           'data': data['data'],
         };
       } else {
-        final errorMessage = data['error'] as String? ?? 
-                           data['message'] as String? ?? 
-                           '$operation failed';
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            '$operation failed';
         print('❌ $operation FAILED: $errorMessage');
-        
+
         return {
           'success': false,
           'message': errorMessage,
@@ -89,10 +134,7 @@ class ApiService {
       };
     } catch (e) {
       print('❌ $operation RESPONSE HANDLING ERROR: ${e.toString()}');
-      return {
-        'success': false,
-        'message': 'Error processing server response',
-      };
+      return {'success': false, 'message': 'Error processing server response'};
     }
   }
 
@@ -104,7 +146,7 @@ class ApiService {
     try {
       print('🔵 $operation REQUEST: $baseUrl/$endpoint');
       print('📤 $operation Data: ${body.keys.join(", ")}');
-      
+
       final response = await http
           .post(
             Uri.parse('$baseUrl/$endpoint'),
@@ -122,10 +164,7 @@ class ApiService {
       };
     } on FormatException catch (e) {
       print('❌ $operation FORMAT ERROR: ${e.toString()}');
-      return {
-        'success': false,
-        'message': 'Invalid data format',
-      };
+      return {'success': false, 'message': 'Invalid data format'};
     } catch (e) {
       print('❌ $operation ERROR: ${e.toString()}');
       return {
@@ -143,12 +182,7 @@ class ApiService {
   }) async {
     return await _makeRequest(
       endpoint: 'signup',
-      body: {
-        'name': name,
-        'email': email,
-        'password': password,
-        'role': role,
-      },
+      body: {'name': name, 'email': email, 'password': password, 'role': role},
       operation: 'SIGNUP',
     );
   }
@@ -159,10 +193,7 @@ class ApiService {
   }) async {
     return await _makeRequest(
       endpoint: 'login',
-      body: {
-        'email': email,
-        'password': password,
-      },
+      body: {'email': email, 'password': password},
       operation: 'LOGIN',
     );
   }
@@ -195,10 +226,7 @@ class ApiService {
   }) async {
     return await _makeRequest(
       endpoint: 'studentLogin',
-      body: {
-        'email': email,
-        'password': password,
-      },
+      body: {'email': email, 'password': password},
       operation: 'STUDENT_LOGIN',
     );
   }
@@ -223,10 +251,7 @@ class ApiService {
     final res = await http.post(
       Uri.parse('$coreBaseUrl/folders'),
       headers: _headers,
-      body: json.encode({
-        'name': name,
-        'className': className,
-      }),
+      body: json.encode({'name': name, 'className': className}),
     );
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -248,8 +273,9 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
     String folderId,
   ) async {
-    final res =
-        await http.get(Uri.parse('$coreBaseUrl/files/folder/$folderId'));
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/files/folder/$folderId'),
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
       return data.cast<Map<String, dynamic>>();

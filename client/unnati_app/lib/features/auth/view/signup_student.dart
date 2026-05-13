@@ -165,6 +165,19 @@ class _SignupStudentState extends State<SignupStudent> {
           duration: const Duration(seconds: 2),
         ),
       );
+      // Save role and user data if returned by server (defensive)
+      try {
+        final data = result['data'] as Map<String, dynamic>?;
+        final role = data != null ? data['role'] as String? : null;
+        if (role != null && role.isNotEmpty) {
+          await ApiService.saveRole(role);
+        }
+        if (data != null) {
+          await ApiService.saveUserData(data);
+        }
+      } catch (e) {
+        // ignore
+      }
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),
@@ -172,7 +185,7 @@ class _SignupStudentState extends State<SignupStudent> {
       );
     } else {
       String errorMessage = result['message'] ?? 'Signup failed';
-      
+
       if (result['errors'] != null) {
         final errors = result['errors'] as List;
         if (errors.isNotEmpty) {
@@ -276,7 +289,10 @@ class _SignupStudentState extends State<SignupStudent> {
                 onPressed: isLoading ? null : handleSignup,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 50.w,
+                    vertical: 15.h,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.r),
                   ),
@@ -287,7 +303,9 @@ class _SignupStudentState extends State<SignupStudent> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(

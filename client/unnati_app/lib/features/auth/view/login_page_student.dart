@@ -77,6 +77,20 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
           duration: const Duration(seconds: 2),
         ),
       );
+
+      try {
+        final data = result['data'] as Map<String, dynamic>?;
+        final role = data != null ? data['role'] as String? : null;
+        if (role != null && role.isNotEmpty) {
+          await ApiService.saveRole(role);
+        }
+        if (data != null) {
+          await ApiService.saveUserData(data);
+        }
+      } catch (e) {
+        // ignore errors saving role/data
+      }
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthCheck()),
@@ -97,8 +111,9 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white),//app bar
-      body: SingleChildScrollView(//body
+      appBar: AppBar(backgroundColor: Colors.white), //app bar
+      body: SingleChildScrollView(
+        //body
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).unfocus(),
@@ -106,13 +121,15 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Lottie.asset( //lottie
+              Lottie.asset(
+                //lottie
                 'assets/lottie/Login_and_Signup.json',
                 height: 300.h,
                 width: 300.h,
               ),
               SizedBox(height: 10.h, width: double.infinity),
-              Text( //mid heading
+              Text(
+                //mid heading
                 'Student',
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 30.sp,
@@ -120,7 +137,8 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                 ),
               ),
               SizedBox(height: 10.h, width: double.infinity),
-              SizedBox(//textfields
+              SizedBox(
+                //textfields
                 width: 300.w,
                 child: TextfieldUtil(
                   title: 'Email',
@@ -136,12 +154,24 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                 ), //password textfield
               ),
 
-              TextButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerification()));
-              }, child: Text('Forgot password?',style: TextStyle(color: Colors.blue),)),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EmailVerification(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Forgot password?',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
 
               SizedBox(height: 25.h),
-              ElevatedButton( //login button
+              ElevatedButton(
+                //login button
                 onPressed: isLoading ? null : handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 9, 75, 128),
@@ -159,7 +189,9 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(

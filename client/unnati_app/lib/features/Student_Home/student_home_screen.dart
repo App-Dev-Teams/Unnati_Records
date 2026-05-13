@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/Providers/bottom_nav_provider.dart';
 import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/bottom_nav_bar.dart';
+import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/features/Student_quiz/student_quiz_screen.dart';
 import 'package:unnati_app/features/Student_profile/studednt_profile_screen.dart';
 import 'package:unnati_app/features/Student_Home/student_home_page.dart';
@@ -21,18 +22,28 @@ class StudentHomeScreen extends ConsumerWidget {
       const StudedntProfileScreen(), //2 index
     ];
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: "Priyanshu"),
-      body: pages[currentIndex],
-      bottomNavigationBar: BottomNavBar(
-        navIcon1: Icons.fact_check_outlined,
-        navIcon2: Icons.home_outlined,
-        navIcon3: Icons.person_outline,
-        labelName1: "Quiz",
-        labelName2: "Home",
-        labelName3: "Profile",
-      ),
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: ApiService.getUserData(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+        final name = (user != null && user['name'] != null)
+            ? (user['name'] as String)
+            : 'Student';
+
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: name),
+          body: pages[currentIndex],
+          bottomNavigationBar: BottomNavBar(
+            navIcon1: Icons.fact_check_outlined,
+            navIcon2: Icons.home_outlined,
+            navIcon3: Icons.person_outline,
+            labelName1: "Quiz",
+            labelName2: "Home",
+            labelName3: "Profile",
+          ),
+        );
+      },
     );
   }
 }
