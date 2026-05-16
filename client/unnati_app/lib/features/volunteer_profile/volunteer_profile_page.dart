@@ -135,7 +135,9 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
             ? user['phoneNo'] as String
             : phone;
         final batchLocal = (user != null && user['batch'] != null)
-            ? user['batch'] as String
+            ? (user['batch'] is Map<String, dynamic>
+                ? '${user['batch']['startYear']}-${user['batch']['endYear']}'
+                : user['batch'].toString())
             : batch;
         final roleLocal = (user != null && user['role'] != null)
             ? user['role'] as String
