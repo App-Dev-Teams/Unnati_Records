@@ -23,7 +23,7 @@ const sendOtpMail = async (email, otp) => {
     ],
     subject: "OTP Verification - Unnati",
     htmlContent: `
-      <h2>This is a test of Email Verification backend , please ignore (lol) </h2>
+      <h2>OTP Verification for Password Reset </h2>
       <p>Your OTP is:</p>
       <h1>${otp}</h1>
       <p>Valid for 5 minutes.</p>

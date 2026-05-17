@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
+import 'package:unnati_app/features/forgot_pass/pass_reset_screen.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class OtpVerification extends StatefulWidget {
   final String emailSent;
@@ -14,6 +16,9 @@ class OtpVerification extends StatefulWidget {
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
+  String _otp = '';
+  bool _isVerifying = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +51,7 @@ class _OtpVerificationState extends State<OtpVerification> {
               SizedBox(height: 30.h),
               //otp sent statement
               Padding(
-                padding: const EdgeInsets.only(left: 30,right: 30),
+                padding: const EdgeInsets.only(left: 30, right: 30),
                 child: Center(
                   child: Text(
                     'OTP sent to : ${widget.emailSent}',
@@ -77,8 +82,11 @@ class _OtpVerificationState extends State<OtpVerification> {
                 child: Center(
                   child: Pinput(
                     length: 6,
+                    onChanged: (value) {
+                      _otp = value;
+                    },
                     onCompleted: (value) {
-                      //api call or dabase call
+                      _otp = value;
                     },
                   ),
                 ),
@@ -96,25 +104,61 @@ class _OtpVerificationState extends State<OtpVerification> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                   ),
-                
-                  //on press logic
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => ,
-                    //   ),
-                    // );
-                  },
+
+                  onPressed: _isVerifying
+                      ? null
+                      : () async {
+                          final otp = _otp.trim();
+                          if (otp.length != 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please enter a 6-digit OTP'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() {
+                            _isVerifying = true;
+                          });
+
+                          final response = await ApiService.verifyOtp(
+                            email: widget.emailSent,
+                            otp: otp,
+                          );
+
+                          setState(() {
+                            _isVerifying = false;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(response['message'] as String),
+                            ),
+                          );
+
+                          if (response['success'] == true) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PasswordResetScreen(
+                                  email: widget.emailSent,
+                                ),
+                              ),
+                            );
+                          }
+                        },
                   child: Center(
-                    child: Text(
-                      'Verify OTP',
-                      style: GoogleFonts.cormorantSc(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isVerifying
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Verify OTP',
+                            style: GoogleFonts.cormorantSc(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ),

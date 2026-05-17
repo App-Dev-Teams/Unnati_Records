@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4aa6d517-1776-4e79-b7c4-36c4404e4fe2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/email_verification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/email_verification.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/otp_verification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/otp_verification.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/pass_reset_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/unnati_app/lib/features/forgot_pass/pass_reset_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/unnati_app/lib/services/api_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/client/unnati_app/lib/services/api_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/unnati_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/unnati_app/pubspec.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="3DrFkIpOl71cMMtO5vwbVkKaFip" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "D:/Projects/Unnati"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4aa6d517-1776-4e79-b7c4-36c4404e4fe2" name="Changes" comment="" />
+      <created>1779032423317</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779032423317</updated>
+    </task>
+    <servers />
+  </component>
+</project>

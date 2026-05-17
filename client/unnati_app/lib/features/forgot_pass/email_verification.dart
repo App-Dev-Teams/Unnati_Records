@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/features/forgot_pass/otp_verification.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class EmailVerification extends StatefulWidget {
   const EmailVerification({super.key});
@@ -13,24 +14,28 @@ class EmailVerification extends StatefulWidget {
 }
 
 class _EmailVerificationState extends State<EmailVerification> {
+  final TextEditingController emailController =
+      TextEditingController(); // email data
+  bool _isSending = false;
 
-      TextEditingController emailController = TextEditingController(); //email data
-
-      @override
+  @override
   void dispose() {
     emailController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white,foregroundColor: Colors.black,automaticallyImplyLeading: true,),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        automaticallyImplyLeading: true,
+      ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: (){
+        onTap: () {
           FocusScope.of(context).unfocus();
         },
 
@@ -51,7 +56,7 @@ class _EmailVerificationState extends State<EmailVerification> {
               ),
               //middle command to enter email
               Padding(
-                padding: EdgeInsets.only(left:30.w),
+                padding: EdgeInsets.only(left: 30.w),
                 child: Text(
                   'Enter your email address',
                   style: GoogleFonts.oswald(
@@ -60,54 +65,99 @@ class _EmailVerificationState extends State<EmailVerification> {
                   ),
                 ),
               ),
-              SizedBox(height: 7,),
-        
+              SizedBox(height: 7),
+
               //textfield
               Padding(
-                padding:  EdgeInsets.only(left: 30.w,right: 30.w),
+                padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: TextField(
-                   controller: emailController,
-                   decoration: InputDecoration(
+                  controller: emailController,
+                  decoration: InputDecoration(
                     label: Text('email'),
-                    labelStyle: TextStyle(color: Colors.grey,fontSize: 12),
-                    enabledBorder:OutlineInputBorder(borderRadius: BorderRadius.circular(7),
-                    borderSide: BorderSide(color: Colors.blue)),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(7),
-                    borderSide: BorderSide(color: Colors.blue,width: 2))
-                   ),
+                    labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(7),
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(7),
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                  ),
                 ),
               ),
-        
-        
-              SizedBox(height: 20,),
-        //button
+
+              SizedBox(height: 20),
+              //button
               Padding(
-                padding:  EdgeInsets.only(left: 30.w,right: 30.w),
+                padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        // fixedSize: Size(300.w, 40.h),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                        backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OtpVerification(emailSent: emailController.text,),
-                          ),
-                        );
-                      },
-                      child: Center(
-                        child: Text(
-                          'Send OTP',
-                          style: GoogleFonts.cormorantSc(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                  style: ElevatedButton.styleFrom(
+                    // fixedSize: Size(300.w, 40.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7),
                     ),
+                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                  ),
+                  onPressed: _isSending
+                      ? null
+                      : () async {
+                          final email = emailController.text.trim();
+                          if (email.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please enter your email'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() {
+                            _isSending = true;
+                          });
+
+                          final response = await ApiService.sendOtp(
+                            email: email,
+                          );
+
+                          setState(() {
+                            _isSending = false;
+                          });
+
+                          if (response['success'] == true) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(response['message'] as String),
+                              ),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OtpVerification(emailSent: email),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(response['message'] as String),
+                              ),
+                            );
+                          }
+                        },
+                  child: Center(
+                    child: _isSending
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Send OTP',
+                            style: GoogleFonts.cormorantSc(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
               ),
             ],
           ),

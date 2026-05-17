@@ -138,8 +138,6 @@ class ApiService {
     }
   }
 
-
-
   static Future<Map<String, dynamic>> _makeRequest({
     required String endpoint,
     required Map<String, dynamic> body,
@@ -176,16 +174,13 @@ class ApiService {
     }
   }
 
-
-  
-
   static Future<Map<String, dynamic>> signup({
     required String name,
     required String email,
     required String password,
     required String program,
     String role = 'volunteer',
-    String? phoneNo, 
+    String? phoneNo,
   }) async {
     return await _makeRequest(
       endpoint: 'signup',
@@ -243,6 +238,109 @@ class ApiService {
       body: {'email': email, 'password': password},
       operation: 'STUDENT_LOGIN',
     );
+  }
+
+  static Future<Map<String, dynamic>> sendOtp({required String email}) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/otp/send-otp'),
+            headers: _headers,
+            body: json.encode({'email': email}),
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        return {
+          'success': true,
+          'message': data['message'] as String? ?? 'OTP sent successfully',
+        };
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final errorMessage =
+          data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to send OTP';
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to send OTP. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/otp/verify-otp'),
+            headers: _headers,
+            body: json.encode({'email': email, 'otp': otp}),
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        return {
+          'success': true,
+          'message': data['message'] as String? ?? 'OTP verified successfully',
+        };
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final errorMessage =
+          data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to verify OTP';
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to verify OTP. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> updatePassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/update-password'),
+            headers: _headers,
+            body: json.encode({'email': email, 'newPassword': newPassword}),
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        return {
+          'success': true,
+          'message':
+              data['message'] as String? ?? 'Password updated successfully',
+        };
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final errorMessage =
+          data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to update password';
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to update password. Please try again.',
+      };
+    }
   }
 
   // ================== FOLDER / FILE APIs (Volunteer resources) ==================
