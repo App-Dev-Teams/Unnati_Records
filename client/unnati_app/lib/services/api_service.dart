@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
+  static const String baseUrl = 'http://localhost:3000/api/auth';
+  static const String coreBaseUrl = 'http://localhost:3000/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -138,6 +138,8 @@ class ApiService {
     }
   }
 
+
+
   static Future<Map<String, dynamic>> _makeRequest({
     required String endpoint,
     required Map<String, dynamic> body,
@@ -174,15 +176,27 @@ class ApiService {
     }
   }
 
+
+  
+
   static Future<Map<String, dynamic>> signup({
     required String name,
     required String email,
     required String password,
+    required String program,
     String role = 'volunteer',
+    String? phoneNo, 
   }) async {
     return await _makeRequest(
       endpoint: 'signup',
-      body: {'name': name, 'email': email, 'password': password, 'role': role},
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'program': program,
+        'phoneNo': phoneNo,
+        'role': role,
+      },
       operation: 'SIGNUP',
     );
   }
