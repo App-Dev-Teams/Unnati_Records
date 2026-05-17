@@ -21,18 +21,9 @@ class StudentHomeScreen extends ConsumerWidget {
       const StudentHomePage(), //1 index
       const StudedntProfileScreen(), //2 index
     ];
-
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: ApiService.getUserData(),
-      builder: (context, snapshot) {
-        final user = snapshot.data;
-        final name = (user != null && user['name'] != null)
-            ? (user['name'] as String)
-            : 'Student';
-
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: name),
+          
           body: pages[currentIndex],
           bottomNavigationBar: BottomNavBar(
             navIcon1: Icons.fact_check_outlined,
@@ -43,7 +34,6 @@ class StudentHomeScreen extends ConsumerWidget {
             labelName3: "Profile",
           ),
         );
-      },
-    );
+      }
+    
   }
-}

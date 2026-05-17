@@ -17,6 +17,8 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  String? selectedProgram;
   bool isLoading = false;
 
   bool isValidVolunteerEmail(String email) {
@@ -28,6 +30,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
     final name = usernameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
+    final phone = phoneController.text.trim();
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,6 +80,28 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Password must be at least 6 characters"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your phone number"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (selectedProgram == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please select a program"),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -193,6 +218,70 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                 child: TextfieldUtil(
                   title: 'Password',
                   controller: passwordController,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              SizedBox(
+                width: 300.w,
+                child: TextfieldUtil(
+                  title: 'Phone Number',
+                  controller: phoneController,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              SizedBox(
+                width: 300.w,
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 72, 160, 248),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 152, 199, 246),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelText: 'Select Program',
+                    labelStyle: GoogleFonts.oswald(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedProgram,
+                    hint: Text(
+                      'Select Program',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    isExpanded: true,
+                    underline: const SizedBox.shrink(),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'digixplore',
+                        child: Text('DigiXplore'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'akshar',
+                        child: Text('Akshar'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'netritva',
+                        child: Text('Netritva'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedProgram = value;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 30.h),
