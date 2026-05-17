@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provider.dart';
+import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_api_provider.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/search_volunteer.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
 
@@ -27,17 +28,24 @@ class _VolunteerAttendancePageState
   }
 
   // show dialog for marked attendance
-  void _showAttendanceDialog(DateTime date, AttendanceDay day) {
+  void _showAttendanceDialog(
+    Map<String, dynamic> data,
+  ) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Attendance Summary',style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Attendance Summary',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // PRESENT LIST
+              // PRESENT
               const Text(
                 'Present',
                 style: TextStyle(
@@ -45,13 +53,17 @@ class _VolunteerAttendancePageState
                   color: Colors.green,
                 ),
               ),
-              ...day.present.map(
-                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+
+              ...(data["present"] as List).map(
+                (v) => ListTile(
+                  title: Text(v["name"]),
+                  
+                ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
-              // ABSENT LIST
+              // ABSENT
               const Text(
                 'Absent',
                 style: TextStyle(
@@ -59,37 +71,55 @@ class _VolunteerAttendancePageState
                   color: Colors.red,
                 ),
               ),
-              ...day.absent.map(
-                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+
+              ...(data["absent"] as List).map(
+                (v) => ListTile(
+                  title: Text(v["name"]),
+                  
+                ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
-              // DEFERRED LIST
+              // CANCELLED
               const Text(
-                'Deferred',
+                'Cancelled',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.orange,
                 ),
               ),
-              ...day.deferred.map(
-                (v) => ListTile(title: Text(v.name), subtitle: Text(v.program)),
+
+              ...(data["cancelled"] as List).map(
+                (v) => ListTile(
+                  title: Text(v["name"]),
+                  
+                ),
               ),
             ],
           ),
         ),
         actions: [
           TextButton(
-            style: TextButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close',style: TextStyle(color: Colors.white),),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Close",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-
+  
+  
   @override
   void dispose() {
     namecontroller.dispose();
@@ -98,7 +128,7 @@ class _VolunteerAttendancePageState
 
   @override
   Widget build(BuildContext context) {
-    final attendanceData = ref.watch(attendanceProvider);
+    //final attendanceData = ref.watch(attendanceProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -137,18 +167,62 @@ class _VolunteerAttendancePageState
                         return isSameDay(_selectedDay, day);
                       },
 
-                      onDaySelected: (selectedDay, focusedDay) {
+                      onDaySelected: (selectedDay, focusedDay) async {
                         final normalized = _normalize(selectedDay);
-
                         setState(() {
                           _selectedDay = normalized;
                           _focusedDay = focusedDay;
                         });
+                         try {
+                          final service =
+                              ref.read(
+                            attendanceServiceProvider,
+                          );
+                          final data =
+                              await service
+                                  .getAttendanceByDate(
+                            normalized,
+                          );
 
-                        final dayData = attendanceData[normalized];
-                        if (dayData != null) {
-                          _showAttendanceDialog(normalized, dayData);
+                          final notifier = ref.read(attendanceProvider.notifier);
+
+                          notifier.setAttendanceFromBackend(
+                            normalized,
+                            (data["present"] as List)
+                                .map((e) => Volunteer.fromJson(e))
+                                .toList(),
+                            (data["absent"] as List)
+                                .map((e) => Volunteer.fromJson(e))
+                                .toList(),
+                            (data["cancelled"] as List)
+                                .map((e) => Volunteer.fromJson(e))
+                                .toList(),
+                          );
+                          
+                          final hasAttendance =
+                          (data["present"]as List).isNotEmpty 
+                          ||(data["absent"]as List).isNotEmpty 
+                          ||(data["cancelled"]as List).isNotEmpty;
+                          if (hasAttendance) {
+                            _showAttendanceDialog(
+                              data,
+                            );
+                          }
+                        }catch (e) {
+                          print(e);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text(
+                                "Failed to load attendance ${e.toString()}",
+                              ),
+                            ),
+                          );
                         }
+                        // final dayData = attendanceData[normalized];
+                        // if (dayData != null) {
+                        //   _showAttendanceDialog(normalized, dayData);
+                        // }
                       },
 
                       //calender styling

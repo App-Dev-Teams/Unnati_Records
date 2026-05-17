@@ -53,6 +53,26 @@ class AttendanceNotifier
     };
   }
 
+
+  void setAttendanceFromBackend(
+    DateTime date,
+    List<Volunteer> present,
+    List<Volunteer> absent,
+    List<Volunteer> cancelled,
+  ) {
+    final d = _normalize(date);
+
+    state = {
+      ...state,
+      d: AttendanceDay(
+        present: present,
+        absent: absent,
+        deferred: cancelled,
+      ),
+    };
+  }
+
+
   // remove volunteer completely from a date
   void removeVolunteer(DateTime date, Volunteer volunteer) {
     final d = _normalize(date);
