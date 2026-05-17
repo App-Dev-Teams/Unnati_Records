@@ -117,6 +117,8 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
       name: name,
       email: email,
       password: password,
+      program: selectedProgram!,
+      phoneNo: phone,
       role: 'volunteer',
     );
 
@@ -264,15 +266,15 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                     underline: const SizedBox.shrink(),
                     items: const [
                       DropdownMenuItem(
-                        value: 'digixplore',
+                        value: 'DigiXplore',
                         child: Text('DigiXplore'),
                       ),
                       DropdownMenuItem(
-                        value: 'akshar',
+                        value: 'Akshar',
                         child: Text('Akshar'),
                       ),
                       DropdownMenuItem(
-                        value: 'netritva',
+                        value: 'Netritva',
                         child: Text('Netritva'),
                       ),
                     ],

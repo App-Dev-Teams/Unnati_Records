@@ -142,6 +142,9 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         final roleLocal = (user != null && user['role'] != null)
             ? user['role'] as String
             : 'Volunteer';
+        final programLocal = (user != null && user['program'] != null)
+            ? user['program'] as String
+            : program;    
 
         return Scaffold(
           backgroundColor: const Color.fromARGB(255, 221, 221, 221),
@@ -280,7 +283,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                             ),
 
                             VolunteerProfileListtile(
-                              title: program,
+                              title: programLocal,
                               subtitle: 'program',
                               icon: Icons.flag,
                               iconColor: Colors.white,
