@@ -167,6 +167,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
 
       appBar: AppBar(
+        elevation: 2,
         foregroundColor: Colors.white,
         title: Text(
           'Resources',
@@ -179,6 +180,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
+        elevation: 2,
         onPressed: () => _showAddSubjectSheet(context, ref),
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
         child: Icon(Icons.add, color: Colors.white),

@@ -56,7 +56,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
 
                     //title
                     Text(
-                      'Are you proud member ?',
+                      'Are you a proud member ?',
                       style: GoogleFonts.oswald(
                         color: Colors.white,
                         fontSize: 20,

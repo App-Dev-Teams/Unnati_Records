@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/components/app_bar.dart';
+import 'package:unnati_app/features/our_programs/akshar.dart';
+import 'package:unnati_app/features/our_programs/digixplore.dart';
+import 'package:unnati_app/features/our_programs/netriva.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
@@ -68,9 +71,9 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                 SizedBox(width: 10.w,),
                 Text("OUR PROGRAMS",style: GoogleFonts.oswald(fontSize: 30,fontWeight: FontWeight.bold,color: Colors.black),)
               ],),
-              ProgramsCardUtil(title: "DigiXplore",subtitle: "Interactive live classes bridging the digital gap",logo: "unnatiLogoColourFix.png",),
-              ProgramsCardUtil(title: "Netritva",subtitle: "Holistic mentorship & doubt sessions for holistic growth",logo: "unnatiLogoColourFix.png",),
-              ProgramsCardUtil(title: "Akshar",subtitle: "Nukkad classes",logo: "unnatiLogoColourFix.png",),
+              ProgramsCardUtil(title: "DigiXplore",subtitle: "Interactive live classes bridging the digital gap",logo: "unnatiLogoColourFix.png",path: DigixplorePage(),),
+              ProgramsCardUtil(title: "Netritva",subtitle: "Holistic mentorship & doubt sessions for holistic growth",logo: "unnatiLogoColourFix.png",path: NetrivaPage(),),
+              ProgramsCardUtil(title: "Akshar",subtitle: "Nukkad classes",logo: "unnatiLogoColourFix.png",path: AksharPage(),),
               SizedBox(height: 20.h,),
         
         

@@ -150,6 +150,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
           backgroundColor: const Color.fromARGB(255, 221, 221, 221),
 
           appBar: AppBar(
+            elevation: 2,
             backgroundColor: const Color.fromARGB(255, 9, 12, 19),
             foregroundColor: Colors.white,
             title: Text(
