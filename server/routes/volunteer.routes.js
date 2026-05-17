@@ -1,9 +1,11 @@
 const express = require("express");
-const router = express.Router();
+const volunteerRouter = express.Router();
 
-const { getAllUsers } = require("../controllers/volunteer.controller.js");
+const { getAllUsers, getUsersByProgram } = require("../controllers/volunteer.controller.js");
 
 // for now: NO admin auth
-router.get("/get-volunteers", getAllUsers);
+volunteerRouter.get("/get-volunteers", getAllUsers);
+volunteerRouter.get("/program/get-volunteers", getUsersByProgram);
 
-module.exports = router;
+
+module.exports = volunteerRouter;

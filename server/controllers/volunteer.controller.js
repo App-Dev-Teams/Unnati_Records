@@ -18,4 +18,38 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers };
+
+// Get users (all volunteers / program wise)
+const getUsersByProgram = async (req, res) => {
+  try {
+    const { program } = req.query;
+
+    let users;
+
+    if (program) {
+      // specific program users
+      users = await USER.find({
+        program: program,
+      }).select("-password");
+    } else {
+      // all users
+      users = await USER.find()
+        .select("-password");
+    }
+
+    return res.status(200).json({
+      count: users.length,
+      users,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
+
+module.exports = { getAllUsers,getUsersByProgram };

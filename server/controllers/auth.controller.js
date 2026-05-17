@@ -35,7 +35,7 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password} = req.body;
+    const { name, email, password,program} = req.body;
 
     const extracted = extractFromEmail(email);
 
@@ -59,6 +59,7 @@ const signup = async (req, res) => {
       name,
       email,
       role:'volunteer',
+      program,
       password: hashedPassword,
       batch, 
       rollNo
@@ -81,6 +82,7 @@ const signup = async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
+        program:newUser.program,
         role: newUser.role,
         rollNo:newUser.rollNo,
         batch:newUser.batch

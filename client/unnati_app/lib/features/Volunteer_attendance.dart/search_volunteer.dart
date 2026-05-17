@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provider.dart';
+import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_api_provider.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
 
 class SearchVolunteer extends ConsumerStatefulWidget {
@@ -23,13 +24,50 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
   final List<String> programs = ['DigiXplore', 'Netritva', 'Akshar', 'All'];
 
   // static volunteers list
-  final List<Volunteer> allVolunteers = [
-    Volunteer(name: 'Rahul Sharma', program: 'DigiXplore'),
-    Volunteer(name: 'Priyanshu Kumar', program: 'DigiXplore'),
-    Volunteer(name: 'Ankit Verma', program: 'Netritva'),
-    Volunteer(name: 'Sneha Singh', program: 'Akshar'),
-    Volunteer(name: 'Aman Gupta', program: 'Netritva'),
-  ];
+  List<Volunteer>
+  allVolunteers=[];
+  
+
+bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers(null);
+  }
+  
+Future<void> fetchUsers(String? program,) async {
+  try {
+    setState(() {
+      loading = true;
+    });
+
+    final service = ref.read(
+      attendanceServiceProvider,
+    );
+
+    final users = await service.fetchVolunteers(
+      program,
+    );
+
+    print("Fetched users: ${users.length}");
+
+    setState(() {
+      allVolunteers = users;
+    });
+
+    print(
+      "allVolunteers after setState: ${allVolunteers.length}"
+    );
+  } catch (e) {
+    print(e);
+  } finally {
+    setState(() {
+      loading = false;
+    });
+  }
+}
+
 
   // get attendance status of a volunteer for selected date
   AttendanceStatus? _getStatus(
@@ -68,11 +106,18 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
             leading: const Icon(Icons.check_circle, color: Colors.green),
             title: const Text('Present'),
             onTap: () {
-              ref.read(attendanceProvider.notifier).markAttendance(
-                    widget.selectedDate,
-                    volunteer,
-                    AttendanceStatus.present,
+               ref.read(attendanceServiceProvider).markAttendance(
+                    date:widget.selectedDate,
+                    present:[volunteer.id],
                   );
+              ref.read(
+                attendanceProvider.notifier,
+              ).markAttendance(
+                widget.selectedDate,
+                volunteer,
+                AttendanceStatus.present,
+              );
+
               Navigator.pop(context);
             },
           ),
@@ -80,23 +125,35 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
             leading: const Icon(Icons.cancel, color: Colors.red),
             title: const Text('Absent'),
             onTap: () {
-              ref.read(attendanceProvider.notifier).markAttendance(
-                    widget.selectedDate,
-                    volunteer,
-                    AttendanceStatus.absent,
+              ref.read(attendanceServiceProvider).markAttendance(
+                    date:widget.selectedDate,
+                    absent:[volunteer.id],
                   );
+              ref.read(
+                attendanceProvider.notifier,
+              ).markAttendance(
+                widget.selectedDate,
+                volunteer,
+                AttendanceStatus.absent,
+              );
               Navigator.pop(context);
             },
           ),
           ListTile(
             leading: const Icon(Icons.access_time, color: Colors.orange),
-            title: const Text('Deferred'),
+            title: const Text('Cancelled'),
             onTap: () {
-              ref.read(attendanceProvider.notifier).markAttendance(
-                    widget.selectedDate,
-                    volunteer,
-                    AttendanceStatus.deferred,
+              ref.read(attendanceServiceProvider).markAttendance(
+                    date:widget.selectedDate,
+                    cancelled:[volunteer.id],
                   );
+              ref.read(
+                attendanceProvider.notifier,
+              ).markAttendance(
+                widget.selectedDate,
+                volunteer,
+                AttendanceStatus.deferred,
+              );
               Navigator.pop(context);
             },
           ),
@@ -110,22 +167,27 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
     final attendanceData = ref.watch(attendanceProvider);
 
     // filter volunteers by program and name
-    final filteredVolunteers = allVolunteers.where((v) {
-      final programMatch =
-          selectedProgram == null ||
-          selectedProgram == 'All' ||
-          v.program == selectedProgram;
+    final filteredVolunteers =
+    selectedProgram == null ||
+    selectedProgram == 'All'
+        ? allVolunteers
+        : allVolunteers.where((v) {
+            final programMatch =
+                v.program == selectedProgram;
 
-      final nameMatch =
-          v.name.toLowerCase().contains(searchText.toLowerCase());
+            final nameMatch =
+                v.name.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                );
 
-      return programMatch && nameMatch;
-    }).toList();
+            return programMatch && nameMatch;
+          }).toList();
 
     return Column(
       children: [
         // program dropdown
         DropdownButtonFormField<String>(
+          initialValue: selectedProgram,
           dropdownColor: Colors.grey,
           hint: const Text('Select Program'),
           decoration: InputDecoration(
@@ -143,10 +205,13 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
                 ),
               )
               .toList(),
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               selectedProgram = value;
             });
+            await fetchUsers(value);
+            print("selectedProgram = $selectedProgram");
+            print("allVolunteers = ${allVolunteers.length}");
           },
         ),
 

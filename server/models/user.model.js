@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
     type:Number,
     unique:true,
   },
+  program:{
+    required:true,
+    type: String,
+    enum: ["DigiXplore","Netritva","Akshar"],
+  },
   role: { 
     type: String, 
     default: 'volunteer' 

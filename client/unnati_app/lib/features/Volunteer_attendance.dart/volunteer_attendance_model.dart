@@ -1,20 +1,24 @@
-
-
 //enum for absent present and deferred
-enum AttendanceStatus {
-  present,
-  absent,
-  deferred,
-}
+enum AttendanceStatus { present, absent, deferred }
 
 class Volunteer {
+  final String id;
+  final String email;
   final String name;
   final String program;
 
-  Volunteer({
-    required this.name,
-    required this.program,
-  });
+  Volunteer({required this.id, required this.email, required this.name, required this.program});
+
+  factory Volunteer.fromJson(
+      Map<String,dynamic> json){
+
+    return Volunteer(
+      id: json["_id"],
+      name: json["name"],
+      email: json["email"],
+      program: json["program"]??"none",
+    );
+  }
 }
 
 // holds all three attendance types for a day
