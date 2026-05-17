@@ -51,15 +51,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            print("Navigate to Notification pannel");
-          },
-          icon: Icon(Icons.notifications_on,color: Colors.white,size: 22.r,),
-        ),
-        SizedBox(width: 10.w,)
-      ],
     );
   }
 

@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/carousel_slider.dart';
+import 'package:unnati_app/features/about_us/about.dart';
+import 'package:unnati_app/features/developer/developers.dart';
+import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
 //import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
 import 'package:unnati_app/components/student_cards.dart';
@@ -131,10 +134,10 @@ class StudentHomePage extends StatelessWidget {
               children: [
                 StudentCardsUtil(
                   //settings
-                  icon: Icons.settings,
+                  icon: Icons.fact_check_outlined,
                   iconColor: Color(0xFF74ee15),
-                  title: "Settings",
-                  subtitle: "Control your app settings",
+                  title: "Quiz",
+                  subtitle: "Challenge Your Knowledge",
                   nextPage:
                       StudentQuizScreen(), ////// replace the student Quiz page with the correct page whenever required
                   ///for testing purpose it is set to studentProfile Screen
@@ -145,7 +148,7 @@ class StudentHomePage extends StatelessWidget {
                   iconColor: Color.fromARGB(255, 255, 120, 47),
                   title: "Help & Support",
                   subtitle: "Assistance at your fingertips",
-                  nextPage: StudedntProfileScreen(),
+                  nextPage: HelpSupport(),
       
                   /// fortesting it is bydefault studntProfileScreen -- change to reqired page
                 ),
@@ -160,7 +163,7 @@ class StudentHomePage extends StatelessWidget {
                   iconColor: Color.fromARGB(255, 244, 94, 255),
                   title: "Developers",
                   subtitle: "Meet our developers",
-                  nextPage: StudedntProfileScreen(),
+                  nextPage: DevelopersPage(),
       
                   /// fortesting it is bydefault studntProfileScreen -- change to reqired page
                 ),
@@ -170,7 +173,7 @@ class StudentHomePage extends StatelessWidget {
                   iconColor: Colors.white,
                   title: "About Us",
                   subtitle: "Our story and vision",
-                  nextPage: StudedntProfileScreen(),
+                  nextPage: AboutPage(),
       
                   /// fortesting it is bydefault studntProfileScreen -- change to reqired page
                 ),
