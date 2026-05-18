@@ -247,6 +247,10 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (result['success']) {
+      // Save full admin data
+      if (result['data'] != null) {
+        await AdminApiService.saveAdminData(result['data']);
+      }
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const AdminHomePage()),
