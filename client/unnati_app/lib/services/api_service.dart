@@ -496,4 +496,29 @@ class ApiService {
     }
     throw Exception('Failed to create file: ${res.body}');
   }
+
+
+
+  //get schools
+  static Future<List<String>> getSchools()async{
+    Uri url = Uri.parse("$coreBaseUrl/schools/get-schools");
+    var res = await http.get(url);
+
+
+try {
+  if(res.statusCode == 200){
+      var data = jsonDecode(res.body);
+      List schools = data["data"];
+      return schools.map((e)=>
+         e["name"].toString()).toList();
+    }
+    else
+    {
+      print("Something went wrong in fetching schools");
+      return[];
+    }
+} catch (e) {
+  throw Exception(e.toString());
+}
+  }
 }
