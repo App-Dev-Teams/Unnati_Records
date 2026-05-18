@@ -16,52 +16,95 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
   String phone = "xxxxxxxxxxxx";
   String studentClass = "10";
   String school = "School Name";
+  List<String> schools = [];
+  List<int> selectClass = [5, 6, 7, 8, 9, 10, 11, 12];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSchools();
+  }
+
+  void _fetchSchools() async {
+    final fetchedSchools = await ApiService.getSchools();
+    setState(() {
+      schools = fetchedSchools;
+    });
+  }
 
   // opens dialog to edit profile details
   void _editProfile() {
     final phoneController = TextEditingController(text: phone);
-    final classController = TextEditingController(text: studentClass);
-    final schoolController = TextEditingController(text: school);
+    int? selectedClass = int.tryParse(studentClass);
+    
+    // Ensure selectedSchool is in the schools list, otherwise set to first available or null
+    String? selectedSchool = (schools.contains(school)) ? school : (schools.isNotEmpty ? schools.first : null);
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('Edit Profile'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+      builder: (_) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Edit Profile'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              TextField(
-                controller: classController,
-                decoration: const InputDecoration(
-                  labelText: 'Class',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<int>(
+                  value: selectedClass,
+                  decoration: const InputDecoration(
+                    labelText: 'Class',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  items: selectClass.map((cls) {
+                    return DropdownMenuItem<int>(
+                      value: cls,
+                      child: Text(cls.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      selectedClass = value;
+                    });
+                  },
                 ),
-              ),
-              TextField(
-                controller: schoolController,
-                decoration: const InputDecoration(
-                  labelText: 'School',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedSchool,
+                  decoration: const InputDecoration(
+                    labelText: 'School',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  items: schools.map((s) {
+                    return DropdownMenuItem<String>(
+                      value: s,
+                      child: Text(s),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      selectedSchool = value;
+                    });
+                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () async {
-              final newPhone = phoneController.text;
-              final newClass = classController.text;
-              final newSchool = schoolController.text;
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: () async {
+                final newPhone = phoneController.text;
+                final newClass = selectedClass?.toString() ?? studentClass;
+                final newSchool = selectedSchool ?? school;
 
               final res = await ApiService.updateProfile(
                 phoneNo: newPhone,
@@ -93,6 +136,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 

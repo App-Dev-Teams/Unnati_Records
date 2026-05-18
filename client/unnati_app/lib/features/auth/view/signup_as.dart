@@ -55,7 +55,10 @@ class _SignupAsState extends State<SignupAs> {
         
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(200.w, 60.h), /////
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),
                     onPressed: () {
@@ -77,11 +80,14 @@ class _SignupAsState extends State<SignupAs> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 5.h, width: double.infinity),
+                  SizedBox(height: 7.h, width: double.infinity),
                   //student
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(200.w, 60.h), /////
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),
                     onPressed: () {
