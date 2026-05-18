@@ -9,6 +9,7 @@ const adminRoutes = require("./routes/volunteer.routes.js");
 const otpRoutes = require("./routes/otp.routes");
 const attendanceRouter = require('./routes/attendance.routes.js');
 const volunteerRouter = require('./routes/volunteer.routes.js');
+const schoolRouter = require('./routes/school.routes.js');
 require("dotenv").config();
 
 
@@ -36,6 +37,7 @@ app.use('/api/attendance',attendanceRouter);
 app.use('/api/admin', adminRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/volunteers", volunteerRouter);
+app.use("/api/schools",schoolRouter);
 
 //app.use("/api/otp", require("./routes/otp.routes"));
 
