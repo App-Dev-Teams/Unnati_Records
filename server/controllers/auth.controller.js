@@ -141,7 +141,9 @@ const login = async (req, res) => {
         email: saveduser.email,
         role: saveduser.role,
         rollNo:saveduser.rollNo,
-        batch:saveduser.batch
+        batch:saveduser.batch,
+        phoneNo:saveduser.phoneNo,
+        program:saveduser.program
       },
     });
 
