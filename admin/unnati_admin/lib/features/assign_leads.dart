@@ -15,6 +15,7 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
   final TextEditingController searchCtrl = TextEditingController();
   bool _isLoading = true;
   String? _errorMessage;
+  String adminName = "Admin";
 
   final List<String> roles = [
     "Finance Lead",
@@ -51,7 +52,16 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
     for (var program in programs) {
       expandedPrograms[program] = false;
     }
+    _loadAdminName();
     _loadVolunteers();
+  }
+
+  Future<void> _loadAdminName() async {
+    final storedName = await AdminApiService.getAdminName();
+    if (!mounted) return;
+    setState(() {
+      adminName = (storedName != null && storedName.isNotEmpty) ? storedName : "Admin";
+    });
   }
 
   Future<void> _loadVolunteers() async {
@@ -62,14 +72,31 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
       });
       
       final volunteerGrouped = await AdminApiService.fetchVolunteersByProgram();
+      final assignedLeadsData = await AdminApiService.fetchAssignedLeads();
       
       setState(() {
         volunteersByProgram = {};
         searchResultsByProgram = {};
+        leads = [];
+        
+        // Load assigned leads
+        leads = assignedLeadsData
+            .map((v) => Volunteer(
+              name: v['name'] ?? 'Unknown',
+              id: v['_id'] ?? '',
+              email: v['email'] ?? '',
+              program: v['program'] ?? 'Unknown',
+              role: v['role'] ?? '',
+            ))
+            .toList();
+        
+        // Get IDs of assigned leads to exclude them from available volunteers
+        Set<String> assignedLeadIds = leads.map((l) => l.id).toSet();
         
         for (var program in programs) {
           final volunteers = volunteerGrouped[program] ?? [];
           volunteersByProgram[program] = volunteers
+              .where((v) => !assignedLeadIds.contains(v['_id'] ?? ''))
               .map((v) => Volunteer(
                 name: v['name'] ?? 'Unknown',
                 id: v['_id'] ?? '',
@@ -122,7 +149,10 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
         setState(() {
           v.role = role;
           leads.add(v);
-          searchResultsByProgram[v.program]!.remove(v);
+          // Remove from search results
+          searchResultsByProgram[v.program]?.remove(v);
+          // Remove from available volunteers
+          volunteersByProgram[v.program]?.remove(v);
         });
 
         // Show success message
@@ -159,8 +189,10 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
     setState(() {
       leads.remove(v);
       v.role = "";
+      // Add back to available volunteers if search is empty
       if (searchCtrl.text.isEmpty) {
-        searchResultsByProgram[v.program]!.add(v);
+        volunteersByProgram[v.program]?.add(v);
+        searchResultsByProgram[v.program]?.add(v);
       }
     });
   }
@@ -168,8 +200,11 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
   void editLead(Volunteer v) {
     setState(() {
       leads.remove(v);
+      v.role = "";
+      // Add back to available volunteers if search is empty
       if (searchCtrl.text.isEmpty) {
-        searchResultsByProgram[v.program]!.add(v);
+        volunteersByProgram[v.program]?.add(v);
+        searchResultsByProgram[v.program]?.add(v);
       }
     });
   }
@@ -178,7 +213,60 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-      appBar: AdminAppBar(name: "Admin Name", imageName: "unnatiLogoColourFix.png"),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: AppBar(
+          backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+          elevation: 4,
+          shadowColor: Colors.black54,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color.fromARGB(255, 9, 75, 128),
+                  backgroundImage: AssetImage("assets/images/unnatiLogoColourFix.png"),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        adminName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.oswald(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        "Administrator",
+                        style: GoogleFonts.nunito(
+                          color: Colors.lightBlueAccent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          titleSpacing: 0,
+        ),
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null

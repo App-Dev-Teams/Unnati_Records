@@ -27,8 +27,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadAdminName();
-    _loadCurrentLeads();
+    // Add slight delay to ensure SharedPreferences data is written
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _loadAdminName();
+      _loadCurrentLeads();
+    });
   }
 
   Future<void> _loadAdminName() async {
