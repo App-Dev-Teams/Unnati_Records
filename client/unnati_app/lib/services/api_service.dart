@@ -345,6 +345,74 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> updateProfile({
+    String? name,
+    String? phoneNo,
+    String? program,
+    String? studentClass,
+    String? school,
+  }) async {
+    try {
+      final token = await getToken();
+      final headers = Map<String, String>.from(_headers);
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final body = <String, dynamic>{};
+      if (name != null) body['name'] = name;
+      if (phoneNo != null) body['phoneNo'] = phoneNo;
+      if (program != null) body['program'] = program;
+      if (studentClass != null) body['studentClass'] = studentClass;
+      if (school != null) body['school'] = school;
+
+      final response = await http
+          .put(
+            Uri.parse('$baseUrl/update-profile'),
+            headers: headers,
+            body: json.encode(body),
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final success = data['success'] as bool? ?? false;
+
+        if (success) {
+          final updated = data['data'] as Map<String, dynamic>?;
+          if (updated != null) {
+            await saveUserData(updated);
+          }
+
+          return {
+            'success': true,
+            'message': data['message'] as String? ?? 'Profile updated',
+            'data': updated,
+          };
+        }
+
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to update profile';
+        return {'success': false, 'message': errorMessage};
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final errorMessage =
+          data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to update profile';
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      print('❌ UPDATE PROFILE ERROR: ${e.toString()}');
+      return {
+        'success': false,
+        'message': 'Unable to update profile. Please try again.',
+      };
+    }
+  }
+
   // ================== FOLDER / FILE APIs (Volunteer resources) ==================
 
   /// Fetch all folders (courses/subjects)

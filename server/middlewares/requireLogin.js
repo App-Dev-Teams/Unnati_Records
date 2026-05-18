@@ -1,23 +1,42 @@
 
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const STUDENT = require('../models/student.model');
 
-module.exports = (req,res,next)=>{
-    const {authorization} = req.headers;
-    if(!authorization){
-        res.status(401).json({error:"You must be logged in"})
+module.exports = (req, res, next) => {
+    const { authorization } = req.headers;
+    if (!authorization) {
+        return res.status(401).json({ error: 'You must be logged in' });
     }
-    const token = authorization.replace("Bearer ","")
-    jwt.verify(token,process.env.JWT_SECRET,(err,payload)=>{
-        if(err){
-            res.status(401).json({error:"you must be logged in"});
+
+    const token = authorization.replace('Bearer ', '');
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+        if (err) {
+            return res.status(401).json({ error: 'you must be logged in' });
         }
-        const {_id} = payload  //stored in jwt
-        User.findById(_id).then(userdata=>{
-            req.user = userdata
-             next();
-        })
-       
-    })
-}
+
+        try {
+            let user = null;
+
+            // token payload may have either `_id` (volunteer) or `id` (student)
+            if (payload && payload._id) {
+                user = await User.findById(payload._id);
+                req.userType = 'volunteer';
+            } else if (payload && payload.id) {
+                user = await STUDENT.findById(payload.id);
+                req.userType = 'student';
+            }
+
+            if (!user) {
+                return res.status(401).json({ error: 'you must be logged in' });
+            }
+
+            req.user = user;
+            next();
+        } catch (e) {
+            console.error('AUTH MIDDLEWARE ERROR:', e);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+};
