@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:3000/api/auth';
-  static const String coreBaseUrl = 'http://localhost:3000/api';
+  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
+  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ class ApiService {
     if (str == null) return null;
     try {
       final Map<String, dynamic> data = json.decode(str);
-      print("getuserdata ${data}");    
+      print("getuserdata ${data}");
       return data;
     } catch (e) {
       print('❌ getUserData parse error: ${e.toString()}');
@@ -349,6 +349,8 @@ class ApiService {
     String? name,
     String? phoneNo,
     String? program,
+    String? branch,
+    int? batchYear,
     String? studentClass,
     String? school,
   }) async {
@@ -363,6 +365,8 @@ class ApiService {
       if (name != null) body['name'] = name;
       if (phoneNo != null) body['phoneNo'] = phoneNo;
       if (program != null) body['program'] = program;
+      if (branch != null) body['branch'] = branch;
+      if (batchYear != null) body['batchYear'] = batchYear;
       if (studentClass != null) body['studentClass'] = studentClass;
       if (school != null) body['school'] = school;
 

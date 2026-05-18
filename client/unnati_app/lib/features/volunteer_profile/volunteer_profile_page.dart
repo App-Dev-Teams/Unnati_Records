@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:unnati_app/features/volunteer_profile/Volunteer_profile_listtile.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
@@ -13,94 +14,232 @@ class VolunteerProfilePage extends StatefulWidget {
 }
 
 class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
+  static const List<String> _programOptions = [
+    'DigiXplore',
+    'Netritva',
+    'Akshar',
+  ];
+  static const List<String> _branchOptions = ['CSE', 'MAE', 'ECE', 'MNC'];
+
   String _name = "Priyanshu Kumar";
   String phone = "xxxxxxxxxxxx";
   String batch = "2025";
   String program = "DigiXplore";
   String branch = "CSE";
 
+  int _parseBatchYear(String value) {
+    final match = RegExp(r'(\d{4})').firstMatch(value);
+    if (match != null) {
+      return int.tryParse(match.group(1)!) ?? 2025;
+    }
+
+    return int.tryParse(value.trim()) ?? 2025;
+  }
+
   // opens dialog to edit profile details
-  void _editProfile() {
-    final phoneController = TextEditingController(text: phone);
-    final batchController = TextEditingController(text: batch);
-    final programController = TextEditingController(text: program);
-    final branchController = TextEditingController(text: branch);
+  void _editProfile({
+    required String currentName,
+    required String currentPhone,
+    required String currentBatch,
+    required String currentProgram,
+    required String currentBranch,
+  }) {
+    final formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController(text: currentName);
+    final phoneController = TextEditingController(text: currentPhone);
+    final batchController = TextEditingController(
+      text: _parseBatchYear(currentBatch).toString(),
+    );
+
+    String selectedProgram = _programOptions.contains(currentProgram)
+        ? currentProgram
+        : _programOptions.first;
+    String selectedBranch = _branchOptions.contains(currentBranch)
+        ? currentBranch
+        : _branchOptions.first;
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('Edit Profile'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Edit Profile'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Username is required';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'Username must be at least 3 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    maxLength: 10,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                      labelText: 'Phone',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      if (text.isEmpty) {
+                        return 'Phone number is required';
+                      }
+                      if (!RegExp(r'^\d{10}$').hasMatch(text)) {
+                        return 'Phone number must be 10 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: batchController,
+                    keyboardType: TextInputType.number,
+                    maxLength: 4,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(4),
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Batch Start Year',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      final year = int.tryParse(text);
+                      if (text.isEmpty) {
+                        return 'Batch year is required';
+                      }
+                      if (year == null || year < 2000 || year > 2100) {
+                        return 'Batch year must be between 2000 and 2100';
+                      }
+                      return null;
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: selectedProgram,
+                    decoration: const InputDecoration(
+                      labelText: 'Program',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    items: _programOptions
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() {
+                          selectedProgram = value;
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Program is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: selectedBranch,
+                    decoration: const InputDecoration(
+                      labelText: 'Branch',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    items: _branchOptions
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() {
+                          selectedBranch = value;
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Branch is required';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              TextField(
-                controller: batchController,
-                decoration: const InputDecoration(
-                  labelText: 'Batch',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              TextField(
-                controller: programController,
-                decoration: const InputDecoration(
-                  labelText: 'Program',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              TextField(
-                controller: branchController,
-                decoration: const InputDecoration(
-                  labelText: 'Branch',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: () async {
+                if (!(formKey.currentState?.validate() ?? false)) {
+                  return;
+                }
+
+                final newName = nameController.text.trim();
+                final newPhone = phoneController.text.trim();
+                final newBatchYear = int.parse(batchController.text.trim());
+
+                final res = await ApiService.updateProfile(
+                  name: newName,
+                  phoneNo: newPhone,
+                  program: selectedProgram,
+                  branch: selectedBranch,
+                  batchYear: newBatchYear,
+                );
+
+                if (res['success'] == true) {
+                  setState(() {
+                    _name = newName;
+                    phone = newPhone;
+                    batch = '$newBatchYear-${newBatchYear + 4}';
+                    program = selectedProgram;
+                    branch = selectedBranch;
+                  });
+                  if (dialogContext.mounted) {
+                    Navigator.pop(dialogContext);
+                  }
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Profile updated')),
+                    );
+                  }
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(res['message'] ?? 'Update failed'),
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () async {
-              final newPhone = phoneController.text;
-              final newProgram = programController.text;
-
-              final res = await ApiService.updateProfile(
-                phoneNo: newPhone,
-                program: newProgram,
-              );
-
-              if (res['success'] == true) {
-                setState(() {
-                  phone = newPhone;
-                  batch = batchController.text;
-                  program = newProgram;
-                  branch = branchController.text;
-                });
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile updated')),
-                  );
-                }
-                Navigator.pop(context);
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(res['message'] ?? 'Update failed')),
-                  );
-                }
-              }
-            },
-            child: const Text('Save', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
@@ -167,6 +306,9 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         final programLocal = (user != null && user['program'] != null)
             ? user['program'] as String
             : program;
+        final branchLocal = (user != null && user['branch'] != null)
+            ? user['branch'] as String
+            : branch;
 
         return Scaffold(
           backgroundColor: const Color.fromARGB(255, 221, 221, 221),
@@ -183,7 +325,16 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
 
             // edit button
             actions: [
-              IconButton(icon: const Icon(Icons.edit), onPressed: _editProfile),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => _editProfile(
+                  currentName: name,
+                  currentPhone: phoneLocal,
+                  currentBatch: batchLocal,
+                  currentProgram: programLocal,
+                  currentBranch: branchLocal,
+                ),
+              ),
             ],
           ),
 
