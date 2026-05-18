@@ -145,6 +145,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
       future: ApiService.getUserData(),
       builder: (context, snapshot) {
         final user = snapshot.data;
+        print("snapshot data in profile page ${snapshot.data}");
 
         final name = (user != null && user['name'] != null)
             ? user['name'] as String

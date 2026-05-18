@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
+  static const String baseUrl = 'http://localhost:3000/api/auth';
+  static const String coreBaseUrl = 'http://localhost:3000/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -49,6 +49,7 @@ class ApiService {
   static Future<void> saveUserData(Map<String, dynamic> user) async {
     final prefs = await _preferences;
     try {
+      print("saveuserdata ${user}");
       await prefs.setString('user_data', json.encode(user));
     } catch (e) {
       print('❌ saveUserData error: ${e.toString()}');
@@ -61,6 +62,7 @@ class ApiService {
     if (str == null) return null;
     try {
       final Map<String, dynamic> data = json.decode(str);
+      print("getuserdata ${data}");    
       return data;
     } catch (e) {
       print('❌ getUserData parse error: ${e.toString()}');
