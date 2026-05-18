@@ -1,7 +1,7 @@
 const USER = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
-const jwt= require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 const STUDENT = require("../models/student.model.js");
 
 
@@ -35,7 +35,7 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password, program, phoneNo} = req.body;
+    const { name, email, password, program, phoneNo } = req.body;
 
     const extracted = extractFromEmail(email);
 
@@ -51,23 +51,23 @@ const signup = async (req, res) => {
     if (existingUser) {
       return res.status(422).json({ error: "User already exists with this email" });
     }
-    
+
     //hashing the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = new USER({
       name,
       email,
-      role:'volunteer',
+      role: 'volunteer',
       program,
       password: hashedPassword,
       batch,
-      phoneNo, 
+      phoneNo,
       rollNo
     });
 
     await newUser.save();
-    
+
     //token generation
     const token = jwt.sign(
       { _id: newUser._id },
@@ -83,11 +83,11 @@ const signup = async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        phoneNo:newUser.phoneNo,
-        program:newUser.program,
+        phoneNo: newUser.phoneNo,
+        program: newUser.program,
         role: newUser.role,
-        rollNo:newUser.rollNo,
-        batch:newUser.batch
+        rollNo: newUser.rollNo,
+        batch: newUser.batch
       },
     });
 
@@ -101,7 +101,7 @@ const signup = async (req, res) => {
 
 //===================USER LOGIN======================
 const login = async (req, res) => {
-  
+
   try {
     const { email, password } = req.body;
 
@@ -113,7 +113,7 @@ const login = async (req, res) => {
         message: "User does not exist",
       });
     }
-    
+
     //comparison of the given password and saved password using bcrypt
     const isMatch = await bcrypt.compare(password, saveduser.password);
 
@@ -123,7 +123,7 @@ const login = async (req, res) => {
         message: "Invalid email or password",
       });
     }
-    
+
     //fresh token generation
     const token = jwt.sign(
       { _id: saveduser._id },
@@ -136,12 +136,12 @@ const login = async (req, res) => {
       message: "User logged in successfully",
       token,
       data: {
-        id:saveduser._id,
+        id: saveduser._id,
         name: saveduser.name,
         email: saveduser.email,
         role: saveduser.role,
-        rollNo:saveduser.rollNo,
-        batch:saveduser.batch
+        rollNo: saveduser.rollNo,
+        batch: saveduser.batch
       },
     });
 
@@ -236,7 +236,7 @@ const studentLogin = async (req, res) => {
       .findOne({ email })
       .select("+password");
 
-      console.log(student);
+    console.log(student);
 
     if (!student) {
       return res.status(401).json({
@@ -325,6 +325,61 @@ const updatePassword = async (req, res) => {
 };
 
 
-module.exports = { studentSignup, studentLogin,signup,login , updatePassword};
+//================== Volunteer UPDATE PROFILE ======================
+const updateProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { name, phoneNo, program, studentClass, school } = req.body;
+
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (phoneNo) updateFields.phoneNo = phoneNo;
+
+    // volunteer-only field
+    if (program && req.userType === 'volunteer') updateFields.program = program;
+
+    // student-only fields
+    if (req.userType === 'student') {
+      if (studentClass) updateFields.studentClass = studentClass;
+      if (school) updateFields.school = school;
+    }
+
+    let updatedUser = null;
+
+    if (req.userType === 'student') {
+      updatedUser = await STUDENT.findByIdAndUpdate(
+        user._id,
+        { $set: updateFields },
+        { new: true }
+      ).select('-password');
+    } else {
+      updatedUser = await USER.findByIdAndUpdate(
+        user._id,
+        { $set: updateFields },
+        { new: true }
+      ).select('-password');
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
+
+
+module.exports = { studentSignup, studentLogin, signup, login, updatePassword, updateProfile };
 
 

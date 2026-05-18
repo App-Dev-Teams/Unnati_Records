@@ -2,7 +2,7 @@ const express=require('express');
 const bcrypt=require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const requireLogin = require('../middlewares/requireLogin');
-const { login, signup, studentSignup, studentLogin ,updatePassword } = require('../controllers/auth.controller');
+const { login, signup, studentSignup, studentLogin, updatePassword, updateProfile } = require('../controllers/auth.controller');
 
 const router=express.Router();
 
@@ -85,5 +85,7 @@ router.post("/studentLogin", loginValidation,studentLogin);
 
 // POST: Volunteer UPDATE PASSWORD route
 router.post("/update-password", updatePassword);
+
+router.put("/update-profile", requireLogin, updateProfile);
 
 module.exports=router;

@@ -68,14 +68,35 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () {
-              setState(() {
-                phone = phoneController.text;
-                batch = batchController.text;
-                program = programController.text;
-                branch = branchController.text;
-              });
-              Navigator.pop(context);
+            onPressed: () async {
+              final newPhone = phoneController.text;
+              final newProgram = programController.text;
+
+              final res = await ApiService.updateProfile(
+                phoneNo: newPhone,
+                program: newProgram,
+              );
+
+              if (res['success'] == true) {
+                setState(() {
+                  phone = newPhone;
+                  batch = batchController.text;
+                  program = newProgram;
+                  branch = branchController.text;
+                });
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Profile updated')),
+                  );
+                }
+                Navigator.pop(context);
+              } else {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(res['message'] ?? 'Update failed')),
+                  );
+                }
+              }
             },
             child: const Text('Save', style: TextStyle(color: Colors.white)),
           ),
@@ -136,15 +157,15 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
             : phone;
         final batchLocal = (user != null && user['batch'] != null)
             ? (user['batch'] is Map<String, dynamic>
-                ? '${user['batch']['startYear']}-${user['batch']['endYear']}'
-                : user['batch'].toString())
+                  ? '${user['batch']['startYear']}-${user['batch']['endYear']}'
+                  : user['batch'].toString())
             : batch;
         final roleLocal = (user != null && user['role'] != null)
             ? user['role'] as String
             : 'Volunteer';
         final programLocal = (user != null && user['program'] != null)
             ? user['program'] as String
-            : program;    
+            : program;
 
         return Scaffold(
           backgroundColor: const Color.fromARGB(255, 221, 221, 221),

@@ -58,13 +58,36 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () {
-              setState(() {
-                phone = phoneController.text;
-                studentClass = classController.text;
-                school = schoolController.text;
-              });
-              Navigator.pop(context);
+            onPressed: () async {
+              final newPhone = phoneController.text;
+              final newClass = classController.text;
+              final newSchool = schoolController.text;
+
+              final res = await ApiService.updateProfile(
+                phoneNo: newPhone,
+                studentClass: newClass,
+                school: newSchool,
+              );
+
+              if (res['success'] == true) {
+                setState(() {
+                  phone = newPhone;
+                  studentClass = newClass;
+                  school = newSchool;
+                });
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Profile updated')),
+                  );
+                }
+                Navigator.pop(context);
+              } else {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(res['message'] ?? 'Update failed')),
+                  );
+                }
+              }
             },
             child: const Text('Save', style: TextStyle(color: Colors.white)),
           ),
@@ -134,7 +157,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
             : 'Student';
 
         return Scaffold(
-          backgroundColor:  Colors.white,
+          backgroundColor: Colors.white,
 
           appBar: AppBar(
             elevation: 2,
