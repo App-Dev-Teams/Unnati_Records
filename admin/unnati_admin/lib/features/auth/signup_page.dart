@@ -313,6 +313,10 @@ class _SignupPageState extends State<SignupPage> {
     });
 
     if (result['success']) {
+      // Save full admin data
+      if (result['data'] != null) {
+        await AdminApiService.saveAdminData(result['data']);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Signup successful! Logging in..."),

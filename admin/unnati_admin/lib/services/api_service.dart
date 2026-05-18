@@ -22,14 +22,19 @@ class AdminApiService {
     await prefs.setString('admin_auth_token', token);
   }
 
+  static Future<String?> getToken() async {
+    final prefs = await _preferences;
+    return prefs.getString('admin_auth_token');
+  }
+
   static Future<void> saveAdminName(String name) async {
     final prefs = await _preferences;
     await prefs.setString('admin_name', name);
   }
 
-  static Future<String?> getToken() async {
+  static Future<void> saveAdminData(Map<String, dynamic> data) async {
     final prefs = await _preferences;
-    return prefs.getString('admin_auth_token');
+    await prefs.setString('admin_data', jsonEncode(data));
   }
 
   static Future<String?> getAdminName() async {
@@ -37,10 +42,20 @@ class AdminApiService {
     return prefs.getString('admin_name');
   }
 
+  static Future<Map<String, dynamic>?> getAdminData() async {
+    final prefs = await _preferences;
+    final dataString = prefs.getString('admin_data');
+    if (dataString != null) {
+      return jsonDecode(dataString) as Map<String, dynamic>;
+    }
+    return null;
+  }
+
   static Future<void> logout() async {
     final prefs = await _preferences;
     await prefs.remove('admin_auth_token');
     await prefs.remove('admin_name');
+    await prefs.remove('admin_data');
   }
 
   static Future<bool> isLoggedIn() async {
@@ -217,4 +232,84 @@ class AdminApiService {
     }
     throw Exception('Failed to fetch files: ${res.body}');
   }
+
+  static Future<List<Map<String, dynamic>>> fetchVolunteers() async {
+    try {
+      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        final data = jsonDecode(res.body);
+        if (data is Map && data['data'] != null) {
+          return List<Map<String, dynamic>>.from(data['data']);
+        }
+        return [];
+      }
+      throw Exception('Failed to fetch volunteers: ${res.body}');
+    } catch (e) {
+      throw Exception('Failed to fetch volunteers: $e');
+    }
+  }
+
+  static Future<Map<String, List<Map<String, dynamic>>>> fetchVolunteersByProgram() async {
+    try {
+      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        final data = jsonDecode(res.body);
+        if (data is Map && data['data'] != null) {
+          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
+          
+          // Group volunteers by program
+          Map<String, List<Map<String, dynamic>>> grouped = {
+            'DigiXplore': [],
+            'Netritva': [],
+            'Akshar': [],
+          };
+          
+          for (var volunteer in allVolunteers) {
+            final program = volunteer['program'] ?? 'DigiXplore';
+            if (grouped.containsKey(program)) {
+              grouped[program]!.add(volunteer);
+            }
+          }
+          
+          return grouped;
+        }
+        return {'DigiXplore': [], 'Netritva': [], 'Akshar': []};
+      }
+      throw Exception('Failed to fetch volunteers: ${res.body}');
+    } catch (e) {
+      throw Exception('Failed to fetch volunteers: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> assignRoleToVolunteer(String userId, String role) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$coreBaseUrl/volunteers/assign-role'),
+        headers: _headers,
+        body: jsonEncode({
+          'userId': userId,
+          'role': role,
+        }),
+      ).timeout(_timeout);
+
+      if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'message': data['message'], 'data': data['data']};
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Failed to assign role',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
 }
+
+
