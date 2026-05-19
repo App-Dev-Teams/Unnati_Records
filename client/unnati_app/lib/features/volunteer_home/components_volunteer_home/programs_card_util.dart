@@ -22,6 +22,7 @@ class ProgramsCardUtil extends StatelessWidget {
       width: 350.w,
       child: Card(
         elevation: 4,
+        color: Colors.white,
         shadowColor: Colors.black.withOpacity(0.15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
