@@ -335,14 +335,23 @@ const updateProfile = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { name, phoneNo, program, studentClass, school } = req.body;
+    const { name, phoneNo, program, studentClass, school, batchYear} = req.body;
 
     const updateFields = {};
     if (name) updateFields.name = name;
     if (phoneNo) updateFields.phoneNo = phoneNo;
 
     // volunteer-only field
-    if (program && req.userType === 'volunteer') updateFields.program = program;
+    if (req.userType === "volunteer") {
+      if (program) updateFields.program = program;
+
+      if (batchYear) {
+        updateFields.batch = {
+          startYear: batchYear,
+          endYear: batchYear + 4,
+        };
+      }
+    }
 
     // student-only fields
     if (req.userType === 'student') {

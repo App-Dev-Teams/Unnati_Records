@@ -43,7 +43,7 @@ dependencies:
   shared_preferences: ^2.2.2
   carousel_slider: ^5.1.1
   url_launcher: ^6.3.2
-  syncfusion_flutter_pdfviewer: ^31.2.18
+  syncfusion_flutter_pdfviewer: ^33.2.6
   curved_labeled_navigation_bar: ^2.0.6
   file_picker: ^10.3.7
   open_file: ^3.5.10
