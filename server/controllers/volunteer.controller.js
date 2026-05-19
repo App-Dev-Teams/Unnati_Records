@@ -50,6 +50,60 @@ const getUsersByProgram = async (req, res) => {
     });
   }
 };
+//it is for admin app
+const assignRole=async(req,res) => {
+  try {
+    const { userId, role } = req.body;
+    if(!userId||!role) {
+      return res.status(400).json({
+        message: "userId and role are required"
+      });
+    }
+    const validRoles=[ "Finance Lead",
+      "JS-Program",
+      "JS-Public Relations",
+      "JS-Technical",
+      "DigiXplore Lead",
+      "Akshar Lead",
+      "Netritva Lead",
+      "R&D Lead",
+      "Operations Lead",
+      "Social Media Lead",
+      "Design Lead",
+      "Video Editing Lead",
+      "Outreach Lead",
+      "Membership Lead",
+    
+    ];
+      if(!validRoles.includes(role)){
+        return res.status(400).json({
+          message: "Invalid role. Valid roles are: " + validRoles.join(", ")
+        });
+      }
+      const updatedUser=await USER.findByIdAndUpdate(
+        userId,
+        {role:role},
+        {
+          new:true, runValidators:true        }
+      ).select("-password");
+      if(!updatedUser){
+        return res.status(404).json({
+          message: "User not found"
+        });
+      }
+      return res.status(200).json({
+        success:true,
+        message: "Role assigned successfully",
+        data: updatedUser
+      });
+  } catch (error) {
+    console.error("ASSIGN ROLE ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+}
 
 
-module.exports = { getAllUsers,getUsersByProgram };
+module.exports = { getAllUsers,getUsersByProgram, assignRole };

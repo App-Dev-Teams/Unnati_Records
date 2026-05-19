@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/services/api_service.dart';
 import 'package:unnati_admin/services/auth_gate.dart';
+import 'package:unnati_admin/features/admin_profile.dart';
 
 class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
@@ -17,89 +18,108 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     final bool isDesktop = width >= 900;
 
-    final double nameFontSize = isDesktop ? 18 : 16;
-    final double roleFontSize = isDesktop ? 12 : 10;
-    final double avatarRadius = isDesktop ? 20 : 16;
+    final double nameFontSize = isDesktop ? 20 : 18;
+    final double roleFontSize = isDesktop ? 13 : 11;
+    final double avatarRadius = isDesktop ? 22 : 18;
 
     return AppBar(
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-      elevation: 3,
-      shadowColor: Colors.black,
+      elevation: 4,
+      shadowColor: Colors.black54,
+      toolbarHeight: 70,
+      titleSpacing: 20,
 
-      leading: IconButton(
-        icon: const Icon(Icons.menu, color: Colors.white),
-        onPressed: () {},
-      ),
-
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: avatarRadius,
-            backgroundImage: AssetImage("assets/images/$imageName"),
-          ),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.oswald(
-                    color: Colors.white,
-                    fontSize: nameFontSize,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  "Administrator",
-                  style: GoogleFonts.nunito(
-                    color: Colors.lightBlueAccent,
-                    fontSize: roleFontSize,
-                  ),
-                ),
-              ],
+      title: Padding(
+        padding: EdgeInsets.only(left: 12.w),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: avatarRadius,
+              backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+              backgroundImage: AssetImage("assets/images/$imageName"),
             ),
-          ),
-        ],
+
+            SizedBox(width: 16.w),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.oswald(
+                      color: Colors.white,
+                      fontSize: nameFontSize,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    "Administrator",
+                    style: GoogleFonts.nunito(
+                      color: Colors.lightBlueAccent,
+                      fontSize: roleFontSize,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
 
       actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications_none, color: Colors.white),
-          onPressed: () {},
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.w),
+          child: IconButton(
+            icon: const Icon(Icons.notifications_none, color: Colors.white),
+            iconSize: 26,
+            onPressed: () {},
+            tooltip: 'Notifications',
+          ),
         ),
 
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.account_circle, color: Colors.white),
-          color: const Color.fromARGB(255, 14, 22, 33),
-          onSelected: (value) async {
-            if (value == "Logout") {
-              await AdminApiService.logout();
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.w),
+          child: PopupMenuButton<String>(
+            icon: const Icon(Icons.account_circle, color: Colors.white),
+            iconSize: 28,
+            color: const Color.fromARGB(255, 14, 22, 33),
+            elevation: 8,
+            onSelected: (value) async {
+              if (value == "Profile") {
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AuthGate()),
-                  (route) => false,
+                  MaterialPageRoute(builder: (_) => const AdminProfilePage()),
                 );
+              } else if (value == "Logout") {
+                await AdminApiService.logout();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AuthGate()),
+                    (route) => false,
+                  );
+                }
               }
-            }
-          },
-          itemBuilder: (context) => [
-            _menuItem("Profile", Icons.person_outline),
-            _menuItem("Settings", Icons.settings_outlined),
-            _menuItem("Logout", Icons.logout),
-          ],
+            },
+            itemBuilder: (context) => [
+              _menuItem("Profile", Icons.person_outline),
+              _menuItem("Settings", Icons.settings_outlined),
+              const PopupMenuDivider(),
+              _menuItem("Logout", Icons.logout),
+            ],
+          ),
         ),
 
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
       ],
     );
   }
@@ -107,11 +127,19 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   PopupMenuItem<String> _menuItem(String text, IconData icon) {
     return PopupMenuItem<String>(
       value: text,
+      height: 48,
       child: Row(
         children: [
-          Icon(icon, color: Colors.white70, size: 18),
-          const SizedBox(width: 10),
-          Text(text, style: GoogleFonts.nunito(color: Colors.white)),
+          Icon(icon, color: Colors.lightBlueAccent, size: 20),
+          SizedBox(width: 14.w),
+          Text(
+            text,
+            style: GoogleFonts.nunito(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

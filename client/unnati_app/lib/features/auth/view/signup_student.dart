@@ -18,17 +18,34 @@ class _SignupStudentState extends State<SignupStudent> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController classController = TextEditingController();
-  final TextEditingController schoolController = TextEditingController();
+  // final TextEditingController classController = TextEditingController();
+  // final TextEditingController schoolController = TextEditingController();
+  List<int> selectClass = [5,6,7,8,9,10,11,12];
+  List<String> schools = [];
+  int? selectedClass;
+  String? selectedSchool;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSchools();
+  }
+
+  void fetchSchools() async {
+    schools = await ApiService.getSchools();
+    setState(() {});
+  }
 
   Future<void> handleSignup() async {
     final name = usernameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final phoneNo = phoneController.text.trim();
-    final studentClass = classController.text.trim();
-    final school = schoolController.text.trim();
+    // final studentClass = classController.text.trim();
+    // final school = schoolController.text.trim();
+    final studentClass = selectedClass ?? 0;
+    final school = selectedSchool ?? "";
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,10 +135,10 @@ class _SignupStudentState extends State<SignupStudent> {
       return;
     }
 
-    if (studentClass.isEmpty) {
+    if (selectedClass == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Please enter your class"),
+          content: Text("Please select your class"),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -149,7 +166,7 @@ class _SignupStudentState extends State<SignupStudent> {
       email: email,
       password: password,
       phoneNo: phoneNo,
-      studentClass: studentClass,
+      studentClass: studentClass.toString(),
       school: school,
     );
 
@@ -269,18 +286,78 @@ class _SignupStudentState extends State<SignupStudent> {
 
               SizedBox(
                 width: 300.w,
-                child: TextfieldUtil(
-                  title: 'Class',
-                  controller: classController,
+                child:DropdownButtonFormField(
+                  value: selectedClass,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 72, 160, 248),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 152, 199, 246),
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    hint: Text(
+                      "Select Class",
+                      style: GoogleFonts.oswald(
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  items: selectClass.map((sc) {
+                    return DropdownMenuItem(value: sc, child: Text(sc.toString()));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedClass = value;
+                    });
+                  },
                 ),
               ),
               SizedBox(height: 20.h),
 
               SizedBox(
                 width: 300.w,
-                child: TextfieldUtil(
-                  title: 'School',
-                  controller: schoolController,
+                child: DropdownButtonFormField(
+                  value: selectedSchool,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 72, 160, 248),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 152, 199, 246),
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    hint: Text(
+                      "Select School",
+                      style: GoogleFonts.oswald(
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  items: schools.map((school) {
+                    return DropdownMenuItem(value: school, child: Text(school));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedSchool = value;
+                    });
+                  },
                 ),
               ),
               SizedBox(height: 30.h),

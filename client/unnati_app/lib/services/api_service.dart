@@ -447,35 +447,28 @@ class ApiService {
   }
 
   /// Delete folder (subject)
-  static Future<void> deleteFolder(
-    String folderId,
-  ) async {
-
+  static Future<void> deleteFolder(String folderId) async {
     final res = await http.delete(
-      Uri.parse(
-        '$coreBaseUrl/folders/$folderId',
-      ),
+      Uri.parse('$coreBaseUrl/folders/$folderId'),
       headers: _headers,
     );
 
-    if (
-      res.statusCode < 200 ||
-      res.statusCode >= 300
-    ) {
-
-      throw Exception(
-        'Failed to delete folder: ${res.body}',
-      );
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed to delete folder: ${res.body}');
     }
   }
-  
-  //Rename folder 
-  static Future<Map<String, dynamic>> updateFolder({required String id,String? name,String? className,}) async {
+
+  //Rename folder
+  static Future<Map<String, dynamic>> updateFolder({
+    required String id,
+    String? name,
+    String? className,
+  }) async {
     final body = {};
-    if(name != null){
+    if (name != null) {
       body['name'] = name;
     }
-    if(className != null){
+    if (className != null) {
       body['className'] = className;
     }
     final res = await http.patch(
@@ -483,17 +476,13 @@ class ApiService {
       headers: _headers,
       body: jsonEncode(body),
     );
-    if(res.statusCode >= 200 &&
-        res.statusCode < 300){
+    if (res.statusCode >= 200 && res.statusCode < 300) {
       return jsonDecode(res.body);
     }
-    throw Exception(
-        'Failed to update folder'
-    );
+    throw Exception('Failed to update folder');
   }
 
-
-//=====================================FILE APIs==========================================
+  //=====================================FILE APIs==========================================
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
     final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
@@ -502,7 +491,6 @@ class ApiService {
     }
     throw Exception('Failed to get ImageKit auth: ${res.body}');
   }
-
 
   /// Fetch all files for a folder
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
@@ -552,46 +540,42 @@ class ApiService {
     required String displayName,
   }) async {
     final res = await http.patch(
-      Uri.parse(
-        '$coreBaseUrl/files/$id',
-      ),
+      Uri.parse('$coreBaseUrl/files/$id'),
       headers: _headers,
-      body: json.encode({
-        'displayName':
-            displayName,
-      }),
+      body: json.encode({'displayName': displayName}),
     );
-    if (
-        res.statusCode >= 200 &&
-        res.statusCode < 300
-    ) {
-      return json.decode(
-        res.body,
-      );
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body);
     }
-    throw Exception(
-      'Failed updating file',
-    );
+    throw Exception('Failed updating file');
   }
 
-
   /// DELETE FILE
-  static Future<void> deleteFile(
-    String id,
-  ) async {
-    final res =
-        await http.delete(
-      Uri.parse(
-        '$coreBaseUrl/files/$id',
-      ),
-    );
-    if (
-        res.statusCode < 200 ||
-        res.statusCode >= 300
-    ) {
-      throw Exception(
-        'Failed deleting file',
-      );
+  static Future<void> deleteFile(String id) async {
+    final res = await http.delete(Uri.parse('$coreBaseUrl/files/$id'));
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed deleting file');
+    }
+  }
+
+  //get schools
+  static Future<List<String>> getSchools() async {
+    try {
+      final url = Uri.parse('$coreBaseUrl/schools/get-schools');
+
+      final res = await http.get(url);
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+
+        final schools = data['data'] as List;
+
+        return schools.map((e) => e['name'].toString()).toList();
+      }
+
+      throw Exception('Failed to fetch schools: ${res.body}');
+    } catch (e) {
+      throw Exception('Error fetching schools: $e');
     }
   }
 }
