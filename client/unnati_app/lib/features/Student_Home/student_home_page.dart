@@ -133,7 +133,7 @@ class StudentHomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 StudentCardsUtil(
-                  //settings
+                  //quiz
                   icon: Icons.fact_check_outlined,
                   iconColor: Color(0xFF74ee15),
                   title: "Quiz",
@@ -158,7 +158,7 @@ class StudentHomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 StudentCardsUtil(
-                  //settings
+                  //developers
                   icon: Icons.computer,
                   iconColor: Color.fromARGB(255, 244, 94, 255),
                   title: "Developers",
