@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:unnati_admin/features/admin_homescreen.dart';
+import 'package:unnati_admin/features/admin_homescreen.dart' as home;
+import 'package:unnati_admin/services/api_service.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  const ResetPasswordPage({super.key});
+  final String email;
+
+  const ResetPasswordPage({
+    super.key,
+    required this.email,
+  });
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -15,6 +21,89 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   bool showNew = false;
   bool showConfirm = false;
+  bool isLoading = false;
+  String? errorMessage;
+
+  @override
+  void dispose() {
+    newPassCtrl.dispose();
+    confirmPassCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _resetPassword() async {
+    if (newPassCtrl.text.isEmpty || confirmPassCtrl.text.isEmpty) {
+      setState(() {
+        errorMessage = 'Please fill all fields';
+      });
+      return;
+    }
+
+    if (newPassCtrl.text != confirmPassCtrl.text) {
+      setState(() {
+        errorMessage = 'Passwords do not match';
+      });
+      return;
+    }
+
+    if (newPassCtrl.text.length < 6) {
+      setState(() {
+        errorMessage = 'Password must be at least 6 characters';
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final result = await AdminApiService.updatePassword(widget.email, newPassCtrl.text);
+
+      if (result['success'] == true && mounted) {
+        // Auto-login with new password
+        final loginResult = await AdminApiService.login(widget.email, newPassCtrl.text);
+        
+        if (loginResult['success'] == true && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Password updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          Future.delayed(const Duration(milliseconds: 800), () {
+            if (mounted) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const home.AdminHomePage()),
+                (route) => false,
+              );
+            }
+          });
+        } else {
+          setState(() {
+            errorMessage = loginResult['message'] ?? 'Failed to auto-login';
+          });
+        }
+      } else {
+        setState(() {
+          errorMessage = result['message'] ?? 'Failed to update password';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +143,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               const SizedBox(height: 30),
-
               _passwordField(
                 controller: newPassCtrl,
                 label: "Create New Password",
@@ -65,9 +152,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   setState(() => showNew = !showNew);
                 },
               ),
-
               const SizedBox(height: 18),
-
               _passwordField(
                 controller: confirmPassCtrl,
                 label: "Confirm New Password",
@@ -76,27 +161,58 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   setState(() => showConfirm = !showConfirm);
                 },
               ),
-
+              if (errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.red.withOpacity(0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          errorMessage!,
+                          style: const TextStyle(color: Colors.red, fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 28),
-
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    isbothsame();
-                  },
+                  onPressed: isLoading ? null : _resetPassword,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color.fromARGB(255, 9, 75, 128),
+                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                    disabledBackgroundColor: Colors.grey.withOpacity(0.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    "Update Password",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Text(
+                          "Update Password",
+                          style: GoogleFonts.nunito(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
               ),
             ],
@@ -135,25 +251,4 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ),
     );
   }
-  void isbothsame(){
-  if(newPassCtrl.text != confirmPassCtrl.text || newPassCtrl.text.isEmpty || confirmPassCtrl.text.isEmpty){
-    ScaffoldMessenger.of(context).  showSnackBar(
-      const SnackBar(
-        content: Text("Passwords do not match"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-  else{ 
-  ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password Updated Successfully"),
-            backgroundColor: Colors.green,
-                      ),
-                    );}
-                  Future.delayed(const Duration(milliseconds: 800), () {
-                    Navigator.push(context, MaterialPageRoute(builder:  (_) =>  AdminHomePage(),));
-                  });
-    
-  
-}}
+}

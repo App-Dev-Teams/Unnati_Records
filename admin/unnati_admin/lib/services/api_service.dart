@@ -94,6 +94,9 @@ class AdminApiService {
         if (name != null && name.isNotEmpty) {
           await saveAdminName(name);
         }
+        if (userData != null) {
+          await saveAdminData(userData);
+        }
         return {'success': true, 'message': data['message'], 'data': data['data']};
       } else {
         return {
@@ -304,6 +307,155 @@ class AdminApiService {
         return {
           'success': false,
           'message': data['message'] ?? 'Failed to assign role',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchAssignedLeads() async {
+    try {
+      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        final data = jsonDecode(res.body);
+        if (data is Map && data['data'] != null) {
+          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
+          
+         
+          List<Map<String, dynamic>> assignedLeads = allVolunteers
+              .where((v) => (v['role'] ?? '').toString().contains('Lead'))
+              .toList();
+          
+          return assignedLeads;
+        }
+        return [];
+      }
+      throw Exception('Failed to fetch assigned leads: ${res.body}');
+    } catch (e) {
+      throw Exception('Failed to fetch assigned leads: $e');
+    }
+  }
+
+  // Forgot Password - Send OTP
+  static Future<Map<String, dynamic>> sendOtp(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$coreBaseUrl/otp/send-otp'),
+        headers: _headers,
+        body: jsonEncode({'email': email}),
+      ).timeout(_timeout);
+
+      if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'message': data['message'] ?? 'OTP sent successfully'};
+      } else {
+        return {
+          'success': false,
+          'message': data['error'] ?? data['message'] ?? 'Failed to send OTP',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // Verify OTP
+  static Future<Map<String, dynamic>> verifyOtp(String email, String otp) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$coreBaseUrl/otp/verify-otp'),
+        headers: _headers,
+        body: jsonEncode({'email': email, 'otp': otp}),
+      ).timeout(_timeout);
+
+      if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'message': data['message'] ?? 'OTP verified successfully'};
+      } else {
+        return {
+          'success': false,
+          'message': data['error'] ?? data['message'] ?? 'Invalid OTP',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // Update Password (Reset Password)
+  static Future<Map<String, dynamic>> updatePassword(String email, String newPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/update-password'),
+        headers: _headers,
+        body: jsonEncode({'email': email, 'newPassword': newPassword}),
+      ).timeout(_timeout);
+
+      if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'message': data['message'] ?? 'Password updated successfully'};
+      } else {
+        return {
+          'success': false,
+          'message': data['error'] ?? data['message'] ?? 'Failed to update password',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // Update Profile
+  static Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> profileData) async {
+    try {
+      final token = await getToken();
+      if (token == null || token.isEmpty) {
+        return {'success': false, 'message': 'Not authenticated'};
+      }
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      final response = await http.put(
+        Uri.parse('$baseUrl/update-profile'),
+        headers: headers,
+        body: jsonEncode(profileData),
+      ).timeout(_timeout);
+
+      if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode >= 200 && response.statusCode < 300 && data['success'] == true) {
+        // Update local storage with new data
+        if (data['data'] != null) {
+          await saveAdminData(data['data']);
+        }
+        return {'success': true, 'message': data['message'] ?? 'Profile updated successfully', 'data': data['data']};
+      } else {
+        return {
+          'success': false,
+          'message': data['error'] ?? data['message'] ?? 'Failed to update profile',
         };
       }
     } catch (e) {

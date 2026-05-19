@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) =>
-                                      const ForgotPasswordOtpPage(),
+                                      const ForgotPasswordEmailPage(),
                                 ),
                               );
                             },

@@ -76,15 +76,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
 
       actions: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.w),
-          child: IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.white),
-            iconSize: 26,
-            onPressed: () {},
-            tooltip: 'Notifications',
-          ),
-        ),
+       
 
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w),

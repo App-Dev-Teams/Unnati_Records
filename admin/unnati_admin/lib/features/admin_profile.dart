@@ -67,30 +67,56 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
     super.dispose();
   }
 
-  void _saveChanges() {
-    // Update local data
-    setState(() {
-      adminData?['name'] = nameCtrl.text;
-      adminData?['email'] = emailCtrl.text;
-      if (adminData?['batch'] == null) {
-        adminData?['batch'] = {};
+  void _saveChanges() async {
+    // Prepare data for API
+    final updatedData = {
+      'name': nameCtrl.text,
+      'phoneNo': adminData?['phoneNo'] ?? '',
+      'program': adminData?['program'] ?? '',
+    };
+
+    try {
+      // Call API to update profile
+      final result = await AdminApiService.updateProfile(updatedData);
+
+      if (result['success'] == true) {
+        // Update local data
+        setState(() {
+          adminData?['name'] = nameCtrl.text;
+          _isEditing = false;
+        });
+
+        // Save updated admin name
+        await AdminApiService.saveAdminName(nameCtrl.text);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message'] ?? 'Failed to update profile'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
-      adminData?['batch']['startYear'] = int.tryParse(startYearCtrl.text) ?? 0;
-      adminData?['batch']['endYear'] = int.tryParse(endYearCtrl.text) ?? 0;
-      adminData?['rollNo'] = rollNoCtrl.text.isEmpty ? null : int.tryParse(rollNoCtrl.text);
-      _isEditing = false;
-    });
-
-    // Save to storage
-    AdminApiService.saveAdminData(adminData!);
-    AdminApiService.saveAdminName(nameCtrl.text);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Profile updated successfully'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
