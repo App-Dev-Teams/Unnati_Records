@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
+  static const String baseUrl = 'http://unnati.onrender.com/api/auth';
+  static const String coreBaseUrl = 'http://unnati.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -446,6 +446,43 @@ class ApiService {
     throw Exception('Failed to create folder: ${res.body}');
   }
 
+  /// Delete folder (subject)
+  static Future<void> deleteFolder(String folderId) async {
+    final res = await http.delete(
+      Uri.parse('$coreBaseUrl/folders/$folderId'),
+      headers: _headers,
+    );
+
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed to delete folder: ${res.body}');
+    }
+  }
+
+  //Rename folder
+  static Future<Map<String, dynamic>> updateFolder({
+    required String id,
+    String? name,
+    String? className,
+  }) async {
+    final body = {};
+    if (name != null) {
+      body['name'] = name;
+    }
+    if (className != null) {
+      body['className'] = className;
+    }
+    final res = await http.patch(
+      Uri.parse('$coreBaseUrl/folders/$id'),
+      headers: _headers,
+      body: jsonEncode(body),
+    );
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return jsonDecode(res.body);
+    }
+    throw Exception('Failed to update folder');
+  }
+
+  //=====================================FILE APIs==========================================
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
     final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
@@ -497,28 +534,48 @@ class ApiService {
     throw Exception('Failed to create file: ${res.body}');
   }
 
+  /// UPDATE FILE NAME
+  static Future<Map<String, dynamic>> updateFile({
+    required String id,
+    required String displayName,
+  }) async {
+    final res = await http.patch(
+      Uri.parse('$coreBaseUrl/files/$id'),
+      headers: _headers,
+      body: json.encode({'displayName': displayName}),
+    );
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body);
+    }
+    throw Exception('Failed updating file');
+  }
 
+  /// DELETE FILE
+  static Future<void> deleteFile(String id) async {
+    final res = await http.delete(Uri.parse('$coreBaseUrl/files/$id'));
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed deleting file');
+    }
+  }
 
   //get schools
-  static Future<List<String>> getSchools()async{
-    Uri url = Uri.parse("$coreBaseUrl/schools/get-schools");
-    var res = await http.get(url);
+  static Future<List<String>> getSchools() async {
+    try {
+      final url = Uri.parse('$coreBaseUrl/schools/get-schools');
 
+      final res = await http.get(url);
 
-try {
-  if(res.statusCode == 200){
-      var data = jsonDecode(res.body);
-      List schools = data["data"];
-      return schools.map((e)=>
-         e["name"].toString()).toList();
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+
+        final schools = data['data'] as List;
+
+        return schools.map((e) => e['name'].toString()).toList();
+      }
+
+      throw Exception('Failed to fetch schools: ${res.body}');
+    } catch (e) {
+      throw Exception('Error fetching schools: $e');
     }
-    else
-    {
-      print("Something went wrong in fetching schools");
-      return[];
-    }
-} catch (e) {
-  throw Exception(e.toString());
-}
   }
 }

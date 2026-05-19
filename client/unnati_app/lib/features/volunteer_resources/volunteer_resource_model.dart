@@ -9,6 +9,8 @@ class FileItem {
 
   final String extension;
 
+  final String? imagekitFileId;
+
   final String? url;
 
   FileItem({
@@ -16,6 +18,7 @@ class FileItem {
     required this.name,
     required this.path,
     required this.extension,
+    this.imagekitFileId,
     this.url,
   });
 }
