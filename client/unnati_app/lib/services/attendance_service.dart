@@ -4,7 +4,7 @@ import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendan
 
 class AttendanceService {
   static const String baseUrl =
-      'http://unnati.onrender.com/api';
+      'https://unnati.onrender.com/api';
 
   // ---------------------------
   // Fetch volunteers
