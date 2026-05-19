@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://unnati.onrender.com/api/auth';
-  static const String coreBaseUrl = 'http://unnati.onrender.com/api';
+  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
+  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
