@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,12 @@ class ApiService {
   };
 
   static SharedPreferences? _prefs;
+  static final StreamController<Map<String, dynamic>?> _userDataController =
+      StreamController<Map<String, dynamic>?>.broadcast();
+
+  static Stream<Map<String, dynamic>?> get userDataStream =>
+      _userDataController.stream;
+
   static Future<SharedPreferences> get _preferences async {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
@@ -44,6 +51,9 @@ class ApiService {
   static Future<void> clearAllData() async {
     final prefs = await _preferences;
     await prefs.clear();
+    if (!_userDataController.isClosed) {
+      _userDataController.add(null);
+    }
   }
 
   static Future<void> saveUserData(Map<String, dynamic> user) async {
@@ -51,6 +61,9 @@ class ApiService {
     try {
       print("saveuserdata ${user}");
       await prefs.setString('user_data', json.encode(user));
+      if (!_userDataController.isClosed) {
+        _userDataController.add(user);
+      }
     } catch (e) {
       print('❌ saveUserData error: ${e.toString()}');
     }
@@ -399,6 +412,23 @@ class ApiService {
             data['error'] as String? ??
             data['message'] as String? ??
             'Failed to update profile';
+        final errors = data['errors'];
+        if (errors is List && errors.isNotEmpty) {
+          final errorText = errors
+              .map((error) {
+                if (error is Map<String, dynamic>) {
+                  return error['msg']?.toString() ?? error.toString();
+                }
+                return error.toString();
+              })
+              .where((message) => message.trim().isNotEmpty)
+              .join(', ');
+
+          if (errorText.isNotEmpty) {
+            return {'success': false, 'message': errorText, 'errors': errors};
+          }
+        }
+
         return {'success': false, 'message': errorMessage};
       }
 
@@ -407,6 +437,23 @@ class ApiService {
           data['error'] as String? ??
           data['message'] as String? ??
           'Failed to update profile';
+      final errors = data['errors'];
+      if (errors is List && errors.isNotEmpty) {
+        final errorText = errors
+            .map((error) {
+              if (error is Map<String, dynamic>) {
+                return error['msg']?.toString() ?? error.toString();
+              }
+              return error.toString();
+            })
+            .where((message) => message.trim().isNotEmpty)
+            .join(', ');
+
+        if (errorText.isNotEmpty) {
+          return {'success': false, 'message': errorText, 'errors': errors};
+        }
+      }
+
       return {'success': false, 'message': errorMessage};
     } catch (e) {
       print('❌ UPDATE PROFILE ERROR: ${e.toString()}');

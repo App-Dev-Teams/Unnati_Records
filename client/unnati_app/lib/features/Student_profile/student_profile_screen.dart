@@ -47,8 +47,8 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
 
     // Ensure selectedSchool is in the schools list, otherwise set to first available or current value.
     String? selectedSchool = schools.contains(currentSchool)
-        ? currentSchool
-        : (schools.isNotEmpty ? schools.first : null);
+      ? currentSchool
+      : (schools.isNotEmpty ? schools.first : null);
 
     showDialog(
       context: context,
@@ -129,7 +129,10 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       labelStyle: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     items: schools.map((s) {
-                      return DropdownMenuItem<String>(value: s, child: Text(s));
+                      return DropdownMenuItem<String>(
+                        value: s,
+                        child: Text(s),
+                      );
                     }).toList(),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -172,12 +175,9 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                 if (res['success'] == true) {
                   final updated = res['data'] as Map<String, dynamic>?;
                   final updatedName = updated?['name']?.toString() ?? newName;
-                  final updatedPhone =
-                      updated?['phoneNo']?.toString() ?? newPhone;
-                  final updatedClass =
-                      updated?['studentClass']?.toString() ?? newClass;
-                  final updatedSchool =
-                      updated?['school']?.toString() ?? newSchool;
+                  final updatedPhone = updated?['phoneNo']?.toString() ?? newPhone;
+                  final updatedClass = updated?['studentClass']?.toString() ?? newClass;
+                  final updatedSchool = updated?['school']?.toString() ?? newSchool;
 
                   setState(() {
                     _name = updatedName;
@@ -202,6 +202,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
           ],
         ),
       ),
+    
     );
   }
 
