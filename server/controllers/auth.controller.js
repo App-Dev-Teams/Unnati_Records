@@ -212,6 +212,7 @@ const studentSignup = async (req, res) => {
         id: newStudent._id,
         name: newStudent.name,
         email: newStudent.email,
+        role: 'student',
         phoneNo: newStudent.phoneNo,
         studentClass: newStudent.studentClass,
         school: newStudent.school
@@ -270,6 +271,7 @@ const studentLogin = async (req, res) => {
         id: student._id,
         name: student.name,
         email: student.email,
+        role: 'student',
         phoneNo: student.phoneNo,
         studentClass: student.studentClass,
         school: student.school
@@ -335,28 +337,44 @@ const updateProfile = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { name, phoneNo, program, studentClass, school, batchYear} = req.body;
+    const { name, phoneNo, program, studentClass, school, batchYear } = req.body;
 
     const updateFields = {};
-    if (name) updateFields.name = name;
-    if (phoneNo) updateFields.phoneNo = phoneNo;
+    const trimmedName = typeof name === 'string' ? name.trim() : name;
+    const trimmedPhoneNo = typeof phoneNo === 'string' ? phoneNo.trim() : phoneNo;
+    const trimmedProgram = typeof program === 'string' ? program.trim() : program;
+    const trimmedStudentClass = typeof studentClass === 'string' ? studentClass.trim() : studentClass;
+    const trimmedSchool = typeof school === 'string' ? school.trim() : school;
+
+    if (trimmedName) updateFields.name = trimmedName;
+    if (trimmedPhoneNo) updateFields.phoneNo = trimmedPhoneNo;
 
     // volunteer-only field
     if (req.userType === "volunteer") {
-      if (program) updateFields.program = program;
+      if (trimmedProgram) updateFields.program = trimmedProgram;
 
-      if (batchYear) {
-        updateFields.batch = {
-          startYear: batchYear,
-          endYear: batchYear + 4,
-        };
+      if (batchYear !== undefined && batchYear !== null && batchYear !== '') {
+        const parsedBatchYear = Number(batchYear);
+        if (!Number.isNaN(parsedBatchYear)) {
+          updateFields.batch = {
+            startYear: parsedBatchYear,
+            endYear: parsedBatchYear + 4,
+          };
+        }
       }
     }
 
     // student-only fields
     if (req.userType === 'student') {
-      if (studentClass) updateFields.studentClass = studentClass;
-      if (school) updateFields.school = school;
+      if (trimmedStudentClass) updateFields.studentClass = trimmedStudentClass;
+      if (trimmedSchool) updateFields.school = trimmedSchool;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No valid fields provided for update',
+      });
     }
 
     let updatedUser = null;

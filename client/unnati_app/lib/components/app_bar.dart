@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  String name = "name";
-  String imageName;
-  MyAppBar({super.key, required this.imageName, required this.name});
+  final String name;
+  final String imageName;
+
+  const MyAppBar({super.key, required this.imageName, this.name = "name"});
 
   String greet() {
     DateTime now = DateTime.now(); //fetch current time and greet
@@ -26,28 +26,40 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 2,
       shadowColor: Colors.black,
       // leadingWidth: 61,
-      leading:  //user profile pic
+      leading: //user profile pic
       Row(
         children: [
           SizedBox(width: 15),
           CircleAvatar(
-            backgroundImage: AssetImage("assets/images/unnatiLogoColourFix.png"),//if no personal pic-> by default unnati logo
-            foregroundImage: AssetImage("assets/images/$imageName"), // if profile pic -> new profile pic
+            backgroundImage: AssetImage(
+              "assets/images/unnatiLogoColourFix.png",
+            ), //if no personal pic-> by default unnati logo
+            foregroundImage: AssetImage(
+              "assets/images/$imageName",
+            ), // if profile pic -> new profile pic
             radius: 20, //user image
           ),
         ],
       ),
-      title: Column(//title
+      title: Column(
+        //title
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Hey, $name",
-            style: GoogleFonts.oswald(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+            style: GoogleFonts.oswald(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ), //user name
           Text(
             greet(),
-            style: GoogleFonts.oswald(color: Colors.white, fontSize: 12), //greet
+            style: GoogleFonts.oswald(
+              color: Colors.white,
+              fontSize: 12,
+            ), //greet
           ),
         ],
       ),
