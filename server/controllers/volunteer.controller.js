@@ -59,7 +59,9 @@ const assignRole=async(req,res) => {
         message: "userId and role are required"
       });
     }
-    const validRoles=[ "Finance Lead",
+    const validRoles=[ 
+      "Admin",
+      "Finance Lead",
       "JS-Program",
       "JS-Public Relations",
       "JS-Technical",
