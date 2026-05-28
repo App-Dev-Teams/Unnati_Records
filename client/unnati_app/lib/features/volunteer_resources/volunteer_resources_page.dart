@@ -7,8 +7,26 @@ import 'package:unnati_app/features/volunteer_resources/subject_provider_volunte
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/services/api_service.dart';
 
-class VolunteerResourcesPage extends ConsumerWidget {
+class VolunteerResourcesPage extends ConsumerStatefulWidget {
   const VolunteerResourcesPage({super.key});
+
+  @override
+  ConsumerState<VolunteerResourcesPage> createState() => _VolunteerResourcesPageState();
+}
+
+class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage> {
+  
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      ref
+        .read(subjectProvider.notifier)
+        .loadSubjects();
+    });
+  }
+
 
   void _showAddSubjectSheet(BuildContext context, WidgetRef ref) {
     final subjectController = TextEditingController();
@@ -116,19 +134,26 @@ class VolunteerResourcesPage extends ConsumerWidget {
                       }
 
                       try {
-                        final folder = await ApiService.createFolder(
-                          name: subject,
-                          className: cls,
-                        );
+                        // final folder = await ApiService.createFolder(
+                        //   name: subject,
+                        //   className: cls,
+                        // );
 
-                        ref.read(subjectProvider.notifier).addSubjectFromBackend(
-                              Subject(
-                                id: folder['_id'] as String,
-                                name: folder['name'] as String,
-                                className:
-                                    (folder['className'] ?? '') as String,
-                              ),
-                            );
+                        // ref.read(subjectProvider.notifier).addSubjectFromBackend(
+                        //       Subject(
+                        //         id: folder['_id'] as String,
+                        //         name: folder['name'] as String,
+                        //         className:
+                        //             (folder['className'] ?? '') as String,
+                        //       ),
+                        //     );
+
+                        await ref
+                          .read(subjectProvider.notifier)
+                          .createSubject(
+                              name: subject,
+                              className: cls,
+                          );
 
                         Navigator.pop(modalContext);
                       } catch (e) {
@@ -160,7 +185,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final subjects = ref.watch(subjectProvider); //watch changes
 
     return Scaffold(
@@ -355,7 +380,7 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                             ),
                                           ),
                                           ElevatedButton(
-                                            onPressed: () {
+                                            onPressed: ()async {
                                               final newName = subjectController
                                                   .text
                                                   .trim();
@@ -401,13 +426,12 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                                 return; // ❌ TERMINATE EDIT
                                               }
 
-                                              ref
+                                              await ref
                                                   .read(
                                                     subjectProvider.notifier,
                                                   )
                                                   .updateSubject(
-                                                    oldName: subject.name,
-                                                    oldClass: subject.className,
+                                                    id: subject.id!,
                                                     newName: newName,
                                                     newClass: newClass,
                                                   );
@@ -455,14 +479,14 @@ class VolunteerResourcesPage extends ConsumerWidget {
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.red,
                                             ),
-                                            onPressed: () {
-                                              ref
+                                            onPressed: () async {
+                                              await ref
                                                   .read(
                                                     subjectProvider.notifier,
                                                   )
                                                   .deleteSubject(
-                                                    subject.name,
-                                                    subject.className,
+                                                    subject.id!,
+                                                    
                                                   );
                                               Navigator.pop(context);
                                             },

@@ -1,5 +1,6 @@
-import 'dart:convert';
+// ignore_for_file: avoid_print
 
+import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,13 +8,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
+import 'package:unnati_app/features/volunteer_resources/pdf_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
 import 'package:unnati_app/services/api_service.dart';
 
-class FileUploadPage extends ConsumerWidget {
+class FileUploadPage extends ConsumerStatefulWidget {
   static const List<String> _allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
 
   final String subject;
@@ -24,6 +26,41 @@ class FileUploadPage extends ConsumerWidget {
     required this.subject,
     required this.className,
   });
+
+  @override
+  ConsumerState<FileUploadPage> createState() {
+    return _FileUploadPageState();
+  }
+}
+
+class _FileUploadPageState extends ConsumerState<FileUploadPage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final subjects = ref.read(
+        subjectProvider,
+      );
+
+      final current = subjects.firstWhere(
+        (s) =>
+            s.name == widget.subject &&
+            s.className == widget.className,
+      );
+
+      if (current.id != null) {
+        ref
+            .read(
+              subjectProvider.notifier,
+            )
+            .loadFiles(
+              current.id!,
+            );
+      }
+    });
+  }
 
   //bottom sheet function
   void _showAddFileSheet(BuildContext scaffoldContext, WidgetRef ref) {
@@ -76,7 +113,8 @@ class FileUploadPage extends ConsumerWidget {
                       onPressed: () async {
                         final result = await FilePicker.platform.pickFiles(
                           type: FileType.custom,
-                          allowedExtensions: _allowedExtensions,
+                          allowedExtensions: FileUploadPage
+                                  ._allowedExtensions,
                         );
 
                         if (result != null) {
@@ -103,133 +141,41 @@ class FileUploadPage extends ConsumerWidget {
                       onPressed: pickedFile == null
                           ? null
                           : () async {
-                              final name =
-                                  fileNameController.text.trim().isEmpty
-                                      ? pickedFile!.name
-                                      : fileNameController.text.trim();
-
-                              final ext = pickedFile!.extension?.toLowerCase() ?? '';
-                              if (!_allowedExtensions.contains(ext)) {
-                                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Only PDF and image files (jpg, png) are allowed.',
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                return;
-                              }
-
                               try {
-                                final auth =
-                                    await ApiService.getImageKitAuth();
+                                print("Uploading started");
 
-                                final uploadRequest = http.MultipartRequest(
-                                  'POST',
-                                  Uri.parse(
-                                      'https://upload.imagekit.io/api/v1/files/upload'),
-                                )
-                                  ..fields['fileName'] = pickedFile!.name
-                                  ..fields['token'] =
-                                      auth['token'].toString()
-                                  ..fields['signature'] =
-                                      auth['signature'].toString()
-                                  ..fields['expire'] =
-                                      auth['expire'].toString();
-
-                                if (pickedFile!.path != null) {
-                                  uploadRequest.files.add(
-                                    await http.MultipartFile.fromPath(
-                                      'file',
-                                      pickedFile!.path!,
-                                    ),
-                                  );
-                                } else {
-                                  uploadRequest.files.add(
-                                    http.MultipartFile.fromBytes(
-                                      'file',
-                                      pickedFile!.bytes!,
-                                      filename: pickedFile!.name,
-                                    ),
-                                  );
-                                }
-
-                                final streamed =
-                                    await uploadRequest.send();
-                                final uploadResponse =
-                                    await http.Response.fromStream(streamed);
-
-                                if (uploadResponse.statusCode < 200 ||
-                                    uploadResponse.statusCode >= 300) {
-                                  throw Exception(
-                                    'ImageKit upload failed: ${uploadResponse.body}',
-                                  );
-                                }
-
-                                final uploadData =
-                                    json.decode(uploadResponse.body)
-                                        as Map<String, dynamic>;
-
-                                final imageUrl =
-                                    uploadData['url'] as String;
-                                final imagekitFileId =
-                                    uploadData['fileId'] as String;
-
-                                final subjects =
-                                    ref.read(subjectProvider);
-                                final subjectObj = subjects.firstWhere(
-                                  (s) =>
-                                      s.name == subject &&
-                                      s.className == className,
-                                );
-
-                                if (subjectObj.id == null) {
-                                  throw Exception(
-                                    'No backend folder id found for this subject',
-                                  );
-                                }
-
-                                final fileMeta =
-                                    await ApiService.createFile(
-                                  originalName: pickedFile!.name,
-                                  displayName: name,
-                                  link: imageUrl,
-                                  folderId: subjectObj.id!,
-                                  type: (pickedFile!.extension ?? '')
-                                      .toLowerCase(),
-                                  imagekitFileId: imagekitFileId,
-                                );
-
-                                final fileItem = FileItem(
-                                  id: fileMeta['_id'] as String,
-                                  name: fileMeta['displayName'] as String,
-                                  path: '',
-                                  extension:
-                                      (fileMeta['type'] ?? '').toString(),
-                                  url: fileMeta['link'] as String,
-                                );
-
-                                ref
+                                await ref
                                     .read(subjectProvider.notifier)
-                                    .addFile(
-                                      subject,
-                                      className,
-                                      fileItem,
+                                    .uploadFile(
+                                      subjectName: widget.subject,
+                                      className: widget.className,
+                                      pickedFile: pickedFile!,
+                                      customName: fileNameController.text
+                                          .trim(),
                                     );
 
+                                print("Upload success");
+
                                 Navigator.pop(modalContext);
-                              } catch (e) {
-                                ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Failed to upload file: $e',
-                                    ),
-                                    backgroundColor: Colors.red,
+
+                                ScaffoldMessenger.of(
+                                  scaffoldContext,
+                                ).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Upload successful"),
                                   ),
+                                );
+                              } catch (e) {
+                                print("ERROR: $e");
+
+                                ScaffoldMessenger.of(
+                                  scaffoldContext,
+                                ).showSnackBar(
+                                  SnackBar(content: Text("Upload failed: $e")),
                                 );
                               }
                             },
+
                       child: Text(
                         'Add File',
                         style: GoogleFonts.oswald(color: Colors.white),
@@ -267,10 +213,10 @@ class FileUploadPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final subjects = ref.watch(subjectProvider);
     final currentSubject = subjects.firstWhere(
-      (s) => s.name == subject && s.className == className,
+      (s) => s.name == widget.subject && s.className == widget.className,
     );
 
     final files = currentSubject.files;
@@ -283,7 +229,7 @@ class FileUploadPage extends ConsumerWidget {
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          '$subject - Class $className',
+          '${widget.subject} - Class ${widget.className}',
           style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
         ),
       ),
@@ -319,22 +265,49 @@ class FileUploadPage extends ConsumerWidget {
                 return InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () async {
-                    if (file.path.isNotEmpty) {
-                      final result = await OpenFile.open(file.path);
-                      if (result.type != ResultType.done) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result.message)),
-                        );
-                      }
-                    } else if (file.url != null &&
-                        file.url!.isNotEmpty &&
-                        await canLaunchUrl(Uri.parse(file.url!))) {
-                      await launchUrl(Uri.parse(file.url!));
-                    } else if (file.url != null && file.url!.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Could not open file'),
+                    // PDF
+                    if (file.extension.toLowerCase() == 'pdf' &&
+                        file.url != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PdfViewerPage(url: file.url!),
                         ),
+                      );
+                    }
+                    // Images
+                    else if ([
+                          'jpg',
+                          'jpeg',
+                          'png',
+                        ].contains(file.extension.toLowerCase()) &&
+                        file.url != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Scaffold(
+                            appBar: AppBar(),
+                            body: Center(
+                              child: InteractiveViewer(
+                                child: Image.network(file.url!),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    // Local file
+                    else if (file.path.isNotEmpty) {
+                      final result = await OpenFile.open(file.path);
+
+                      if (result.type != ResultType.done) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(result.message)));
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Could not open file')),
                       );
                     }
                   },
@@ -384,7 +357,7 @@ class FileUploadPage extends ConsumerWidget {
                               //EDIT
                               IconButton(
                                 icon: const Icon(Icons.edit, size: 18),
-                                onPressed: () {
+                                onPressed: () async{
                                   final controller = TextEditingController(
                                     text: file.name,
                                   );
@@ -411,20 +384,28 @@ class FileUploadPage extends ConsumerWidget {
                                           ),
                                         ),
                                         ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async{
                                             final newName = controller.text
                                                 .trim();
-                                            if (newName.isNotEmpty) {
-                                              ref
-                                                  .read(
-                                                    subjectProvider.notifier,
-                                                  )
-                                                  .renameFile(
-                                                    subjectName: subject,
-                                                    className: className,
-                                                    oldFile: file,
-                                                    newName: newName,
-                                                  );
+                                            
+                                            if (newName.isEmpty) {
+                                              return;        
+                                            }
+                                            try{
+                                              await ref.read(subjectProvider.notifier).renameFile(
+                                                subjectName: widget.subject,
+                                                className: widget.className,
+                                                oldFile: file,
+                                                newName: newName,
+                                              );
+                                              //Navigator.pop(context);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('File renamed successfully.')),
+                                              );
+                                            } catch (e) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text('Failed to rename file.')),
+                                              );
                                             }
                                             Navigator.pop(context);
                                           },
@@ -471,13 +452,13 @@ class FileUploadPage extends ConsumerWidget {
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.red,
                                           ),
-                                          onPressed: () {
-                                            ref
+                                          onPressed: ()async {
+                                            await ref
                                                 .read(subjectProvider.notifier)
                                                 .deleteFile(
-                                                  subject,
-                                                  className,
-                                                  file,
+                                                  subjectName: widget.subject,
+                                                  className: widget.className,
+                                                  file: file,
                                                 );
                                             Navigator.pop(context);
                                           },

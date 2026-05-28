@@ -142,6 +142,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
           await ApiService.saveRole(role);
         }
         if (data != null) {
+          print(data);
           await ApiService.saveUserData(data);
         }
       } catch (e) {
@@ -269,10 +270,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                         value: 'DigiXplore',
                         child: Text('DigiXplore'),
                       ),
-                      DropdownMenuItem(
-                        value: 'Akshar',
-                        child: Text('Akshar'),
-                      ),
+                      DropdownMenuItem(value: 'Akshar', child: Text('Akshar')),
                       DropdownMenuItem(
                         value: 'Netritva',
                         child: Text('Netritva'),

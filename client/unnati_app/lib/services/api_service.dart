@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,12 @@ class ApiService {
   };
 
   static SharedPreferences? _prefs;
+  static final StreamController<Map<String, dynamic>?> _userDataController =
+      StreamController<Map<String, dynamic>?>.broadcast();
+
+  static Stream<Map<String, dynamic>?> get userDataStream =>
+      _userDataController.stream;
+
   static Future<SharedPreferences> get _preferences async {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
@@ -44,12 +51,19 @@ class ApiService {
   static Future<void> clearAllData() async {
     final prefs = await _preferences;
     await prefs.clear();
+    if (!_userDataController.isClosed) {
+      _userDataController.add(null);
+    }
   }
 
   static Future<void> saveUserData(Map<String, dynamic> user) async {
     final prefs = await _preferences;
     try {
+      print("saveuserdata ${user}");
       await prefs.setString('user_data', json.encode(user));
+      if (!_userDataController.isClosed) {
+        _userDataController.add(user);
+      }
     } catch (e) {
       print('❌ saveUserData error: ${e.toString()}');
     }
@@ -61,6 +75,7 @@ class ApiService {
     if (str == null) return null;
     try {
       final Map<String, dynamic> data = json.decode(str);
+      print("getuserdata ${data}");
       return data;
     } catch (e) {
       print('❌ getUserData parse error: ${e.toString()}');
@@ -343,6 +358,112 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> updateProfile({
+    String? name,
+    String? phoneNo,
+    String? program,
+    String? branch,
+    int? batchYear,
+    String? studentClass,
+    String? school,
+  }) async {
+    try {
+      final token = await getToken();
+      final headers = Map<String, String>.from(_headers);
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final body = <String, dynamic>{};
+      if (name != null) body['name'] = name;
+      if (phoneNo != null) body['phoneNo'] = phoneNo;
+      if (program != null) body['program'] = program;
+      if (branch != null) body['branch'] = branch;
+      if (batchYear != null) body['batchYear'] = batchYear;
+      if (studentClass != null) body['studentClass'] = studentClass;
+      if (school != null) body['school'] = school;
+
+      final response = await http
+          .put(
+            Uri.parse('$baseUrl/update-profile'),
+            headers: headers,
+            body: json.encode(body),
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final success = data['success'] as bool? ?? false;
+
+        if (success) {
+          final updated = data['data'] as Map<String, dynamic>?;
+          if (updated != null) {
+            await saveUserData(updated);
+          }
+
+          return {
+            'success': true,
+            'message': data['message'] as String? ?? 'Profile updated',
+            'data': updated,
+          };
+        }
+
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to update profile';
+        final errors = data['errors'];
+        if (errors is List && errors.isNotEmpty) {
+          final errorText = errors
+              .map((error) {
+                if (error is Map<String, dynamic>) {
+                  return error['msg']?.toString() ?? error.toString();
+                }
+                return error.toString();
+              })
+              .where((message) => message.trim().isNotEmpty)
+              .join(', ');
+
+          if (errorText.isNotEmpty) {
+            return {'success': false, 'message': errorText, 'errors': errors};
+          }
+        }
+
+        return {'success': false, 'message': errorMessage};
+      }
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final errorMessage =
+          data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to update profile';
+      final errors = data['errors'];
+      if (errors is List && errors.isNotEmpty) {
+        final errorText = errors
+            .map((error) {
+              if (error is Map<String, dynamic>) {
+                return error['msg']?.toString() ?? error.toString();
+              }
+              return error.toString();
+            })
+            .where((message) => message.trim().isNotEmpty)
+            .join(', ');
+
+        if (errorText.isNotEmpty) {
+          return {'success': false, 'message': errorText, 'errors': errors};
+        }
+      }
+
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      print('❌ UPDATE PROFILE ERROR: ${e.toString()}');
+      return {
+        'success': false,
+        'message': 'Unable to update profile. Please try again.',
+      };
+    }
+  }
+
   // ================== FOLDER / FILE APIs (Volunteer resources) ==================
 
   /// Fetch all folders (courses/subjects)
@@ -372,6 +493,43 @@ class ApiService {
     throw Exception('Failed to create folder: ${res.body}');
   }
 
+  /// Delete folder (subject)
+  static Future<void> deleteFolder(String folderId) async {
+    final res = await http.delete(
+      Uri.parse('$coreBaseUrl/folders/$folderId'),
+      headers: _headers,
+    );
+
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed to delete folder: ${res.body}');
+    }
+  }
+
+  //Rename folder
+  static Future<Map<String, dynamic>> updateFolder({
+    required String id,
+    String? name,
+    String? className,
+  }) async {
+    final body = {};
+    if (name != null) {
+      body['name'] = name;
+    }
+    if (className != null) {
+      body['className'] = className;
+    }
+    final res = await http.patch(
+      Uri.parse('$coreBaseUrl/folders/$id'),
+      headers: _headers,
+      body: jsonEncode(body),
+    );
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return jsonDecode(res.body);
+    }
+    throw Exception('Failed to update folder');
+  }
+
+  //=====================================FILE APIs==========================================
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
     final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
@@ -421,5 +579,50 @@ class ApiService {
       return json.decode(res.body) as Map<String, dynamic>;
     }
     throw Exception('Failed to create file: ${res.body}');
+  }
+
+  /// UPDATE FILE NAME
+  static Future<Map<String, dynamic>> updateFile({
+    required String id,
+    required String displayName,
+  }) async {
+    final res = await http.patch(
+      Uri.parse('$coreBaseUrl/files/$id'),
+      headers: _headers,
+      body: json.encode({'displayName': displayName}),
+    );
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return json.decode(res.body);
+    }
+    throw Exception('Failed updating file');
+  }
+
+  /// DELETE FILE
+  static Future<void> deleteFile(String id) async {
+    final res = await http.delete(Uri.parse('$coreBaseUrl/files/$id'));
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Failed deleting file');
+    }
+  }
+
+  //get schools
+  static Future<List<String>> getSchools() async {
+    try {
+      final url = Uri.parse('$coreBaseUrl/schools/get-schools');
+
+      final res = await http.get(url);
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+
+        final schools = data['data'] as List;
+
+        return schools.map((e) => e['name'].toString()).toList();
+      }
+
+      throw Exception('Failed to fetch schools: ${res.body}');
+    } catch (e) {
+      throw Exception('Error fetching schools: $e');
+    }
   }
 }

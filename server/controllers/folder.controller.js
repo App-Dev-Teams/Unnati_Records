@@ -48,7 +48,7 @@ const updateFolder = async (req, res) => {
       }
       updates.name = name.trim();  //agar name chnage kiya to wo name otherwise previous name.
     }
-    if (className !== undefined) updates.class = className;
+    if (className !== undefined) updates.className = className;
     
     //agar kuch v pass na karo , empty object-->
     if (Object.keys(updates).length === 0) {
@@ -80,6 +80,7 @@ const deleteFolder = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete folder' });
   }
 };
+
 
 
 // const updateFolder = async (req, res) => {

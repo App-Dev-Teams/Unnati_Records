@@ -55,6 +55,9 @@ class _LoginPage1State extends State<LoginPage1> {
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),
@@ -77,9 +80,12 @@ class _LoginPage1State extends State<LoginPage1> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 5.h, width: double.infinity),
+                  SizedBox(height: 7.h, width: double.infinity),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       fixedSize: Size(200.w, 60.h),
                       backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                     ),

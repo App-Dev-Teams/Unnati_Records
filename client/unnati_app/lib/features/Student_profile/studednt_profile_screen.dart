@@ -16,59 +16,191 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
   String phone = "xxxxxxxxxxxx";
   String studentClass = "10";
   String school = "School Name";
+  List<String> schools = [];
+  List<int> selectClass = [5, 6, 7, 8, 9, 10, 11, 12];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSchools();
+  }
+
+  void _fetchSchools() async {
+    final fetchedSchools = await ApiService.getSchools();
+    if (!mounted) return;
+    setState(() {
+      schools = fetchedSchools;
+    });
+  }
 
   // opens dialog to edit profile details
-  void _editProfile() {
-    final phoneController = TextEditingController(text: phone);
-    final classController = TextEditingController(text: studentClass);
-    final schoolController = TextEditingController(text: school);
+  void _editProfile({
+    required String currentName,
+    required String currentPhone,
+    required String currentClass,
+    required String currentSchool,
+  }) {
+    final formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController(text: currentName);
+    final phoneController = TextEditingController(text: currentPhone);
+    int? selectedClass = int.tryParse(currentClass);
+
+    // Ensure selectedSchool is in the schools list, otherwise set to first available or current value.
+    String? selectedSchool = schools.contains(currentSchool)
+        ? currentSchool
+        : (schools.isNotEmpty ? schools.first : null);
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('Edit Profile'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Edit Profile'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Name is required';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'Name must be at least 3 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Phone number is required';
+                      }
+                      if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                        return 'Phone number must be 10 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    value: selectedClass,
+                    decoration: const InputDecoration(
+                      labelText: 'Class',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    items: selectClass.map((cls) {
+                      return DropdownMenuItem<int>(
+                        value: cls,
+                        child: Text(cls.toString()),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Class is required';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setDialogState(() {
+                        selectedClass = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedSchool,
+                    decoration: const InputDecoration(
+                      labelText: 'School',
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    items: schools.map((s) {
+                      return DropdownMenuItem<String>(value: s, child: Text(s));
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'School is required';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setDialogState(() {
+                        selectedSchool = value;
+                      });
+                    },
+                  ),
+                ],
               ),
-              TextField(
-                controller: classController,
-                decoration: const InputDecoration(
-                  labelText: 'Class',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              TextField(
-                controller: schoolController,
-                decoration: const InputDecoration(
-                  labelText: 'School',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: () async {
+                if (!(formKey.currentState?.validate() ?? false)) {
+                  return;
+                }
+
+                final newName = nameController.text.trim();
+                final newPhone = phoneController.text.trim();
+                final newClass = selectedClass?.toString() ?? currentClass;
+                final newSchool = selectedSchool ?? currentSchool;
+
+                final res = await ApiService.updateProfile(
+                  name: newName,
+                  phoneNo: newPhone,
+                  studentClass: newClass,
+                  school: newSchool,
+                );
+
+                if (!mounted) return;
+
+                if (res['success'] == true) {
+                  final updated = res['data'] as Map<String, dynamic>?;
+                  final updatedName = updated?['name']?.toString() ?? newName;
+                  final updatedPhone =
+                      updated?['phoneNo']?.toString() ?? newPhone;
+                  final updatedClass =
+                      updated?['studentClass']?.toString() ?? newClass;
+                  final updatedSchool =
+                      updated?['school']?.toString() ?? newSchool;
+
+                  setState(() {
+                    _name = updatedName;
+                    phone = updatedPhone;
+                    studentClass = updatedClass;
+                    school = updatedSchool;
+                  });
+
+                  Navigator.of(dialogContext).pop();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Profile updated')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(res['message'] ?? 'Update failed')),
+                  );
+                }
+              },
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () {
-              setState(() {
-                phone = phoneController.text;
-                studentClass = classController.text;
-                school = schoolController.text;
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Save', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
@@ -134,7 +266,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
             : 'Student';
 
         return Scaffold(
-          backgroundColor:  Colors.white,
+          backgroundColor: Colors.white,
 
           appBar: AppBar(
             elevation: 2,
@@ -148,7 +280,15 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
 
             // edit button
             actions: [
-              IconButton(icon: const Icon(Icons.edit), onPressed: _editProfile),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => _editProfile(
+                  currentName: name,
+                  currentPhone: phoneLocal,
+                  currentClass: classLocal,
+                  currentSchool: schoolLocal,
+                ),
+              ),
             ],
           ),
 

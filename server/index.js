@@ -10,6 +10,7 @@ const otpRoutes = require("./routes/otp.routes");
 const attendanceRouter = require('./routes/attendance.routes.js');
 const volunteerRouter = require('./routes/volunteer.routes.js');
 const doubtRouter = require('./routes/doubt.routes.js');
+const schoolRouter = require('./routes/school.routes.js');
 require("dotenv").config();
 
 
@@ -38,10 +39,11 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/volunteers", volunteerRouter);
 app.use('/api/doubts', doubtRouter);
+app.use("/api/schools",schoolRouter);
 
 //app.use("/api/otp", require("./routes/otp.routes"));
 
 //================SERVER======================
-app.listen(PORT , ()=>{
+app.listen(PORT ,'0.0.0.0',()=>{
     console.log(`server running at port ${PORT}`);
 })
