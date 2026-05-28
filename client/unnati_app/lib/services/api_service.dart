@@ -83,6 +83,36 @@ class ApiService {
     }
   }
 
+  static Future<void> clearRoleAndNotify() async {
+    try {
+      final prefs = await _preferences;
+      await prefs.remove('user_role');
+
+      final current = await getUserData();
+      if (current != null) {
+        final updated = Map<String, dynamic>.from(current);
+        updated.remove('role');
+        await saveUserData(updated);
+        if (!_userDataController.isClosed) _userDataController.add(updated);
+      } else {
+        if (!_userDataController.isClosed) _userDataController.add(null);
+      }
+      print('✅ ROLE CLEARED AND NOTIFIED');
+    } catch (e) {
+      print('❌ clearRoleAndNotify error: ${e.toString()}');
+    }
+  }
+
+  static Future<void> _handleAuthError(http.Response response) async {
+    try {
+      print('⚠️ AUTH ERROR (${response.statusCode}). Clearing auth state.');
+      await removeToken();
+      await clearRoleAndNotify();
+    } catch (e) {
+      print('❌ _handleAuthError failed: ${e.toString()}');
+    }
+  }
+
   static Future<Map<String, dynamic>> _handleResponse(
     http.Response response,
     String operation,
@@ -92,10 +122,30 @@ class ApiService {
       print('📥 $operation Response Body: ${response.body}');
 
       if (response.body.isEmpty) {
-        return {'success': false, 'message': 'Empty response from server'};
+        return {
+          'success': false,
+          'message': 'Empty response from server',
+          'statusCode': response.statusCode,
+        };
       }
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      // Handle auth errors centrally
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        print('❌ $operation AUTH ERROR: $errorMessage');
+        return {
+          'success': false,
+          'message': errorMessage,
+          'errors': data['errors'],
+          'statusCode': response.statusCode,
+        };
+      }
 
       // Treat any 2xx + success:true as successful
       if (response.statusCode >= 200 &&
@@ -125,6 +175,7 @@ class ApiService {
         return {
           'success': true,
           'message': data['message'] as String? ?? '$operation successful',
+          'statusCode': response.statusCode,
           'token': token,
           'data': data['data'],
         };
@@ -139,6 +190,7 @@ class ApiService {
           'success': false,
           'message': errorMessage,
           'errors': data['errors'],
+          'statusCode': response.statusCode,
         };
       }
     } on FormatException catch (e) {
@@ -146,10 +198,15 @@ class ApiService {
       return {
         'success': false,
         'message': 'Invalid response format from server',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       print('❌ $operation RESPONSE HANDLING ERROR: ${e.toString()}');
-      return {'success': false, 'message': 'Error processing server response'};
+      return {
+        'success': false,
+        'message': 'Error processing server response',
+        'statusCode': 0,
+      };
     }
   }
 
@@ -493,12 +550,27 @@ class ApiService {
           .timeout(_timeout);
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
       if (response.statusCode >= 200 &&
           response.statusCode < 300 &&
           data['success'] == true) {
         return {
           'success': true,
           'message': 'Doubt created successfully',
+          'statusCode': response.statusCode,
           'doubt': data['doubt'],
         };
       }
@@ -509,6 +581,7 @@ class ApiService {
             data['error'] as String? ??
             data['message'] as String? ??
             'Failed to create doubt',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       return {
@@ -525,6 +598,10 @@ class ApiService {
         .timeout(_timeout);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
     if (response.statusCode >= 200 &&
         response.statusCode < 300 &&
         data['success'] == true) {
@@ -546,6 +623,10 @@ class ApiService {
         .timeout(_timeout);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
     if (response.statusCode >= 200 &&
         response.statusCode < 300 &&
         data['success'] == true) {
@@ -560,6 +641,31 @@ class ApiService {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> getClosedDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch closed doubts',
+    );
+  }
+
   static Future<Map<String, dynamic>> getDoubtDetails(String doubtId) async {
     final headers = await _authHeaders();
     final response = await http
@@ -567,6 +673,10 @@ class ApiService {
         .timeout(_timeout);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
     if (response.statusCode >= 200 &&
         response.statusCode < 300 &&
         data['success'] == true) {
@@ -592,6 +702,10 @@ class ApiService {
         .timeout(_timeout);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
     if (response.statusCode >= 200 &&
         response.statusCode < 300 &&
         data['success'] == true) {
@@ -621,12 +735,27 @@ class ApiService {
           .timeout(_timeout);
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
       if (response.statusCode >= 200 &&
           response.statusCode < 300 &&
           data['success'] == true) {
         return {
           'success': true,
           'message': 'Message sent successfully',
+          'statusCode': response.statusCode,
           'data': data['message'],
         };
       }
@@ -637,6 +766,7 @@ class ApiService {
             data['error'] as String? ??
             data['message'] as String? ??
             'Failed to send message',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       return {
@@ -661,12 +791,27 @@ class ApiService {
           .timeout(_timeout);
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
       if (response.statusCode >= 200 &&
           response.statusCode < 300 &&
           data['success'] == true) {
         return {
           'success': true,
           'message': 'Reply sent successfully',
+          'statusCode': response.statusCode,
           'data': data['message'],
         };
       }
@@ -677,6 +822,7 @@ class ApiService {
             data['error'] as String? ??
             data['message'] as String? ??
             'Failed to send reply',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       return {
@@ -697,12 +843,27 @@ class ApiService {
           .timeout(_timeout);
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
       if (response.statusCode >= 200 &&
           response.statusCode < 300 &&
           data['success'] == true) {
         return {
           'success': true,
           'message': data['message'] ?? 'Doubt resolved successfully',
+          'statusCode': response.statusCode,
           'data': data['data'],
         };
       }
@@ -713,6 +874,7 @@ class ApiService {
             data['error'] as String? ??
             data['message'] as String? ??
             'Failed to resolve doubt',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       return {

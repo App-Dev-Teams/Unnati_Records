@@ -10,11 +10,13 @@ import 'package:unnati_app/models/doubt.dart';
 
 class DoubtListScreen extends ConsumerStatefulWidget {
   final bool showOpenDoubts;
+  final bool showClosedDoubts;
   final String title;
 
   const DoubtListScreen({
     super.key,
     this.showOpenDoubts = false,
+    this.showClosedDoubts = false,
     this.title = 'My Doubts',
   });
 
@@ -45,6 +47,10 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
       ref.invalidate(openDoubtsProvider);
       return;
     }
+    if (widget.showClosedDoubts) {
+      ref.invalidate(closedDoubtsProvider);
+      return;
+    }
     ref.invalidate(myDoubtsProvider);
   }
 
@@ -52,11 +58,13 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
   Widget build(BuildContext context) {
     final doubtsAsync = widget.showOpenDoubts
         ? ref.watch(openDoubtsProvider)
+        : widget.showClosedDoubts
+        ? ref.watch(closedDoubtsProvider)
         : ref.watch(myDoubtsProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      floatingActionButton: widget.showOpenDoubts
+      floatingActionButton: (widget.showOpenDoubts || widget.showClosedDoubts)
           ? null
           : FloatingActionButton.extended(
               onPressed: () async {

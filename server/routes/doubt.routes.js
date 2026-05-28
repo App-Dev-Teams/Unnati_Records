@@ -9,6 +9,7 @@ router.get('/mydoubts', requireLogin, doubtController.getmyDoubts);
 
 //routes for lead and admin 
 router.get('/open', requireLogin, doubtController.getOpenDoubts);
+router.get('/closed', requireLogin, doubtController.getClosedDoubts);
 
 router.get('/:id', requireLogin, doubtController.getDoubtDetails);
 router.get('/:id/messages', requireLogin, doubtController.getDoubtMessages);

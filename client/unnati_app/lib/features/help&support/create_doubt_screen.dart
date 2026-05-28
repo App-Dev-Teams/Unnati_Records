@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:unnati_app/services/api_service.dart';
 
@@ -14,13 +15,77 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
   final _descriptionController = TextEditingController();
   final _subjectController = TextEditingController();
   bool _isSubmitting = false;
+  String? _role;
+  StreamSubscription<Map<String, dynamic>?>? _userSub;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
     _subjectController.dispose();
+    _userSub?.cancel();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkRole();
+    _userSub = ApiService.userDataStream.listen((user) {
+      if (!mounted) return;
+      final role = user == null ? '' : (user['role'] as String? ?? '');
+      if (role != (_role ?? '')) {
+        setState(() => _role = role);
+        if (role != 'student') {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            showDialog<void>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Not allowed'),
+                content: const Text('Only students can create doubts.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      Navigator.of(context).maybePop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          });
+        }
+      }
+    });
+  }
+
+  Future<void> _checkRole() async {
+    final r = await ApiService.getRole();
+    if (!mounted) return;
+    setState(() => _role = r);
+    if ((_role ?? '') != 'student') {
+      // show message and close
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Not allowed'),
+            content: const Text('Only students can create doubts.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Navigator.of(context).maybePop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      });
+    }
   }
 
   Future<void> _submit() async {

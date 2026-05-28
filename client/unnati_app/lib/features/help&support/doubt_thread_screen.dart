@@ -25,13 +25,48 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
   Timer? _autoRefreshTimer;
   bool _isSending = false;
   bool _isResolving = false;
+  String? _role;
+  String? _userId;
+  StreamSubscription<Map<String, dynamic>?>? _userSub;
 
   @override
   void initState() {
     super.initState();
+    _loadAuthContext();
+    _userSub = ApiService.userDataStream.listen((user) {
+      if (!mounted) return;
+      setState(() {
+        _userId = user == null
+            ? null
+            : (user['id']?.toString() ?? user['_id']?.toString());
+        _role = user == null ? '' : (user['role'] as String? ?? '');
+      });
+
+      // If this screen is lead-only and the role was revoked, close it.
+      if (widget.isLeadView && !(_role == 'lead' || _role == 'admin')) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Permission revoked.')));
+          Navigator.of(context).maybePop();
+        }
+      }
+    });
     _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       if (!mounted) return;
       _refresh();
+    });
+  }
+
+  Future<void> _loadAuthContext() async {
+    final user = await ApiService.getUserData();
+    final role = await ApiService.getRole();
+    if (!mounted) return;
+    setState(() {
+      _userId = user == null
+          ? null
+          : (user['id']?.toString() ?? user['_id']?.toString());
+      _role = role;
     });
   }
 
@@ -39,6 +74,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
   void dispose() {
     _autoRefreshTimer?.cancel();
     _messageController.dispose();
+    _userSub?.cancel();
     super.dispose();
   }
 
@@ -131,6 +167,30 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
       appBar: AppBar(title: const Text('Doubt Thread')),
       body: detailsAsync.when(
         data: (doubt) {
+          // If current user is a student and does not own this doubt, block access
+          if ((_role ?? '') == 'student' &&
+              _userId != null &&
+              doubt.studentId != null &&
+              doubt.studentId != _userId) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'You do not have permission to view this doubt.',
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      child: const Text('Go Back'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
           return messagesAsync.when(
             data: (messages) {
               return RefreshIndicator(

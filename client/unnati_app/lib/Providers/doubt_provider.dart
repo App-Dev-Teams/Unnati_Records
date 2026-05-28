@@ -12,6 +12,13 @@ final openDoubtsProvider = FutureProvider.autoDispose<List<Doubt>>((ref) async {
   return doubts.map(Doubt.fromJson).toList();
 });
 
+final closedDoubtsProvider = FutureProvider.autoDispose<List<Doubt>>((
+  ref,
+) async {
+  final doubts = await ApiService.getClosedDoubts();
+  return doubts.map(Doubt.fromJson).toList();
+});
+
 final doubtDetailsProvider = FutureProvider.autoDispose.family<Doubt, String>((
   ref,
   doubtId,
