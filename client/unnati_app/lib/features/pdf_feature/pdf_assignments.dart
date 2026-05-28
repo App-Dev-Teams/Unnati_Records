@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 
 class PdfAssignments extends StatefulWidget {
@@ -14,7 +16,16 @@ class _PdfAssignmentsState extends State<PdfAssignments> {
     return Scaffold(
       appBar: PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "Assignments"),
       body: Center(
-        child: Text("Stay Tuned for quizzes and assignments!!"),
+        child:Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 200,
+            width: 200,
+            child: Lottie.asset("assets/lottie/empty.json")),
+          Text('No assignments available',style: GoogleFonts.oswald(fontSize: 20,fontWeight: FontWeight.bold),),
+        ],
+      ),
       ),
     );
   }}
