@@ -3,6 +3,7 @@ const ImageKit = require('imagekit');
 const dotenv= require('dotenv');
 dotenv.config();
 
+
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
@@ -12,7 +13,7 @@ const imagekit = new ImageKit({
 
 const getImageKitAuth = (req, res) => {
   try {
-    const authParams = imagekit.getAuthenticationParameters();
+      const authParams = imagekit.getAuthenticationParameters();
 
     res.status(200).json(authParams);
   } catch (error) {
