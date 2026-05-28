@@ -1,26 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
+import 'package:unnati_app/features/help&support/doubt_list_screen.dart';
+import 'package:unnati_app/features/help&support/lead_open_doubts_screen.dart';
+import 'package:unnati_app/services/api_service.dart';
 
-class HelpSupport extends StatelessWidget {
+class HelpSupport extends StatefulWidget {
   const HelpSupport({super.key});
 
   @override
+  State<HelpSupport> createState() => _HelpSupportState();
+}
+
+class _HelpSupportState extends State<HelpSupport> {
+  String? _role;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRole();
+  }
+
+  Future<void> _loadRole() async {
+    final role = await ApiService.getRole();
+    if (!mounted) return;
+    setState(() {
+      _role = role;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isStudent = (_role ?? 'student') == 'student';
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.transparent,),
-      body: Center(child: 
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(title: const Text('Help & Support')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          SizedBox(
-            height: 200,
-            width: 200,
-            child: Lottie.asset("assets/lottie/under_maintenance.json")),
-          Text('Under Maintenance !',style: GoogleFonts.oswald(fontSize: 20,fontWeight: FontWeight.bold),),
+          Text(
+            'Doubt Support',
+            style: GoogleFonts.oswald(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text('Ask, track, and resolve learning doubts from one place.'),
+          const SizedBox(height: 18),
+          _SupportCard(
+            title: 'My Doubts',
+            subtitle: 'Create and track your doubt threads.',
+            icon: Icons.question_answer_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const DoubtListScreen(title: 'My Doubts'),
+                ),
+              );
+            },
+          ),
+          if (!isStudent)
+            _SupportCard(
+              title: 'Open Doubts',
+              subtitle: 'Respond to student doubts and resolve them.',
+              icon: Icons.support_agent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LeadOpenDoubtsScreen(),
+                  ),
+                );
+              },
+            ),
         ],
-      )),
+      ),
+    );
+  }
+}
+
+class _SupportCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _SupportCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 2,
+      child: ListTile(
+        onTap: onTap,
+        leading: Icon(icon),
+        title: Text(
+          title,
+          style: GoogleFonts.oswald(fontSize: 20, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.arrow_forward_ios),
+      ),
     );
   }
 }

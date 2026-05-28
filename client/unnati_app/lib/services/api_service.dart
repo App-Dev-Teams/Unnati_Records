@@ -464,6 +464,264 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, String>> _authHeaders() async {
+    final headers = Map<String, String>.from(_headers);
+    final token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
+
+  static Future<Map<String, dynamic>> createDoubt({
+    required String title,
+    required String description,
+    required String subject,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/createdoubt'),
+            headers: headers,
+            body: json.encode({
+              'title': title,
+              'description': description,
+              'subject': subject,
+            }),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Doubt created successfully',
+          'doubt': data['doubt'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to create doubt',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to create doubt. Please try again.',
+      };
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getMyDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/mydoubts'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch doubts',
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getOpenDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/open'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch open doubts',
+    );
+  }
+
+  static Future<Map<String, dynamic>> getDoubtDetails(String doubtId) async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      return (data['data'] as Map<String, dynamic>? ?? {});
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch doubt details',
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getDoubtMessages(
+    String doubtId,
+  ) async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(
+          Uri.parse('$coreBaseUrl/doubts/$doubtId/messages'),
+          headers: headers,
+        )
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final messages = (data['data'] as List? ?? []);
+      return messages.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch messages',
+    );
+  }
+
+  static Future<Map<String, dynamic>> addDoubtMessage({
+    required String doubtId,
+    required String message,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/messages'),
+            headers: headers,
+            body: json.encode({'message': message}),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Message sent successfully',
+          'data': data['message'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to send message',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to send message. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> addDoubtReply({
+    required String doubtId,
+    required String message,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/reply'),
+            headers: headers,
+            body: json.encode({'message': message}),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Reply sent successfully',
+          'data': data['message'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to send reply',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to send reply. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> resolveDoubt(String doubtId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .put(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/resolve'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Doubt resolved successfully',
+          'data': data['data'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to resolve doubt',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to resolve doubt. Please try again.',
+      };
+    }
+  }
+
   // ================== FOLDER / FILE APIs (Volunteer resources) ==================
 
   /// Fetch all folders (courses/subjects)
