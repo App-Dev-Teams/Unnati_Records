@@ -30,19 +30,19 @@ class PdfAppBar extends StatelessWidget implements PreferredSizeWidget {
        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 18.r,
+            radius: 18,
             backgroundImage:
                 const AssetImage("assets/images/unnatiLogoColourFix.png"),
             foregroundImage: AssetImage("assets/images/$imageName"),
           ),
-          SizedBox(width: 10.w),
+          SizedBox(width: 10),
           Flexible(
             child: Text(
               name,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.oswald(
                 color: Colors.white,
-                fontSize: 20.sp,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
