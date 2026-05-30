@@ -211,7 +211,4 @@ class DownloadService {
     return '${fileName}_$timestamp';
   }
 
-  /// Open a file (requires open_file package - not implemented here)
-  /// You can use the open_file package from pubspec.yaml for this
-  /// Example: await OpenFile.open(filePath);
 }
