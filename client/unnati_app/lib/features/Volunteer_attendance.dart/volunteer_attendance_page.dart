@@ -163,6 +163,13 @@ class _VolunteerAttendancePageState
                       firstDay: DateTime.utc(2025),
                       lastDay: DateTime(2030),
 
+                      enabledDayPredicate: (day){
+                        final today = DateTime.now();
+                        final normalizedToday = DateTime(today.year,today.month,today.day+1);
+
+                        return !day.isAfter(normalizedToday);
+                      },
+
                       selectedDayPredicate: (day) {
                         return isSameDay(_selectedDay, day);
                       },
