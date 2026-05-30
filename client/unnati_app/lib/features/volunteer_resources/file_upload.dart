@@ -34,6 +34,8 @@ class FileUploadPage extends ConsumerStatefulWidget {
 }
 
 class _FileUploadPageState extends ConsumerState<FileUploadPage> {
+  bool hasResourcePermission = false;
+  bool isLoadingPermission = true;
 
   @override
   void initState() {
@@ -60,7 +62,28 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
             );
       }
     });
+    checkPermission();
   }
+
+  Future<void> checkPermission() async {
+  try {
+  final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
+
+    if (!mounted) return;
+
+    setState(() {
+      hasResourcePermission = allowed;
+      isLoadingPermission = false;
+    });
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      hasResourcePermission = false;
+      isLoadingPermission = false;
+    });
+  }
+}
 
   //bottom sheet function
   void _showAddFileSheet(BuildContext scaffoldContext, WidgetRef ref) {
@@ -220,6 +243,13 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
     );
 
     final files = currentSubject.files;
+    if (isLoadingPermission) {
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
@@ -234,12 +264,14 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
         ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        // + button
-        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () => _showAddFileSheet(context, ref),
-      ),
+      floatingActionButton: !hasResourcePermission
+          ? null
+          : FloatingActionButton(
+              // + button
+              backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+              child: const Icon(Icons.add, color: Colors.white),
+              onPressed: () => _showAddFileSheet(context, ref),
+            ),
 
       body: files.isEmpty
           ? Center(
@@ -355,6 +387,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               //EDIT
+                            if(hasResourcePermission)
                               IconButton(
                                 icon: const Icon(Icons.edit, size: 18),
                                 onPressed: () async{
@@ -423,12 +456,13 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                               ),
 
                               //DELETE
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  size: 18,
-                                  color: Colors.red,
-                                ),
+                              if(hasResourcePermission)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
                                 onPressed: () {
                                   showDialog(
                                     context: context,
