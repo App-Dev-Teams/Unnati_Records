@@ -7,7 +7,7 @@ const groups = {
 
   ATTENDANCE_MANAGER: [
     "MARK_ATTENDANCE",
-    "UPDATE_ATTENDANCE"
+    //"UPDATE_ATTENDANCE"
   ],
 
   RESOURCE_MANAGER: [
@@ -57,7 +57,7 @@ const rolePermissions = {
   ],
 
   "Akshar Lead": [
-    //...groups.ATTENDANCE_MANAGER,
+    ...groups.ATTENDANCE_MANAGER,
     ...groups.RESOURCE_MANAGER
   ],
 

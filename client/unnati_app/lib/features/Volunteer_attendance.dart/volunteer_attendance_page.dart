@@ -42,6 +42,7 @@ class _VolunteerAttendancePageState
     final allowed = await ApiService.hasPermission(
       "MARK_ATTENDANCE",
     );
+    print("Allowed = $allowed");
 
     setState(() {
       hasAttendancePermission = allowed;

@@ -72,6 +72,9 @@ static Future<List<String>> getPermissions() async {
 
 static Future<bool> hasPermission(String permission) async {
   final permissions = await getPermissions();
+  print("Stored Permissions: $permissions");
+  print("Checking Permission: $permission");
+  
   return permissions.contains(permission);
 }
 //-----------------------------
@@ -183,9 +186,12 @@ static Future<bool> hasPermission(String permission) async {
 
         // Save role if present in response data
         final responseData = data['data'] as Map<String, dynamic>?;
+        print("responseData = $responseData");
+
         
         //permission save
         final permissions = responseData?['permissions'];
+        print("permissions✅ = $permissions");
         if (permissions != null && permissions is List) {
           await savePermissions(permissions);
           print("✅ PERMISSIONS SAVED: $permissions");

@@ -140,6 +140,9 @@ const login = async (req, res) => {
       { expiresIn: "14d" }
     );
 
+    console.log("Role:", saveduser.role);
+    console.log("Permissions:", rolePermissions[saveduser.role]);
+
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
