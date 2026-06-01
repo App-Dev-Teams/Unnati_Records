@@ -25,7 +25,8 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
   Timer? _autoRefreshTimer;
   bool _isSending = false;
   bool _isResolving = false;
-  String? _role;
+  bool _isStudent = false;
+  bool _canManageDoubts = false;
   String? _userId;
   StreamSubscription<Map<String, dynamic>?>? _userSub;
 
@@ -35,15 +36,19 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     _loadAuthContext();
     _userSub = ApiService.userDataStream.listen((user) {
       if (!mounted) return;
+      final permissions = ApiService.permissionsFromUserData(user);
       setState(() {
         _userId = user == null
             ? null
             : (user['id']?.toString() ?? user['_id']?.toString());
-        _role = user == null ? '' : (user['role'] as String? ?? '');
+        _isStudent = ApiService.isStudentUserData(user);
+        _canManageDoubts =
+            permissions.contains('REPLY_DOUBTS') ||
+            permissions.contains('RESOLVE_DOUBTS');
       });
 
-      // If this screen is lead-only and the role was revoked, close it.
-      if (widget.isLeadView && !(_role == 'lead' || _role == 'admin')) {
+      // If this screen is lead-only and doubts permissions were revoked, close it.
+      if (widget.isLeadView && !_canManageDoubts) {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
@@ -60,13 +65,16 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
 
   Future<void> _loadAuthContext() async {
     final user = await ApiService.getUserData();
-    final role = await ApiService.getRole();
     if (!mounted) return;
+    final permissions = ApiService.permissionsFromUserData(user);
     setState(() {
       _userId = user == null
           ? null
           : (user['id']?.toString() ?? user['_id']?.toString());
-      _role = role;
+      _isStudent = ApiService.isStudentUserData(user);
+      _canManageDoubts =
+          permissions.contains('REPLY_DOUBTS') ||
+          permissions.contains('RESOLVE_DOUBTS');
     });
   }
 
@@ -99,6 +107,14 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     setState(() {
       _isSending = true;
     });
+
+    if (widget.isLeadView && !_canManageDoubts) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Permission revoked.')));
+      Navigator.of(context).maybePop();
+      return;
+    }
 
     final result = widget.isLeadView
         ? await ApiService.addDoubtReply(doubtId: widget.doubtId, message: text)
@@ -168,7 +184,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
       body: detailsAsync.when(
         data: (doubt) {
           // If current user is a student and does not own this doubt, block access
-          if ((_role ?? '') == 'student' &&
+          if (_isStudent &&
               _userId != null &&
               doubt.studentId != null &&
               doubt.studentId != _userId) {
@@ -199,7 +215,8 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                   children: [
                     _DoubtHeader(
                       doubt: doubt,
-                      showResolve: widget.isLeadView && doubt.isOpen,
+                      showResolve:
+                          widget.isLeadView && _canManageDoubts && doubt.isOpen,
                       isResolving: _isResolving,
                       onResolve: _resolveDoubt,
                     ),
