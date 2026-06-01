@@ -254,31 +254,30 @@ class AdminApiService {
 
   static Future<Map<String, List<Map<String, dynamic>>>> fetchVolunteersByProgram() async {
     try {
-      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        final data = jsonDecode(res.body);
-        if (data is Map && data['data'] != null) {
-          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
-          
-          // Group volunteers by program
-          Map<String, List<Map<String, dynamic>>> grouped = {
-            'DigiXplore': [],
-            'Netritva': [],
-            'Akshar': [],
-          };
-          
-          for (var volunteer in allVolunteers) {
-            final program = volunteer['program'] ?? 'DigiXplore';
-            if (grouped.containsKey(program)) {
-              grouped[program]!.add(volunteer);
-            }
+      // Group volunteers by program
+      Map<String, List<Map<String, dynamic>>> grouped = {
+        'DigiXplore': [],
+        'Netritva': [],
+        'Akshar': [],
+      };
+      
+      // Fetch volunteers for each program separately
+      final programs = ['DigiXplore', 'Netritva', 'Akshar'];
+      for (var program in programs) {
+        final uri = Uri.parse('$coreBaseUrl/volunteers/program/get-volunteers')
+            .replace(queryParameters: {'program': program});
+        
+        final res = await http.get(uri);
+        
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          final data = jsonDecode(res.body);
+          if (data is Map && data['users'] != null && data['users'] is List) {
+            grouped[program] = List<Map<String, dynamic>>.from(data['users']);
           }
-          
-          return grouped;
         }
-        return {'DigiXplore': [], 'Netritva': [], 'Akshar': []};
       }
-      throw Exception('Failed to fetch volunteers: ${res.body}');
+      
+      return grouped;
     } catch (e) {
       throw Exception('Failed to fetch volunteers: $e');
     }
@@ -316,22 +315,27 @@ class AdminApiService {
 
   static Future<List<Map<String, dynamic>>> fetchAssignedLeads() async {
     try {
-      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        final data = jsonDecode(res.body);
-        if (data is Map && data['data'] != null) {
-          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
-          
-         
-          List<Map<String, dynamic>> assignedLeads = allVolunteers
-              .where((v) => (v['role'] ?? '').toString().contains('Lead'))
-              .toList();
-          
-          return assignedLeads;
+      // Use the same method as fetchVolunteersByProgram to get program info
+      final volunteersGrouped = await fetchVolunteersByProgram();
+      
+      List<Map<String, dynamic>> allLeads = [];
+      
+      // Go through each program and filter for leads
+      for (var program in volunteersGrouped.keys) {
+        final volunteers = volunteersGrouped[program] ?? [];
+        final leads = volunteers
+            .where((v) => (v['role'] ?? '').toString().contains('Lead'))
+            .toList();
+        
+        // Ensure program field is set correctly
+        for (var lead in leads) {
+          lead['program'] = program;
         }
-        return [];
+        
+        allLeads.addAll(leads);
       }
-      throw Exception('Failed to fetch assigned leads: ${res.body}');
+      
+      return allLeads;
     } catch (e) {
       throw Exception('Failed to fetch assigned leads: $e');
     }

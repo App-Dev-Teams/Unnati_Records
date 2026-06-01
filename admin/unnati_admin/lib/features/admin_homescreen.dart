@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/features/adminappbar.dart';
 import 'package:unnati_admin/features/assign_leads.dart';
 import 'package:unnati_admin/features/file_upload_admin.dart';
 import 'package:unnati_admin/features/leadcard.dart';
+import 'package:unnati_admin/features/view_volunteers.dart';
 import 'package:unnati_admin/services/api_service.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -47,22 +49,25 @@ class _AdminHomePageState extends State<AdminHomePage> {
       setState(() {
         _isLoadingLeads = true;
       });
-      final volunteersGrouped = await AdminApiService.fetchVolunteersByProgram();
+      final assignedLeads = await AdminApiService.fetchAssignedLeads();
       
-      Map<String, List<Map<String, dynamic>>> grouped = {};
-      for (var program in programs) {
-        final volunteers = volunteersGrouped[program] ?? [];
-        grouped[program] = volunteers
-            .where((v) => (v['role'] ?? '').toString().contains('Lead'))
-            .map((v) {
-              return {
-                'name': v['name'] ?? 'Unknown',
-                'role': v['role'] ?? 'Volunteer',
-                'id': v['_id'] ?? '',
-                'program': program,
-              };
-            })
-            .toList();
+      // Group assigned leads by program
+      Map<String, List<Map<String, dynamic>>> grouped = {
+        'DigiXplore': [],
+        'Netritva': [],
+        'Akshar': [],
+      };
+      
+      for (var lead in assignedLeads) {
+        final program = lead['program'] ?? 'DigiXplore';
+        if (grouped.containsKey(program)) {
+          grouped[program]!.add({
+            'name': lead['name'] ?? 'Unknown',
+            'role': lead['role'] ?? 'Volunteer',
+            'id': lead['_id'] ?? '',
+            'program': program,
+          });
+        }
       }
 
       if (mounted) {
@@ -237,36 +242,37 @@ class _AdminHomePageState extends State<AdminHomePage> {
       ),
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Admin Dashboard",
               style: GoogleFonts.oswald(
-                fontSize: 28,
+                fontSize: 28.sp,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
             ),
 
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
 
             Text(
               "Manage volunteers and leads",
               style: GoogleFonts.nunito(
                 color: Colors.white70,
+                fontSize: 14.sp,
               ),
             ),
 
-            const SizedBox(height: 28),
+            SizedBox(height: 28.h),
 
           
             Row(
               children: [
                 SizedBox(
-                  height: 180,
-                  width: MediaQuery.of(context).size.width / 2 - 30 ,
+                  height: 180.h,
+                  width: MediaQuery.of(context).size.width / 2 - 30.w,
                   child: InkWell(
                     onTap: (){
                       Navigator.push( context, MaterialPageRoute(builder: (context) => const AdminFileUploadPage(),) );
@@ -278,10 +284,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
+                SizedBox(width: 20.w),
                 SizedBox(
-                  height: 180,
-                  width: MediaQuery.of(context).size.width / 2 - 30 ,
+                  height: 180.h,
+                  width: MediaQuery.of(context).size.width / 2 - 30.w,
                   child: InkWell(
                     onTap: (){
                       Navigator.push( context, MaterialPageRoute(builder: (context) =>  AssignLeadsPage(),) );
@@ -296,18 +302,35 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ],
             ),
 
-            const SizedBox(height: 40),
+            SizedBox(height: 20.h),
+
+            SizedBox(
+              height: 180.h,
+              width: double.infinity,
+              child: InkWell(
+                onTap: (){
+                  Navigator.push( context, MaterialPageRoute(builder: (context) => const ViewVolunteersPage(),) );
+                },
+                child: _AdminActionCard(
+                  icon: Icons.people_outline,
+                  title: "View Unnati Volunteers",
+                  subtitle: "Browse all volunteers and their details",
+                ),
+              ),
+            ),
+
+            SizedBox(height: 40.h),
 
             Text(
               "Current Leads",
               style: GoogleFonts.oswald(
-                fontSize: 22,
+                fontSize: 22.sp,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             _isLoadingLeads
                 ? const Center(child: CircularProgressIndicator())
@@ -327,10 +350,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             },
                             child: Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(255, 9, 75, 128),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.w),
                                 border: Border.all(color: Colors.white10),
                               ),
                               child: Row(
@@ -341,8 +364,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                       Icon(
                                         isExpanded ? Icons.expand_less : Icons.expand_more,
                                         color: Colors.white,
+                                        size: 20.w,
                                       ),
-                                      const SizedBox(width: 12),
+                                      SizedBox(width: 12.w),
                                       Text(
                                         program,
                                         style: GoogleFonts.oswald(

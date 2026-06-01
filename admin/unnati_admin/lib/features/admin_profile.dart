@@ -130,14 +130,14 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
           'Admin Profile',
           style: GoogleFonts.oswald(
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 24.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
           if (!_isEditing)
             IconButton(
-              icon: const Icon(Icons.edit, color: Colors.lightBlueAccent),
+              icon: Icon(Icons.edit, color: Colors.lightBlueAccent, size: 22.w),
               onPressed: () {
                 setState(() {
                   _isEditing = true;
@@ -148,7 +148,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.red),
+                  icon: Icon(Icons.close, color: Colors.red, size: 22.w),
                   onPressed: () {
                     setState(() {
                       _isEditing = false;
@@ -157,7 +157,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.check, color: Colors.green),
+                  icon: Icon(Icons.check, color: Colors.green, size: 22.w),
                   onPressed: _saveChanges,
                 ),
               ],
