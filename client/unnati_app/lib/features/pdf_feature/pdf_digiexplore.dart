@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 import 'package:unnati_app/components/pdf_components/pdf_viewer_page.dart';
+import 'package:unnati_app/components/pdf_components/download_button.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/Providers/download_provider.dart';
 
-class PdfDxscreen extends StatefulWidget {
+class PdfDxscreen extends ConsumerStatefulWidget {
   const PdfDxscreen({super.key});
 
   @override
-  State<PdfDxscreen> createState() => _PdfDxscreenState();
+  ConsumerState<PdfDxscreen> createState() => _PdfDxscreenState();
 }
 
-class _PdfDxscreenState extends State<PdfDxscreen> {
+class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
   bool isLoading = true;
   List<Map<String, dynamic>> folders = [];
   final Map<String, List<Map<String, dynamic>>> folderFiles = {};
@@ -52,7 +55,7 @@ class _PdfDxscreenState extends State<PdfDxscreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load DigiExplore data: $e')),
+        SnackBar(content: Text('Failed to load DigiXplore data: $e')),
       );
     } finally {
       if (mounted) {
@@ -98,6 +101,7 @@ class _PdfDxscreenState extends State<PdfDxscreen> {
 
   Widget _buildFileTile(Map<String, dynamic> file) {
     final title = (file['displayName'] ?? 'Untitled').toString();
+    final link = (file['link'] ?? '').toString();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -158,6 +162,32 @@ class _PdfDxscreenState extends State<PdfDxscreen> {
                   ],
                 ),
               ),
+              // Download Button
+              DownloadButton(
+                fileUrl: link,
+                fileName: title,
+                fileType: 'pdf',
+                onDownloadComplete: (downloadPdf) {
+                  ref.read(dP.notifier).addDownload(downloadPdf);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$title downloaded successfully!'),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                onError: (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Download failed: $error'),
+                      backgroundColor: Colors.red,
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
               const Icon(
                 Icons.chevron_right_rounded,
                 color: Color(0xFF94A3B8),
@@ -275,7 +305,7 @@ class _PdfDxscreenState extends State<PdfDxscreen> {
       backgroundColor: const Color(0xFFF5F7FB),
       appBar: PdfAppBar(
         imageName: 'unnatiLogoColourFix.png',
-        name: 'DigiExplore Syllabus',
+        name: 'DigiXplore Syllabus',
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -334,7 +364,7 @@ class _PdfDxscreenState extends State<PdfDxscreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'DigiExplore Syllabus',
+                                        'Digixplore Syllabus',
                                         style: GoogleFonts.oswald(
                                           color: Colors.white,
                                           fontSize: 28,

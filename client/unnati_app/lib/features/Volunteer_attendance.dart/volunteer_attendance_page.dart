@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provider.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_api_provider.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/search_volunteer.dart';
+import 'package:unnati_app/features/Volunteer_attendance.dart/self_attendance_page.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
+import 'package:unnati_app/services/api_service.dart';
 
 class VolunteerAttendancePage extends ConsumerStatefulWidget {
   const VolunteerAttendancePage({super.key});
@@ -19,12 +22,32 @@ class _VolunteerAttendancePageState
     extends ConsumerState<VolunteerAttendancePage> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
+  bool hasAttendancePermission = false;
+  bool isLoadingPermission = true;
 
   TextEditingController namecontroller = TextEditingController();
 
   // normalize date (must match provider)
   DateTime _normalize(DateTime date) {
     return DateTime(date.year, date.month, date.day);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkPermission();
+  }
+
+  Future<void> checkPermission() async {
+    final allowed = await ApiService.hasPermission(
+      "MARK_ATTENDANCE",
+    );
+    print("Allowed = $allowed");
+
+    setState(() {
+      hasAttendancePermission = allowed;
+      isLoadingPermission = false;
+    });
   }
 
   // show dialog for marked attendance
@@ -130,7 +153,16 @@ class _VolunteerAttendancePageState
   Widget build(BuildContext context) {
     //final attendanceData = ref.watch(attendanceProvider);
 
+    if (isLoadingPermission) {
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
     return Scaffold(
+      
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
@@ -141,7 +173,52 @@ class _VolunteerAttendancePageState
         automaticallyImplyLeading: true,
       ),
 
-      body: GestureDetector(
+      body:!hasAttendancePermission
+      ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.lock,
+              size: 70,
+              color: Colors.grey,
+            ),
+
+             SizedBox(height: 10.h),
+
+            const Text(
+              "You don't have access to mark attendance",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+             SizedBox(height: 10.h),
+
+            TextButton(
+              onPressed: () async {
+                final userData = await ApiService.getUserData();
+                print("User Data: $userData");
+                final userId = userData?["id"];
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    
+                    builder: (_) =>
+                        SelfAttendancePage(userId: userId??' ',)
+                  ),
+                );
+              },
+              child: const Text(
+                "View Your Attendance",
+              ),
+            )
+          ],
+        ),
+      )
+      :GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         behavior: HitTestBehavior.opaque,
         child: SingleChildScrollView(
@@ -162,6 +239,13 @@ class _VolunteerAttendancePageState
                       focusedDay: _focusedDay,
                       firstDay: DateTime.utc(2025),
                       lastDay: DateTime(2030),
+
+                      enabledDayPredicate: (day){
+                        final today = DateTime.now();
+                        final normalizedToday = DateTime(today.year,today.month,today.day+1);
+
+                        return !day.isAfter(normalizedToday);
+                      },
 
                       selectedDayPredicate: (day) {
                         return isSameDay(_selectedDay, day);

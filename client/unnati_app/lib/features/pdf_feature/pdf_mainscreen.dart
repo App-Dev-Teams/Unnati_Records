@@ -19,7 +19,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "Utkarsh's Resources"), // to be replaced by backend username 
+      appBar: PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "Resources"), // to be replaced by backend username 
       backgroundColor: Colors.white, 
       body: SafeArea(
         child: Center(
@@ -35,7 +35,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
                     MaterialPageRoute(builder: (_) => PdfDxscreen()),
                   );
                 },
-              child:  PdfCards(lottiePath: "assets/lottie/Exams.json", title: "DigiExplore Syllabus", Height: 220.h, width: 350.h, isLarge: true,),),
+              child:  PdfCards(lottiePath: "assets/lottie/Exams.json", title: "DigiXplore Syllabus", Height: 220.h, width: 350.h, isLarge: true,),),
               SizedBox(height: 20.h),
              
               Row(

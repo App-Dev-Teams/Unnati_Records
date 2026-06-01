@@ -15,6 +15,8 @@ class VolunteerResourcesPage extends ConsumerStatefulWidget {
 }
 
 class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage> {
+  bool hasResourcePermission = false;
+  bool isLoadingPermission = true;
   
   @override
   void initState() {
@@ -25,8 +27,29 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
         .read(subjectProvider.notifier)
         .loadSubjects();
     });
+    checkPermission();
   }
 
+  Future<void> checkPermission() async {
+  try {
+  final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
+
+    if (!mounted) return;
+
+    setState(() {
+      hasResourcePermission = allowed;
+      isLoadingPermission = false;
+    });
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      hasResourcePermission = false;
+      isLoadingPermission = false;
+    });
+  }
+}
+  
 
   void _showAddSubjectSheet(BuildContext context, WidgetRef ref) {
     final subjectController = TextEditingController();
@@ -187,6 +210,13 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
   @override
   Widget build(BuildContext context) {
     final subjects = ref.watch(subjectProvider); //watch changes
+    if (isLoadingPermission) {
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
@@ -203,8 +233,11 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
         ),
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
       ),
-
-      floatingActionButton: FloatingActionButton(
+      
+      floatingActionButton:
+      !hasResourcePermission
+      ? null    
+      : FloatingActionButton(
         elevation: 2,
         onPressed: () => _showAddSubjectSheet(context, ref),
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
@@ -294,13 +327,14 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 //edit
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.edit,
-                                    color: Colors.white70,
-                                    size: 18.sp,
-                                  ),
-                                  onPressed: () {
+                                if(hasResourcePermission)
+                                 IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Colors.white70,
+                                          size: 18.sp,
+                                        ),
+                                  onPressed:() {
                                     final subjectController =
                                         TextEditingController(
                                           text: subject.name,
@@ -455,6 +489,7 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                                 ),
 
                                 //DELETE
+                              if(hasResourcePermission)
                                 IconButton(
                                   icon: Icon(
                                     Icons.delete,

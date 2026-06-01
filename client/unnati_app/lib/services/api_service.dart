@@ -56,6 +56,29 @@ class ApiService {
     }
   }
 
+//all about permissions-----------
+  static Future<void> savePermissions(List permissions) async {
+  final prefs = await _preferences;
+  await prefs.setStringList(
+    'user_permissions',
+    permissions.map((e) => e.toString()).toList(),
+  );
+}
+
+static Future<List<String>> getPermissions() async {
+  final prefs = await _preferences;
+  return prefs.getStringList('user_permissions') ?? [];
+}
+
+static Future<bool> hasPermission(String permission) async {
+  final permissions = await getPermissions();
+  print("Stored Permissions: $permissions");
+  print("Checking Permission: $permission");
+  
+  return permissions.contains(permission);
+}
+//-----------------------------
+
   static Future<void> saveUserData(Map<String, dynamic> user) async {
     final prefs = await _preferences;
     try {
@@ -83,6 +106,36 @@ class ApiService {
     }
   }
 
+  static Future<void> clearRoleAndNotify() async {
+    try {
+      final prefs = await _preferences;
+      await prefs.remove('user_role');
+
+      final current = await getUserData();
+      if (current != null) {
+        final updated = Map<String, dynamic>.from(current);
+        updated.remove('role');
+        await saveUserData(updated);
+        if (!_userDataController.isClosed) _userDataController.add(updated);
+      } else {
+        if (!_userDataController.isClosed) _userDataController.add(null);
+      }
+      print('✅ ROLE CLEARED AND NOTIFIED');
+    } catch (e) {
+      print('❌ clearRoleAndNotify error: ${e.toString()}');
+    }
+  }
+
+  static Future<void> _handleAuthError(http.Response response) async {
+    try {
+      print('⚠️ AUTH ERROR (${response.statusCode}). Clearing auth state.');
+      await removeToken();
+      await clearRoleAndNotify();
+    } catch (e) {
+      print('❌ _handleAuthError failed: ${e.toString()}');
+    }
+  }
+
   static Future<Map<String, dynamic>> _handleResponse(
     http.Response response,
     String operation,
@@ -92,10 +145,30 @@ class ApiService {
       print('📥 $operation Response Body: ${response.body}');
 
       if (response.body.isEmpty) {
-        return {'success': false, 'message': 'Empty response from server'};
+        return {
+          'success': false,
+          'message': 'Empty response from server',
+          'statusCode': response.statusCode,
+        };
       }
 
       final data = json.decode(response.body) as Map<String, dynamic>;
+
+      // Handle auth errors centrally
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        print('❌ $operation AUTH ERROR: $errorMessage');
+        return {
+          'success': false,
+          'message': errorMessage,
+          'errors': data['errors'],
+          'statusCode': response.statusCode,
+        };
+      }
 
       // Treat any 2xx + success:true as successful
       if (response.statusCode >= 200 &&
@@ -113,6 +186,17 @@ class ApiService {
 
         // Save role if present in response data
         final responseData = data['data'] as Map<String, dynamic>?;
+        print("responseData = $responseData");
+
+        
+        //permission save
+        final permissions = responseData?['permissions'];
+        print("permissions✅ = $permissions");
+        if (permissions != null && permissions is List) {
+          await savePermissions(permissions);
+          print("✅ PERMISSIONS SAVED: $permissions");
+        }
+
         if (responseData != null) {
           final role = responseData['role'] as String?;
           if (role != null && role.isNotEmpty) {
@@ -125,6 +209,7 @@ class ApiService {
         return {
           'success': true,
           'message': data['message'] as String? ?? '$operation successful',
+          'statusCode': response.statusCode,
           'token': token,
           'data': data['data'],
         };
@@ -139,6 +224,7 @@ class ApiService {
           'success': false,
           'message': errorMessage,
           'errors': data['errors'],
+          'statusCode': response.statusCode,
         };
       }
     } on FormatException catch (e) {
@@ -146,10 +232,15 @@ class ApiService {
       return {
         'success': false,
         'message': 'Invalid response format from server',
+        'statusCode': response.statusCode,
       };
     } catch (e) {
       print('❌ $operation RESPONSE HANDLING ERROR: ${e.toString()}');
-      return {'success': false, 'message': 'Error processing server response'};
+      return {
+        'success': false,
+        'message': 'Error processing server response',
+        'statusCode': 0,
+      };
     }
   }
 
@@ -464,11 +555,375 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, String>> _authHeaders() async {
+    final headers = Map<String, String>.from(_headers);
+    final token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
+
+  static Future<Map<String, dynamic>> createDoubt({
+    required String title,
+    required String description,
+    required String subject,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/createdoubt'),
+            headers: headers,
+            body: json.encode({
+              'title': title,
+              'description': description,
+              'subject': subject,
+            }),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Doubt created successfully',
+          'statusCode': response.statusCode,
+          'doubt': data['doubt'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to create doubt',
+        'statusCode': response.statusCode,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to create doubt. Please try again.',
+      };
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getMyDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/mydoubts'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch doubts',
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getOpenDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/open'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch open doubts',
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getClosedDoubts() async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final doubts = (data['data'] as List? ?? []);
+      return doubts.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch closed doubts',
+    );
+  }
+
+  static Future<Map<String, dynamic>> getDoubtDetails(String doubtId) async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      return (data['data'] as Map<String, dynamic>? ?? {});
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch doubt details',
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getDoubtMessages(
+    String doubtId,
+  ) async {
+    final headers = await _authHeaders();
+    final response = await http
+        .get(
+          Uri.parse('$coreBaseUrl/doubts/$doubtId/messages'),
+          headers: headers,
+        )
+        .timeout(_timeout);
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      await _handleAuthError(response);
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        data['success'] == true) {
+      final messages = (data['data'] as List? ?? []);
+      return messages.cast<Map<String, dynamic>>();
+    }
+
+    throw Exception(
+      data['error'] as String? ??
+          data['message'] as String? ??
+          'Failed to fetch messages',
+    );
+  }
+
+  static Future<Map<String, dynamic>> addDoubtMessage({
+    required String doubtId,
+    required String message,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/messages'),
+            headers: headers,
+            body: json.encode({'message': message}),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Message sent successfully',
+          'statusCode': response.statusCode,
+          'data': data['message'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to send message',
+        'statusCode': response.statusCode,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to send message. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> addDoubtReply({
+    required String doubtId,
+    required String message,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/reply'),
+            headers: headers,
+            body: json.encode({'message': message}),
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': 'Reply sent successfully',
+          'statusCode': response.statusCode,
+          'data': data['message'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to send reply',
+        'statusCode': response.statusCode,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to send reply. Please try again.',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> resolveDoubt(String doubtId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .put(
+            Uri.parse('$coreBaseUrl/doubts/$doubtId/resolve'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        await _handleAuthError(response);
+        final errorMessage =
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Unauthorized';
+        return {
+          'success': false,
+          'message': errorMessage,
+          'statusCode': response.statusCode,
+        };
+      }
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Doubt resolved successfully',
+          'statusCode': response.statusCode,
+          'data': data['data'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message':
+            data['error'] as String? ??
+            data['message'] as String? ??
+            'Failed to resolve doubt',
+        'statusCode': response.statusCode,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Unable to resolve doubt. Please try again.',
+      };
+    }
+  }
+
   // ================== FOLDER / FILE APIs (Volunteer resources) ==================
 
   /// Fetch all folders (courses/subjects)
   static Future<List<Map<String, dynamic>>> fetchFolders() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/folders'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/folders'),headers:headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -481,9 +936,10 @@ class ApiService {
     required String name,
     required String className,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/folders'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({'name': name, 'className': className}),
     );
 
@@ -495,9 +951,10 @@ class ApiService {
 
   /// Delete folder (subject)
   static Future<void> deleteFolder(String folderId) async {
+    final headers = await _authHeaders();
     final res = await http.delete(
       Uri.parse('$coreBaseUrl/folders/$folderId'),
-      headers: _headers,
+      headers: headers,
     );
 
     if (res.statusCode < 200 || res.statusCode >= 300) {
@@ -511,6 +968,7 @@ class ApiService {
     String? name,
     String? className,
   }) async {
+    final headers = await _authHeaders();
     final body = {};
     if (name != null) {
       body['name'] = name;
@@ -520,7 +978,7 @@ class ApiService {
     }
     final res = await http.patch(
       Uri.parse('$coreBaseUrl/folders/$id'),
-      headers: _headers,
+      headers:headers,
       body: jsonEncode(body),
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -532,7 +990,8 @@ class ApiService {
   //=====================================FILE APIs==========================================
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'), headers: headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return json.decode(res.body) as Map<String, dynamic>;
     }
@@ -543,8 +1002,10 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
     String folderId,
   ) async {
+    final headers = await _authHeaders();
     final res = await http.get(
       Uri.parse('$coreBaseUrl/files/folder/$folderId'),
+      headers:headers
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
@@ -562,9 +1023,10 @@ class ApiService {
     required String type,
     required String imagekitFileId,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/files'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({
         'originalName': originalName,
         'displayName': displayName,
@@ -586,9 +1048,10 @@ class ApiService {
     required String id,
     required String displayName,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.patch(
       Uri.parse('$coreBaseUrl/files/$id'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({'displayName': displayName}),
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -599,7 +1062,11 @@ class ApiService {
 
   /// DELETE FILE
   static Future<void> deleteFile(String id) async {
-    final res = await http.delete(Uri.parse('$coreBaseUrl/files/$id'));
+    final headers = await _authHeaders();
+    final res = await http.delete(
+      Uri.parse('$coreBaseUrl/files/$id'),
+      headers: headers,
+    );
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw Exception('Failed deleting file');
     }

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const STUDENT = require('../models/student.model');
 
-module.exports = (req, res, next) => {
+const requireLogin = (req, res, next) => {
     const { authorization } = req.headers;
     if (!authorization) {
         return res.status(401).json({ error: 'You must be logged in' });
@@ -33,6 +33,7 @@ module.exports = (req, res, next) => {
             }
 
             req.user = user;
+            req.role = payload.role;
             next();
         } catch (e) {
             console.error('AUTH MIDDLEWARE ERROR:', e);
@@ -40,3 +41,5 @@ module.exports = (req, res, next) => {
         }
     });
 };
+
+module.exports=requireLogin

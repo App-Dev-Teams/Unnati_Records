@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
+import 'dart:io';
 
 class PdfViewerPage extends StatelessWidget {
   final String pdfPath;
@@ -22,7 +23,9 @@ class PdfViewerPage extends StatelessWidget {
         imageName: "unnatiLogoColourFix.png",
         name: title,
       ),
-      body: isNetwork ? SfPdfViewer.network(pdfPath) : SfPdfViewer.asset(pdfPath),
+      body: isNetwork 
+          ? SfPdfViewer.network(pdfPath)
+          : SfPdfViewer.file(File(pdfPath)),
     );
   }
 }

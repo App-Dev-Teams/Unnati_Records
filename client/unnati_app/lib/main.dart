@@ -46,6 +46,14 @@ class _AuthCheckState extends State<AuthCheck> {
     final token = await ApiService.getToken();
     String? role = await ApiService.getRole();
 
+    // Re-broadcast stored user data on startup so UI can react to current role
+    try {
+      final storedUser = await ApiService.getUserData();
+      if (storedUser != null) {
+        await ApiService.saveUserData(storedUser);
+      }
+    } catch (_) {}
+
     if ((role == null || role.isEmpty)) {
       try {
         final user = await ApiService.getUserData();
@@ -69,17 +77,17 @@ class _AuthCheckState extends State<AuthCheck> {
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      if (role == 'volunteer') {
+      if (role?.toLowerCase() == 'student') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const VolunteerHomeScreen()),
+          MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
         );
         return;
       }
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
+        MaterialPageRoute(builder: (_) => const VolunteerHomeScreen()),
       );
     } else {
       Navigator.pushReplacement(
