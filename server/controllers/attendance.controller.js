@@ -95,5 +95,31 @@ module.exports = {
       console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
+  },
+
+  //Get total months stats--
+  getUserYearlyAttendance: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { year } = req.query;
+
+      const stats =
+        await userAttendanceService.getUserYearlyStats(
+          userId,
+          year,
+        );
+
+      return res.status(200).json({
+        success: true,
+        data: stats,
+      });
+    } catch (err) {
+      console.error(err);
+
+      return res.status(500).json({
+        success: false,
+        message: "Server error",
+      });
+    }
   }
 };

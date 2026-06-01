@@ -56,6 +56,29 @@ class ApiService {
     }
   }
 
+//all about permissions-----------
+  static Future<void> savePermissions(List permissions) async {
+  final prefs = await _preferences;
+  await prefs.setStringList(
+    'user_permissions',
+    permissions.map((e) => e.toString()).toList(),
+  );
+}
+
+static Future<List<String>> getPermissions() async {
+  final prefs = await _preferences;
+  return prefs.getStringList('user_permissions') ?? [];
+}
+
+static Future<bool> hasPermission(String permission) async {
+  final permissions = await getPermissions();
+  print("Stored Permissions: $permissions");
+  print("Checking Permission: $permission");
+  
+  return permissions.contains(permission);
+}
+//-----------------------------
+
   static Future<void> saveUserData(Map<String, dynamic> user) async {
     final prefs = await _preferences;
     try {
@@ -163,6 +186,17 @@ class ApiService {
 
         // Save role if present in response data
         final responseData = data['data'] as Map<String, dynamic>?;
+        print("responseData = $responseData");
+
+        
+        //permission save
+        final permissions = responseData?['permissions'];
+        print("permissions✅ = $permissions");
+        if (permissions != null && permissions is List) {
+          await savePermissions(permissions);
+          print("✅ PERMISSIONS SAVED: $permissions");
+        }
+
         if (responseData != null) {
           final role = responseData['role'] as String?;
           if (role != null && role.isNotEmpty) {
@@ -888,7 +922,8 @@ class ApiService {
 
   /// Fetch all folders (courses/subjects)
   static Future<List<Map<String, dynamic>>> fetchFolders() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/folders'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/folders'),headers:headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -901,9 +936,10 @@ class ApiService {
     required String name,
     required String className,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/folders'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({'name': name, 'className': className}),
     );
 
@@ -915,9 +951,10 @@ class ApiService {
 
   /// Delete folder (subject)
   static Future<void> deleteFolder(String folderId) async {
+    final headers = await _authHeaders();
     final res = await http.delete(
       Uri.parse('$coreBaseUrl/folders/$folderId'),
-      headers: _headers,
+      headers: headers,
     );
 
     if (res.statusCode < 200 || res.statusCode >= 300) {
@@ -931,6 +968,7 @@ class ApiService {
     String? name,
     String? className,
   }) async {
+    final headers = await _authHeaders();
     final body = {};
     if (name != null) {
       body['name'] = name;
@@ -940,7 +978,7 @@ class ApiService {
     }
     final res = await http.patch(
       Uri.parse('$coreBaseUrl/folders/$id'),
-      headers: _headers,
+      headers:headers,
       body: jsonEncode(body),
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -952,7 +990,8 @@ class ApiService {
   //=====================================FILE APIs==========================================
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'), headers: headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return json.decode(res.body) as Map<String, dynamic>;
     }
@@ -963,8 +1002,10 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
     String folderId,
   ) async {
+    final headers = await _authHeaders();
     final res = await http.get(
       Uri.parse('$coreBaseUrl/files/folder/$folderId'),
+      headers:headers
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
@@ -982,9 +1023,10 @@ class ApiService {
     required String type,
     required String imagekitFileId,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/files'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({
         'originalName': originalName,
         'displayName': displayName,
@@ -1006,9 +1048,10 @@ class ApiService {
     required String id,
     required String displayName,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.patch(
       Uri.parse('$coreBaseUrl/files/$id'),
-      headers: _headers,
+      headers: headers,
       body: json.encode({'displayName': displayName}),
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -1019,7 +1062,11 @@ class ApiService {
 
   /// DELETE FILE
   static Future<void> deleteFile(String id) async {
-    final res = await http.delete(Uri.parse('$coreBaseUrl/files/$id'));
+    final headers = await _authHeaders();
+    final res = await http.delete(
+      Uri.parse('$coreBaseUrl/files/$id'),
+      headers: headers,
+    );
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw Exception('Failed deleting file');
     }

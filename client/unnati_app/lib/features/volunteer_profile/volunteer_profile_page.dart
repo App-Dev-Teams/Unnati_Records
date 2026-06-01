@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:unnati_app/features/Volunteer_attendance.dart/self_attendance_page.dart';
 import 'package:unnati_app/features/volunteer_profile/Volunteer_profile_listtile.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
@@ -397,7 +398,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-
+      
               // avatar
               Stack(
                 alignment: Alignment.center,
@@ -411,9 +412,9 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   ),
                 ],
               ),
-
+      
               const SizedBox(height: 10),
-
+      
               // name
               Text(
                 name,
@@ -422,9 +423,75 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-
+      
               const SizedBox(height: 10),
-
+      
+              // VIEW ATTENDANCE
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SelfAttendancePage(
+                        userId: user != null && user['id'] != null
+                            ? user['id'].toString()
+                            : '',
+                      )
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    //padding: const EdgeInsets.all(8),
+                    width:double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                        ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                              color: Colors.lightBlueAccent.withAlpha(25),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              Icons.calendar_month,
+                              color: Colors.lightBlueAccent,
+                              size: 22,
+                            ),
+                          ),
+                         const SizedBox(width: 14),
+                                        
+                          Expanded(
+                            child: Text(
+                              'View  Your Attendance',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                                        
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                      ],),
+                    ),
+                  ),
+                ),
+              ),
+      
               // CONTACT INFORMATION CONTAINER
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -452,14 +519,14 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                             ),
                           ),
                         ),
-
+      
                         VolunteerProfileListtile(
                           title: email,
                           subtitle: 'email',
                           icon: Icons.email,
                           iconColor: Colors.green,
                         ),
-
+      
                         VolunteerProfileListtile(
                           title: phoneLocal,
                           subtitle: 'phone',
@@ -471,7 +538,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   ),
                 ),
               ),
-
+      
               // MORE DETAILS CONTAINER
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -499,28 +566,28 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                             ),
                           ),
                         ),
-
+      
                         VolunteerProfileListtile(
                           title: roleLocal,
                           subtitle: 'role',
                           icon: Icons.assignment_ind,
                           iconColor: Colors.white,
                         ),
-
+      
                         VolunteerProfileListtile(
                           title: programLocal,
                           subtitle: 'program',
                           icon: Icons.flag,
                           iconColor: Colors.white,
                         ),
-
-                        VolunteerProfileListtile(
-                          title: branch,
-                          subtitle: 'branch',
-                          icon: Icons.school,
-                          iconColor: Colors.white,
-                        ),
-
+      
+                        // VolunteerProfileListtile(
+                        //   title: branch,
+                        //   subtitle: 'branch',
+                        //   icon: Icons.school,
+                        //   iconColor: Colors.white,
+                        // ),
+      
                         VolunteerProfileListtile(
                           title: batchLocal,
                           subtitle: 'batch',
@@ -532,7 +599,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   ),
                 ),
               ),
-
+      
               // LOGOUT BUTTON
               Padding(
                 padding: const EdgeInsets.all(16.0),

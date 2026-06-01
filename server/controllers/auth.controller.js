@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken")
 const STUDENT = require("../models/student.model.js");
+const rolePermissions = require("../utils/permission.js");
 
 
 const extractFromEmail = (email) => {
@@ -70,7 +71,10 @@ const signup = async (req, res) => {
 
     //token generation
     const token = jwt.sign(
-      { _id: newUser._id },
+      {
+        _id: newUser._id,
+        role: newUser.role
+      },
       process.env.JWT_SECRET,
       { expiresIn: "14d" }
     );
@@ -79,6 +83,7 @@ const signup = async (req, res) => {
       token,
       success: true,
       message: "User registered successfully",
+      
       data: {
         id: newUser._id,
         name: newUser.name,
@@ -86,6 +91,7 @@ const signup = async (req, res) => {
         phoneNo: newUser.phoneNo,
         program: newUser.program,
         role: newUser.role,
+        permissions:rolePermissions[newUser.role] || [],
         rollNo: newUser.rollNo,
         batch: newUser.batch
       },
@@ -126,10 +132,16 @@ const login = async (req, res) => {
 
     //fresh token generation
     const token = jwt.sign(
-      { _id: saveduser._id },
+      {
+        _id: saveduser._id,
+        role: saveduser.role
+      },
       process.env.JWT_SECRET,
       { expiresIn: "14d" }
     );
+
+    console.log("Role:", saveduser.role);
+    console.log("Permissions:", rolePermissions[saveduser.role]);
 
     return res.status(200).json({
       success: true,
@@ -140,6 +152,7 @@ const login = async (req, res) => {
         name: saveduser.name,
         email: saveduser.email,
         role: saveduser.role,
+        permissions:rolePermissions[saveduser.role] || [],
         rollNo: saveduser.rollNo,
         batch: saveduser.batch,
         phoneNo: saveduser.phoneNo,
@@ -199,7 +212,10 @@ const studentSignup = async (req, res) => {
 
     // generate token
     const token = jwt.sign(
-      { id: newStudent._id },
+      { 
+        id: newStudent._id,
+        role: "student" 
+      },
       process.env.JWT_SECRET,
       { expiresIn: "14d" }
     );
@@ -208,11 +224,13 @@ const studentSignup = async (req, res) => {
       success: true,
       message: "Signup successful",
       token,
+      
       data: {
         id: newStudent._id,
         name: newStudent.name,
         email: newStudent.email,
         role: 'student',
+        permissions: [],
         phoneNo: newStudent.phoneNo,
         studentClass: newStudent.studentClass,
         school: newStudent.school
@@ -258,7 +276,10 @@ const studentLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: student._id },
+      { 
+        id: student._id,
+        role: "student" 
+      },
       process.env.JWT_SECRET,
       { expiresIn: "14d" }
     );
@@ -272,6 +293,7 @@ const studentLogin = async (req, res) => {
         name: student.name,
         email: student.email,
         role: 'student',
+        permissions: [],
         phoneNo: student.phoneNo,
         studentClass: student.studentClass,
         school: student.school

@@ -77,17 +77,17 @@ class _AuthCheckState extends State<AuthCheck> {
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      if (role == 'volunteer') {
+      if (role?.toLowerCase() == 'student') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const VolunteerHomeScreen()),
+          MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
         );
         return;
       }
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const StudentHomeScreen()),
+        MaterialPageRoute(builder: (_) => const VolunteerHomeScreen()),
       );
     } else {
       Navigator.pushReplacement(

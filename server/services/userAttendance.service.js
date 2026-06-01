@@ -82,6 +82,55 @@ module.exports = {
     const totalClasses = presentCount + absentCount; // cancel not counted
 
     return { totalClasses, presentCount, absentCount, cancelledCount };
-  }
+  },
 
+  
+  getUserYearlyStats: async (userId, year) => {
+    const userAttendance = await UserAttendance.findOne({
+      userId,
+    }).lean();
+
+    if (!userAttendance) {
+      return [];
+    }
+
+    const monthlyData = Array.from(
+      { length: 12 },
+      (_, i) => ({
+        month: i + 1,
+        present: 0,
+        absent: 0,
+        cancelled: 0,
+      }),
+    );
+
+    // Present
+    userAttendance.present?.forEach((date) => {
+      const d = new Date(date);
+
+      if (d.getUTCFullYear() === parseInt(year)) {
+        monthlyData[d.getUTCMonth()].present++;
+      }
+    });
+
+    // Absent
+    userAttendance.absent?.forEach((date) => {
+      const d = new Date(date);
+
+      if (d.getUTCFullYear() === parseInt(year)) {
+        monthlyData[d.getUTCMonth()].absent++;
+      }
+    });
+
+    // Cancelled
+    userAttendance.cancelled?.forEach((date) => {
+      const d = new Date(date);
+
+      if (d.getUTCFullYear() === parseInt(year)) {
+        monthlyData[d.getUTCMonth()].cancelled++;
+      }
+    });
+
+    return monthlyData;
+  }
 };

@@ -28,11 +28,11 @@ class AttendanceNotifier
 
     // remove volunteer from all lists first
     final present =
-        day.present.where((v) => v.name != volunteer.name).toList();
+        day.present.where((v) => v.id != volunteer.id).toList();
     final absent =
-        day.absent.where((v) => v.name != volunteer.name).toList();
+        day.absent.where((v) => v.id != volunteer.id).toList();
     final deferred =
-        day.deferred.where((v) => v.name != volunteer.name).toList();
+        day.deferred.where((v) => v.id != volunteer.id).toList();
 
     // add to selected status list
     if (status == AttendanceStatus.present) {
@@ -84,11 +84,11 @@ class AttendanceNotifier
       ...state,
       d: AttendanceDay(
         present:
-            day.present.where((v) => v.name != volunteer.name).toList(),
+            day.present.where((v) => v.id != volunteer.id).toList(),
         absent:
-            day.absent.where((v) => v.name != volunteer.name).toList(),
+            day.absent.where((v) => v.id != volunteer.id).toList(),
         deferred:
-            day.deferred.where((v) => v.name != volunteer.name).toList(),
+            day.deferred.where((v) => v.id != volunteer.id).toList(),
       ),
     };
   }
