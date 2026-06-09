@@ -41,14 +41,21 @@ class VolunteerHomeCard extends StatelessWidget {
                     SizedBox(
                       height: 40,
                       width: 210,
-                      child:Text("EMPOWERING DREAMS",style: GoogleFonts.oswald(fontSize: 25,color: Colors.white,fontWeight:FontWeight.bold),)
+                      child: Text(
+                        "EMPOWERING DREAMS",
+                        style: GoogleFonts.oswald(
+                          fontSize: 25,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
 
                     SizedBox(height: 12),
 
                     //subtitle
                     Text(
-                      'Join the journey of bridging the digital divide through DigiXplore , Netritva & Akshar.',
+                      'Join the journey of bridging the digital divide through DigiXplore, Netritva & Akshar.',
                       style: GoogleFonts.roboto(
                         color: Colors.grey,
                         fontSize: 10,
@@ -59,11 +66,17 @@ class VolunteerHomeCard extends StatelessWidget {
                     SizedBox(height: 12.h),
 
                     //options
-                    Row( 
+                    Row(
                       children: [
-                        InkWell( //attendance
+                        InkWell(
+                          //attendance
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>VolunteerAttendancePage())); //for testing it is kept at profile page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VolunteerAttendancePage(),
+                              ),
+                            ); //for testing it is kept at profile page
                           },
                           child: Container(
                             height: 30,
@@ -84,9 +97,15 @@ class VolunteerHomeCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 10.w),
-                        InkWell(//resources
+                        InkWell(
+                          //resources
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>VolunteerResourcesPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VolunteerResourcesPage(),
+                              ),
+                            );
                           },
                           child: Container(
                             height: 30,

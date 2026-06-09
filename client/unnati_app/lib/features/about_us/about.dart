@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../our_programs/digixplore.dart';
 import '../our_programs/akshar.dart';
-import '../our_programs/netriva.dart';
+import '../our_programs/netritva.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -18,10 +18,7 @@ class AboutPage extends StatelessWidget {
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF6200EA),
-                      Color(0xFF3700B3),
-                    ],
+                    colors: [Color(0xFF6200EA), Color(0xFF3700B3)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -29,11 +26,7 @@ class AboutPage extends StatelessWidget {
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.info,
-                      size: 60,
-                      color: Colors.white,
-                    ),
+                    Icon(Icons.info, size: 60, color: Colors.white),
                     SizedBox(height: 12),
                     Text(
                       'UNNATI Society',
@@ -46,10 +39,7 @@ class AboutPage extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       'Social Outreach Initiative',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.white70),
                     ),
                   ],
                 ),
@@ -63,7 +53,6 @@ class AboutPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   _buildSectionTitle('About UNNATI'),
 
                   const SizedBox(height: 12),
@@ -113,8 +102,7 @@ class AboutPage extends StatelessWidget {
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const DigixplorePage(),
+                        builder: (context) => const DigixplorePage(),
                       ),
                     ),
                   ),
@@ -131,8 +119,7 @@ class AboutPage extends StatelessWidget {
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const AksharPage(),
+                        builder: (context) => const AksharPage(),
                       ),
                     ),
                   ),
@@ -149,8 +136,7 @@ class AboutPage extends StatelessWidget {
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const NetrivaPage(),
+                        builder: (context) => const NetritvaPage(),
                       ),
                     ),
                   ),
@@ -190,10 +176,7 @@ class AboutPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF6200EA).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFF6200EA),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF6200EA), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,32 +211,21 @@ class AboutPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.blue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.blue,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.blue, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Row(
             children: [
-
-              const Icon(
-                Icons.school,
-                color: Colors.blue,
-                size: 28,
-              ),
+              const Icon(Icons.school, color: Colors.blue, size: 28),
 
               const SizedBox(width: 12),
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text(
                       'IIIT Bhagalpur',
                       style: TextStyle(
@@ -265,10 +237,7 @@ class AboutPage extends StatelessWidget {
 
                     Text(
                       'An Institute of National Importance',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -280,22 +249,14 @@ class AboutPage extends StatelessWidget {
 
           Row(
             children: [
-
-              const Icon(
-                Icons.location_on,
-                color: Colors.grey,
-                size: 18,
-              ),
+              const Icon(Icons.location_on, color: Colors.grey, size: 18),
 
               const SizedBox(width: 8),
 
               Expanded(
                 child: Text(
                   'Sabour, Bhagalpur, Bihar 813210, India',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.grey[700]),
                 ),
               ),
             ],
@@ -309,24 +270,17 @@ class AboutPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF3700B3)
-            .withOpacity(0.1),
+        color: const Color(0xFF3700B3).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFF3700B3),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF3700B3), width: 1),
       ),
       child: const Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           _MissionPoint(
             emoji: '🎓',
             title: 'Educational Empowerment',
-            description:
-                'Literacy, digital, and career guidance',
+            description: 'Literacy, digital, and career guidance',
           ),
 
           SizedBox(height: 12),
@@ -343,8 +297,7 @@ class AboutPage extends StatelessWidget {
           _MissionPoint(
             emoji: '⭐',
             title: 'Youth Development',
-            description:
-                'Leadership, skill development & confidence building',
+            description: 'Leadership, skill development & confidence building',
           ),
 
           SizedBox(height: 12),
@@ -352,8 +305,7 @@ class AboutPage extends StatelessWidget {
           _MissionPoint(
             emoji: '🚀',
             title: 'Community Impact',
-            description:
-                'Bridging educational & digital divides',
+            description: 'Bridging educational & digital divides',
           ),
         ],
       ),
@@ -375,12 +327,8 @@ class AboutPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius:
-              BorderRadius.circular(12),
-          border: Border.all(
-            color: color,
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color, width: 2),
           boxShadow: [
             BoxShadow(
               color: color.withOpacity(0.2),
@@ -391,47 +339,32 @@ class AboutPage extends StatelessWidget {
         ),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Row(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Container(
-                  padding:
-                      const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color:
-                        color.withOpacity(0.2),
-                    borderRadius:
-                        BorderRadius.circular(12),
+                    color: color.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 32,
-                  ),
+                  child: Icon(icon, color: color, size: 32),
                 ),
 
                 const SizedBox(width: 16),
 
                 Expanded(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       Text(
                         title,
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight:
-                              FontWeight.bold,
-                          color:
-                              Colors.grey[800],
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
                         ),
                       ),
 
@@ -442,19 +375,14 @@ class AboutPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: color,
-                          fontWeight:
-                              FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: color,
-                  size: 20,
-                ),
+                Icon(Icons.arrow_forward_ios, color: color, size: 20),
               ],
             ),
 
@@ -484,11 +412,7 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                Icon(
-                  Icons.touch_app,
-                  size: 14,
-                  color: color,
-                ),
+                Icon(Icons.touch_app, size: 14, color: color),
               ],
             ),
           ],
@@ -502,43 +426,29 @@ class AboutPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius:
-            BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.grey[300]!,
-        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
       ),
 
       child: Row(
         children: [
-
-          Icon(
-            Icons.email,
-            color: Colors.grey[700],
-            size: 24,
-          ),
+          Icon(Icons.email, color: Colors.grey[700], size: 24),
 
           const SizedBox(width: 12),
 
           Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                 'Email',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
 
               Text(
                 'unnati.ir@iiitbh.ac.in',
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight:
-                      FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                   color: Colors.grey[800],
                 ),
               ),
@@ -564,41 +474,28 @@ class _MissionPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        Text(
-          emoji,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
+        Text(emoji, style: const TextStyle(fontSize: 20)),
 
         const SizedBox(width: 12),
 
         Expanded(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight:
-                      FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                   color: Colors.grey[800],
                 ),
               ),
 
               Text(
                 description,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
           ),

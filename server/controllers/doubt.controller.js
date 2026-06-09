@@ -150,9 +150,7 @@ const addReply = async (req, res) => {
         if (doubt.status == 'closed') {
             return res.status(400).json({ error: "Cannot add message to closed doubt" });
         }
-        if (req.userType !== 'volunteer' || !['lead', 'admin'].includes((req.user.role || '').toString())) {
-            return res.status(403).json({ error: 'Only RnD lead or admin can reply to doubts' });
-        }
+        // Route-level authorization (authorize middleware) ensures only permitted roles reach here
         const newMessage = new DoubtMessage({
             doubtId,
             senderId: req.user._id,
@@ -185,28 +183,47 @@ const resolveDoubt = async (req, res) => {
             return res.status(400).json({ error: "Doubt is already closed" });
         }
 
-        if (req.userType !== 'volunteer' || !['lead', 'admin'].includes((req.user.role || '').toString())) {
-            return res.status(403).json({ error: 'Only RnD lead or admin can resolve doubts' });
+        // Make resolve atomic via a transaction: ensure the resolver has replied and the doubt is open
+        const session = await Doubt.startSession();
+        try {
+            session.startTransaction();
+            const doubtForUpdate = await Doubt.findById(doubtId).session(session);
+            if (!doubtForUpdate) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ error: "Doubt not found" });
+            }
+            if (doubtForUpdate.status === 'closed') {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ error: "Doubt is already closed" });
+            }
+            const userMessage = await DoubtMessage.countDocuments({ doubtId: doubtId, senderId: leadid }).session(session);
+            if (userMessage == 0) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ error: "Only those who have replied can resolve the doubt" });
+            }
+            doubtForUpdate.status = 'closed';
+            doubtForUpdate.resolvedAt = Date.now();
+            doubtForUpdate.resolvedBy = leadid;
+            await doubtForUpdate.save({ session });
+            await session.commitTransaction();
+            session.endSession();
+            // Return updated doubt
+            res.status(200).json({
+                success: true,
+                message: "Doubt resolved successfully",
+                data: doubtForUpdate
+            });
+            return;
+        } catch (txErr) {
+            console.error('Transaction error resolving doubt:', txErr);
+            try { await session.abortTransaction(); } catch (e) {}
+            session.endSession();
+            return res.status(500).json({ error: 'Internal server error' });
         }
-        const userMessage = await DoubtMessage.countDocuments({
-            doubtId: doubtId,
-            senderId: leadid
-        });
-        if (userMessage == 0) {
-            return res.status(400).json({ error: "Only those who have replied can resolve the doubt" });
-        };
-        doubt.status = 'closed';
-        doubt.resolvedAt = Date.now();
-        doubt.resolvedBy = leadid;
-        await doubt.save();
-        res.status(200).json({
-            success: true,
-            message: "Doubt resolved successfully",
-            data: doubt
-        });
-
-
-
+        
     }
     catch (error) {
         console.error("Error resolving doubt:", error);
@@ -217,10 +234,6 @@ const resolveDoubt = async (req, res) => {
 //get all doubts for lead 
 const getOpenDoubts = async (req, res) => {
     try {
-
-        if (req.userType !== 'volunteer' || !['lead', 'admin'].includes((req.user.role || '').toString())) {
-            return res.status(403).json({ error: 'Only RnD lead or admin can view open doubts' });
-        }
         const doubts = await Doubt.find({
             status: 'open'
         })
@@ -241,9 +254,6 @@ const getOpenDoubts = async (req, res) => {
 
 const getClosedDoubts = async (req, res) => {
     try {
-        if (req.userType !== 'volunteer' || !['lead', 'admin'].includes((req.user.role || '').toString())) {
-            return res.status(403).json({ error: 'Only RnD lead or admin can view closed doubts' });
-        }
 
         const doubts = await Doubt.find({
             status: 'closed'

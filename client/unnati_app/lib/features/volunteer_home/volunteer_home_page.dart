@@ -6,7 +6,7 @@ import 'package:unnati_app/features/developer/developers.dart';
 import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/our_programs/akshar.dart';
 import 'package:unnati_app/features/our_programs/digixplore.dart';
-import 'package:unnati_app/features/our_programs/netriva.dart';
+import 'package:unnati_app/features/our_programs/netritva.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
@@ -100,7 +100,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     subtitle:
                         "Holistic mentorship & doubt sessions for holistic growth",
                     logo: "unnatiLogoColourFix.png",
-                    path: NetrivaPage(),
+                    path: NetritvaPage(),
                   ),
                   ProgramsCardUtil(
                     title: "Akshar",

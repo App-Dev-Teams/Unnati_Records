@@ -15,7 +15,7 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
   final _descriptionController = TextEditingController();
   final _subjectController = TextEditingController();
   bool _isSubmitting = false;
-  String? _role;
+  bool _isStudent = false;
   StreamSubscription<Map<String, dynamic>?>? _userSub;
 
   @override
@@ -30,13 +30,13 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
   @override
   void initState() {
     super.initState();
-    _checkRole();
+    _loadAuthContext();
     _userSub = ApiService.userDataStream.listen((user) {
       if (!mounted) return;
-      final role = user == null ? '' : (user['role'] as String? ?? '');
-      if (role != (_role ?? '')) {
-        setState(() => _role = role);
-        if (role != 'student') {
+      final isStudent = ApiService.isStudentUserData(user);
+      if (isStudent != _isStudent) {
+        setState(() => _isStudent = isStudent);
+        if (!isStudent) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             showDialog<void>(
@@ -61,11 +61,11 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
     });
   }
 
-  Future<void> _checkRole() async {
-    final r = await ApiService.getRole();
+  Future<void> _loadAuthContext() async {
+    final user = await ApiService.getUserData();
     if (!mounted) return;
-    setState(() => _role = r);
-    if ((_role ?? '') != 'student') {
+    setState(() => _isStudent = ApiService.isStudentUserData(user));
+    if (!_isStudent) {
       // show message and close
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog<void>(

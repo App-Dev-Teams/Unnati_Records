@@ -314,7 +314,35 @@ class AdminApiService {
     }
   }
 
+  // static Future<Map<String, dynamic>> assignRoleToVolunteer(String userId, String role) async {
+  //   try {
+  //     final response = await http.put(
+  //       Uri.parse('$coreBaseUrl/volunteers/assign-role'),
+  //       headers: _headers,
+  //       body: jsonEncode({
+  //         'userId': userId,
+  //         'role': role,
+  //       }),
+  //     ).timeout(_timeout);
 
+  //     if (response.body.isEmpty) {
+  //       return {'success': false, 'message': 'Empty response from server'};
+  //     }
+
+  //     final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+  //     if (response.statusCode >= 200 && response.statusCode < 300) {
+  //       return {'success': true, 'message': data['message'], 'data': data['data']};
+  //     } else {
+  //       return {
+  //         'success': false,
+  //         'message': data['message'] ?? 'Failed to assign role',
+  //       };
+  //     }
+  //   } catch (e) {
+  //     return {'success': false, 'message': 'Network error: $e'};
+  //   }
+  // }
 
   static Future<Map<String, dynamic>> updateRole(
     String userId,
