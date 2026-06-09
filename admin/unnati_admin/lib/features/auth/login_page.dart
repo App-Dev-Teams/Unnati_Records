@@ -184,36 +184,36 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
 
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                        //const SizedBox(height: 20),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
                             
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const SignupPage(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                "Sign Up",
-                                style: GoogleFonts.nunito(
-                                  color: const Color.fromARGB(255, 140, 200, 255),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "as an admin",
-                              style: GoogleFonts.nunito(
-                                color: Colors.white70,
-                              ),
-                            ),
-                          ],
-                        ),
+                        //     TextButton(
+                        //       onPressed: () {
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (_) => const SignupPage(),
+                        //           ),
+                        //         );
+                        //       },
+                        //       child: Text(
+                        //         "Sign Up",
+                        //         style: GoogleFonts.nunito(
+                        //           color: const Color.fromARGB(255, 140, 200, 255),
+                        //           fontWeight: FontWeight.w600,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Text(
+                        //       "as an admin",
+                        //       style: GoogleFonts.nunito(
+                        //         color: Colors.white70,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -247,15 +247,36 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (result['success']) {
-      // Save full admin data
-      if (result['data'] != null) {
-        await AdminApiService.saveAdminData(result['data']);
-      }
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AdminHomePage()),
+
+      final adminData = result['data'] as Map<String, dynamic>;
+      final role = adminData['role'];
+    if (role.toString().toLowerCase() != 'admin') {
+      await AdminApiService.logout();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(  
+          backgroundColor: const Color.fromARGB(255, 14, 22, 33),
+          title: const Text("Access Denied",style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),),
+          content: const Text("You are not an admin.",style: TextStyle(color: Colors.white),),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
       );
-    } else {
+      return;
+    }
+    await AdminApiService.saveAdminData(adminData);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AdminHomePage(),
+      ),
+    );
+  } 
+    else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result['message'] ?? 'Login failed')),
       );

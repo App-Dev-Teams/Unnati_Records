@@ -19,6 +19,7 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
   String adminName = "Admin";
 
   final List<String> roles = [
+    "Admin",
     "Finance Lead",
     "JS-Program",
     "JS-Public Relations",
@@ -143,7 +144,7 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
       );
 
       // Call backend API
-      final result = await AdminApiService.assignRoleToVolunteer(v.id, role);
+      final result = await AdminApiService.updateRole(v.id, role);
 
       if (result['success'] == true) {
         // Success - update UI
@@ -186,29 +187,126 @@ class _AssignLeadsPageState extends State<AssignLeadsPage> {
     }
   }
 
-  void deleteLead(Volunteer v) {
+  // void deleteLead(Volunteer v) {
+  //   setState(() {
+  //     leads.remove(v);
+  //     v.role = "";
+  //     // Add back to available volunteers if search is empty
+  //     if (searchCtrl.text.isEmpty) {
+  //       volunteersByProgram[v.program]?.add(v);
+  //       searchResultsByProgram[v.program]?.add(v);
+  //     }
+  //   });
+  // }
+  Future<void> deleteLead(Volunteer v) async {
+    final result =
+        await AdminApiService.updateRole(
+          v.id,
+          "Volunteer",
+        );
+    if (!result['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+        ),
+      );
+      return;
+    }
     setState(() {
       leads.remove(v);
       v.role = "";
-      // Add back to available volunteers if search is empty
-      if (searchCtrl.text.isEmpty) {
-        volunteersByProgram[v.program]?.add(v);
-        searchResultsByProgram[v.program]?.add(v);
-      }
+      volunteersByProgram[v.program]?.add(v);
+      searchResultsByProgram[v.program]?.add(v);
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Lead removed successfully"),
+      ),
+    );
   }
 
-  void editLead(Volunteer v) {
-    setState(() {
-      leads.remove(v);
-      v.role = "";
-      // Add back to available volunteers if search is empty
-      if (searchCtrl.text.isEmpty) {
-        volunteersByProgram[v.program]?.add(v);
-        searchResultsByProgram[v.program]?.add(v);
-      }
-    });
+  // void editLead(Volunteer v) {
+  //   setState(() {
+  //     leads.remove(v);
+  //     v.role = "";
+  //     // Add back to available volunteers if search is empty
+  //     if (searchCtrl.text.isEmpty) {
+  //       volunteersByProgram[v.program]?.add(v);
+  //       searchResultsByProgram[v.program]?.add(v);
+  //     }
+  //   });
+  // }
+
+  Future<void> editLead(Volunteer v) async {
+    String selectedRole = v.role;
+    await showDialog(
+      
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: const Color.fromARGB(255, 14, 22, 33),
+              title: const Text("Edit Role",style: TextStyle(color: Colors.white),),
+              content: DropdownButton<String>(
+                dropdownColor:const Color.fromARGB(255, 14, 22, 33),
+                isExpanded: true,
+                value: selectedRole,
+                
+                items: roles.map((role) {
+                  return DropdownMenuItem(
+                    value: role,
+                    child: Text(role,style: TextStyle(color: Colors.white),),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setDialogState(() {
+                    selectedRole = value;
+                  });
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel",style: TextStyle(color: Colors.red),),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                  ),
+                  onPressed: () async {
+                    final result =
+                        await AdminApiService.updateRole(
+                          v.id,
+                          selectedRole,
+                        );
+                    if (result['success']) {
+                      setState(() {
+                        v.role = selectedRole;
+                      });
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text("Role updated successfully"),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Save",style: TextStyle(color: Colors.white),),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -258,7 +258,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Text(
               "Admin Dashboard",
               style: GoogleFonts.oswald(
-                fontSize: 28.sp,
+                fontSize: 28,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -268,49 +268,53 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
             Text(
               "Manage volunteers and leads",
-              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14.sp),
+              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
             ),
 
             SizedBox(height: 28.h),
 
             Row(
               children: [
-                SizedBox(
-                  height: 180.h,
-                  width: MediaQuery.of(context).size.width / 2 - 30.w,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminFileUploadPage(),
-                        ),
-                      );
-                    },
-                    child: _AdminActionCard(
-                      icon: Icons.file_copy,
-                      title: "Upload Files",
-                      subtitle: "Provide students with study materials.",
+                Expanded(
+                  child: SizedBox(
+                    height: 180.h,
+                    width: MediaQuery.of(context).size.width / 2 - 30.w,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminFileUploadPage(),
+                          ),
+                        );
+                      },
+                      child: _AdminActionCard(
+                        icon: Icons.file_copy,
+                        title: "Upload Files",
+                        subtitle: "Provide students with study materials.",
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(width: 20.w),
-                SizedBox(
-                  height: 180.h,
-                  width: MediaQuery.of(context).size.width / 2 - 30.w,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AssignLeadsPage(),
-                        ),
-                      );
-                    },
-                    child: _AdminActionCard(
-                      icon: Icons.admin_panel_settings_outlined,
-                      title: "Assign Leads",
-                      subtitle: "Promote & change roles",
+                SizedBox(width: 20),
+                Expanded(
+                  child: SizedBox(
+                    height: 180.h,
+                    width: MediaQuery.of(context).size.width / 2 - 30.w,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AssignLeadsPage(),
+                          ),
+                        );
+                      },
+                      child: _AdminActionCard(
+                        icon: Icons.admin_panel_settings_outlined,
+                        title: "Assign Leads",
+                        subtitle: "Promote & change roles",
+                      ),
                     ),
                   ),
                 ),
@@ -344,7 +348,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Text(
               "Current Leads",
               style: GoogleFonts.oswald(
-                fontSize: 22.sp,
+                fontSize: 22,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
@@ -371,12 +375,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             child: Container(
                               width: double.infinity,
                               padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 12.h,
+                                horizontal: 16,
+                                vertical: 12,
                               ),
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(255, 9, 75, 128),
-                                borderRadius: BorderRadius.circular(10.w),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.white10),
                               ),
                               child: Row(
@@ -390,9 +394,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                             ? Icons.expand_less
                                             : Icons.expand_more,
                                         color: Colors.white,
-                                        size: 20.w,
+                                        size: 20,
                                       ),
-                                      SizedBox(width: 12.w),
+                                      SizedBox(width: 12),
                                       Text(
                                         program,
                                         style: GoogleFonts.oswald(

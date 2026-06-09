@@ -12,7 +12,6 @@ const messageschema = mongoose.Schema({
     },
     senderRole: {
         type: String,
-        enum: ['student', 'lead', 'volunteer', 'admin'],
         required: true,
     },
     message: {

@@ -294,6 +294,7 @@ class ApiService {
             body: json.encode(body),
           )
           .timeout(_timeout);
+          print('📥 $operation Raw Response Status: ${response.body}');
 
       return await _handleResponse(response, operation);
     } on http.ClientException catch (e) {
@@ -689,6 +690,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/open'), headers: headers)
         .timeout(_timeout);
+    print(" OPEN DOUBTS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -714,6 +716,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
         .timeout(_timeout);
+        print(  " CLOSED DOUBTS: ${response.body}" );
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -739,6 +742,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
         .timeout(_timeout);
+        print(" DOUBT DETAILS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -768,6 +772,7 @@ class ApiService {
           headers: headers,
         )
         .timeout(_timeout);
+        print(" DOUBT MESSAGES: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
