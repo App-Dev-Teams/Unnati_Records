@@ -260,6 +260,7 @@ static Future<bool> hasPermission(String permission) async {
             body: json.encode(body),
           )
           .timeout(_timeout);
+          print('📥 $operation Raw Response Status: ${response.body}');
 
       return await _handleResponse(response, operation);
     } on http.ClientException catch (e) {
@@ -655,6 +656,7 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/open'), headers: headers)
         .timeout(_timeout);
+    print(" OPEN DOUBTS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401 || response.statusCode == 403) {
@@ -680,6 +682,7 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
         .timeout(_timeout);
+        print(  " CLOSED DOUBTS: ${response.body}" );
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401 || response.statusCode == 403) {
@@ -705,6 +708,7 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
         .timeout(_timeout);
+        print(" DOUBT DETAILS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401 || response.statusCode == 403) {
@@ -734,6 +738,7 @@ static Future<bool> hasPermission(String permission) async {
           headers: headers,
         )
         .timeout(_timeout);
+        print(" DOUBT MESSAGES: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401 || response.statusCode == 403) {

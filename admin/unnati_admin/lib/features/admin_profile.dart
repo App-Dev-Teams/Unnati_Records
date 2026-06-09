@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_admin/services/api_service.dart';
 
@@ -137,7 +137,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         actions: [
           if (!_isEditing)
             IconButton(
-              icon: const Icon(Icons.edit, color: Colors.lightBlueAccent),
+              icon: Icon(Icons.edit, color: Colors.lightBlueAccent, size: 22),
               onPressed: () {
                 setState(() {
                   _isEditing = true;
@@ -148,7 +148,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.red),
+                  icon: Icon(Icons.close, color: Colors.red, size: 22),
                   onPressed: () {
                     setState(() {
                       _isEditing = false;
@@ -157,7 +157,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.check, color: Colors.green),
+                  icon: Icon(Icons.check, color: Colors.green, size: 22),
                   onPressed: _saveChanges,
                 ),
               ],
@@ -167,7 +167,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -176,38 +176,38 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: 50.r,
+                          radius: 50,
                           backgroundColor: const Color.fromARGB(255, 9, 75, 128),
                           child: Text(
                             (adminData?['name'] ?? 'A')[0].toUpperCase(),
                             style: GoogleFonts.oswald(
-                              fontSize: 48.sp,
+                              fontSize: 48,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
-                        SizedBox(height: 16.h),
+                        SizedBox(height: 16),
                         Text(
                           adminData?['name'] ?? 'Admin',
                           style: GoogleFonts.oswald(
-                            fontSize: 24.sp,
+                            fontSize: 24,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 6.h),
+                        SizedBox(height: 6),
                         Text(
                           'Administrator',
                           style: GoogleFonts.nunito(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             color: Colors.lightBlueAccent,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 32),
 
                   // Profile Information Sections
                   _buildSection(
@@ -219,7 +219,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                         controller: _isEditing ? nameCtrl : null,
                         isEditing: _isEditing,
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 16),
                       _buildProfileField(
                         label: 'Email',
                         value: adminData?['email'] ?? 'N/A',
@@ -229,7 +229,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
 
                   // Batch Information
                   _buildSection(
@@ -245,7 +245,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                               isEditing: _isEditing,
                             ),
                           ),
-                          SizedBox(width: 16.w),
+                          SizedBox(width: 16),
                           Expanded(
                             child: _buildProfileField(
                               label: 'End Year',
@@ -256,7 +256,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 16),
                       _buildProfileField(
                         label: 'Roll Number',
                         value: adminData?['rollNo']?.toString() ?? 'N/A',
@@ -265,7 +265,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 32),
 
                   // Additional Info
                   if (!_isEditing)
@@ -273,9 +273,9 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       title: 'Additional Information',
                       children: [
                         _buildInfoRow('Role', 'Administrator'),
-                        SizedBox(height: 12.h),
+                        SizedBox(height: 12),
                         _buildInfoRow('Status', 'Active'),
-                        SizedBox(height: 12.h),
+                        SizedBox(height: 12),
                         _buildInfoRow(
                           'Member Since',
                           adminData?['batch']?['startYear']?.toString() ?? 'N/A',
@@ -283,7 +283,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       ],
                     ),
 
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                 ],
               ),
             ),
@@ -300,16 +300,17 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         Text(
           title,
           style: GoogleFonts.oswald(
-            fontSize: 18.sp,
+            fontSize: 18,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 12),
         Container(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(16),
+          width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(14),
             color: const Color.fromARGB(255, 14, 22, 33),
             border: Border.all(color: Colors.white10),
           ),
@@ -340,11 +341,11 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
           filled: true,
           fillColor: const Color.fromARGB(255, 9, 12, 19),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Colors.white10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
               color: Color.fromARGB(255, 9, 75, 128),
             ),
@@ -359,16 +360,16 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         Text(
           label,
           style: GoogleFonts.nunito(
-            fontSize: 12.sp,
+            fontSize: 12,
             color: Colors.white70,
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(height: 6.h),
+        SizedBox(height: 6),
         Text(
           value,
           style: GoogleFonts.nunito(
-            fontSize: 16.sp,
+            fontSize: 16,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
@@ -384,14 +385,14 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         Text(
           label,
           style: GoogleFonts.nunito(
-            fontSize: 14.sp,
+            fontSize: 14,
             color: Colors.white70,
           ),
         ),
         Text(
           value,
           style: GoogleFonts.nunito(
-            fontSize: 14.sp,
+            fontSize: 14,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),

@@ -26,6 +26,15 @@ class AdminApiService {
     final prefs = await _preferences;
     return prefs.getString('admin_auth_token');
   }
+  
+  static Future<Map<String, String>> _authHeaders() async {
+    final headers = Map<String, String>.from(_headers);
+    final token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
 
   static Future<void> saveAdminName(String name) async {
     final prefs = await _preferences;
@@ -41,6 +50,18 @@ class AdminApiService {
     final prefs = await _preferences;
     return prefs.getString('admin_name');
   }
+
+  //role--
+  static Future<void> saveRole(String role) async {
+    final prefs = await _preferences;
+    await prefs.setString('user_role', role);
+  }
+
+  static Future<String?> getRole() async {
+    final prefs = await _preferences;
+    return prefs.getString('user_role');
+  }
+  //------
 
   static Future<Map<String, dynamic>?> getAdminData() async {
     final prefs = await _preferences;
@@ -88,11 +109,15 @@ class AdminApiService {
         final token = data['token'] as String?;
         final userData = data['data'] as Map<String, dynamic>?;
         final name = userData?['name'] as String?;
+        final role= userData?['role'] as String?;
         if (token != null && token.isNotEmpty) {
           await saveToken(token);
         }
         if (name != null && name.isNotEmpty) {
           await saveAdminName(name);
+        }
+        if(role != null && role.isNotEmpty){
+          await saveRole(role);
         }
         if (userData != null) {
           await saveAdminData(userData);
@@ -163,7 +188,8 @@ class AdminApiService {
   }
 
   static Future<Map<String, dynamic>> getImageKitAuth() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'), headers: headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return jsonDecode(res.body) as Map<String, dynamic>;
     }
@@ -178,9 +204,10 @@ class AdminApiService {
     required String type,
     required String imagekitFileId,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/files'),
-      headers: _headers,
+      headers: headers,
       body: jsonEncode({
         'originalName': originalName,
         'displayName': displayName,
@@ -198,7 +225,9 @@ class AdminApiService {
   }
 
   static Future<List<Map<String, dynamic>>> fetchFolders() async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/folders'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/folders'), headers: headers);
+    
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = jsonDecode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -210,9 +239,10 @@ class AdminApiService {
     required String name,
     required String className,
   }) async {
+    final headers = await _authHeaders();
     final res = await http.post(
       Uri.parse('$coreBaseUrl/folders'),
-      headers: _headers,
+      headers: headers,
       body: jsonEncode({
         'name': name,
         'className': className,
@@ -228,7 +258,8 @@ class AdminApiService {
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
     String folderId,
   ) async {
-    final res = await http.get(Uri.parse('$coreBaseUrl/files/folder/$folderId'));
+    final headers = await _authHeaders();
+    final res = await http.get(Uri.parse('$coreBaseUrl/files/folder/$folderId'), headers: headers);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = jsonDecode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -254,40 +285,44 @@ class AdminApiService {
 
   static Future<Map<String, List<Map<String, dynamic>>>> fetchVolunteersByProgram() async {
     try {
-      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        final data = jsonDecode(res.body);
-        if (data is Map && data['data'] != null) {
-          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
-          
-          // Group volunteers by program
-          Map<String, List<Map<String, dynamic>>> grouped = {
-            'DigiXplore': [],
-            'Netritva': [],
-            'Akshar': [],
-          };
-          
-          for (var volunteer in allVolunteers) {
-            final program = volunteer['program'] ?? 'DigiXplore';
-            if (grouped.containsKey(program)) {
-              grouped[program]!.add(volunteer);
-            }
+      // Group volunteers by program
+      Map<String, List<Map<String, dynamic>>> grouped = {
+        'DigiXplore': [],
+        'Netritva': [],
+        'Akshar': [],
+      };
+      
+      // Fetch volunteers for each program separately
+      final programs = ['DigiXplore', 'Netritva', 'Akshar'];
+      for (var program in programs) {
+        final uri = Uri.parse('$coreBaseUrl/volunteers/program/get-volunteers')
+            .replace(queryParameters: {'program': program});
+        
+        final res = await http.get(uri);
+        
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          final data = jsonDecode(res.body);
+          if (data is Map && data['users'] != null && data['users'] is List) {
+            grouped[program] = List<Map<String, dynamic>>.from(data['users']);
           }
-          
-          return grouped;
         }
-        return {'DigiXplore': [], 'Netritva': [], 'Akshar': []};
       }
-      throw Exception('Failed to fetch volunteers: ${res.body}');
+      
+      return grouped;
     } catch (e) {
       throw Exception('Failed to fetch volunteers: $e');
     }
   }
 
-  static Future<Map<String, dynamic>> assignRoleToVolunteer(String userId, String role) async {
+
+
+  static Future<Map<String, dynamic>> updateRole(
+    String userId,
+    String role,
+  ) async {
     try {
       final response = await http.put(
-        Uri.parse('$coreBaseUrl/volunteers/assign-role'),
+        Uri.parse('$coreBaseUrl/volunteers/update-role'),
         headers: _headers,
         body: jsonEncode({
           'userId': userId,
@@ -296,42 +331,51 @@ class AdminApiService {
       ).timeout(_timeout);
 
       if (response.body.isEmpty) {
-        return {'success': false, 'message': 'Empty response from server'};
-      }
-
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return {'success': true, 'message': data['message'], 'data': data['data']};
-      } else {
         return {
           'success': false,
-          'message': data['message'] ?? 'Failed to assign role',
+          'message': 'Empty response from server'
         };
       }
+
+      final data = jsonDecode(response.body);
+
+      return {
+        'success': response.statusCode >= 200 &&
+            response.statusCode < 300,
+        'message': data['message'],
+        'data': data['data'],
+      };
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
     }
   }
 
   static Future<List<Map<String, dynamic>>> fetchAssignedLeads() async {
     try {
-      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        final data = jsonDecode(res.body);
-        if (data is Map && data['data'] != null) {
-          List<Map<String, dynamic>> allVolunteers = List<Map<String, dynamic>>.from(data['data']);
-          
-         
-          List<Map<String, dynamic>> assignedLeads = allVolunteers
-              .where((v) => (v['role'] ?? '').toString().contains('Lead'))
-              .toList();
-          
-          return assignedLeads;
+      // Use the same method as fetchVolunteersByProgram to get program info
+      final volunteersGrouped = await fetchVolunteersByProgram();
+      
+      List<Map<String, dynamic>> allLeads = [];
+      
+      // Go through each program and filter for leads
+      for (var program in volunteersGrouped.keys) {
+        final volunteers = volunteersGrouped[program] ?? [];
+        final leads = volunteers
+            .where((v) => (v['role'] ?? '').toString().contains('Lead')|| (v['role'] ?? '').toString().contains('Admin'))
+            .toList();
+        
+        // Ensure program field is set correctly
+        for (var lead in leads) {
+          lead['program'] = program;
         }
-        return [];
+        
+        allLeads.addAll(leads);
       }
-      throw Exception('Failed to fetch assigned leads: ${res.body}');
+      
+      return allLeads;
     } catch (e) {
       throw Exception('Failed to fetch assigned leads: $e');
     }
@@ -463,5 +507,3 @@ class AdminApiService {
     }
   }
 }
-
-
