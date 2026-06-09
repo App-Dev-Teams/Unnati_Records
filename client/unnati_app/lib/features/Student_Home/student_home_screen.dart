@@ -21,17 +21,19 @@ class StudentHomeScreen extends ConsumerWidget {
       const StudentHomePage(), //1 index
       const StudedntProfileScreen(), //2 index
     ];
-        return Scaffold(
-          backgroundColor: Colors.white,
-          
-          body: pages[currentIndex],
-          bottomNavigationBar: BottomNavBar(
-            navIcon1: Icons.fact_check_outlined,
-            navIcon2: Icons.home_outlined,
-            navIcon3: Icons.person_outline,
-            labelName1: "Quiz",
-            labelName2: "Home",
-            labelName3: "Profile",
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            
+            body: pages[currentIndex],
+            bottomNavigationBar: BottomNavBar(
+              navIcon1: Icons.fact_check_outlined,
+              navIcon2: Icons.home_outlined,
+              navIcon3: Icons.person_outline,
+              labelName1: "Quiz",
+              labelName2: "Home",
+              labelName3: "Profile",
+            ),
           ),
         );
       }
