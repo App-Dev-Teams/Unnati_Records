@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 import 'package:unnati_app/components/pdf_components/pdf_cards.dart';
+import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/pdf_feature/comments.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_assignments.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_digiexplore.dart';
@@ -95,7 +96,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => CommentsPage()),
+                    MaterialPageRoute(builder: (_) => HelpSupport()),
                   );
                 },
                 child: PdfCards(
