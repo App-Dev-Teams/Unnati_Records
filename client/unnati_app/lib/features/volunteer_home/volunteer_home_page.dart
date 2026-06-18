@@ -34,7 +34,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
             backgroundColor: const Color.fromARGB(255, 221, 221, 221),
 
             appBar: MyAppBar(
-              imageName: "unnatiLogoColourFix.png",
+              imageName: "NGO.png",
               name: user!["name"],
             ),
 
@@ -89,23 +89,23 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     ],
                   ),
                   ProgramsCardUtil(
-                    title: "DigiXplore",
+                    title: "Digi",
                     subtitle:
                         "Interactive live classes bridging the digital gap",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "NGO.png",
                     path: DigixplorePage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Netritva",
+                    title: "Netri",
                     subtitle:
                         "Holistic mentorship & doubt sessions for holistic growth",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "NGO.png",
                     path: NetritvaPage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Akshar",
+                    title: "Aksh",
                     subtitle: "Nukkad classes",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "NGO.png",
                     path: AksharPage(),
                   ),
                   SizedBox(height: 20.h),

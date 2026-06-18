@@ -406,7 +406,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   const CircleAvatar(backgroundColor: Colors.black, radius: 63),
                   const CircleAvatar(
                     backgroundImage: AssetImage(
-                      'assets/images/unnatiLogoColourFix.png',
+                      'assets/images/NGO.png',
                     ),
                     radius: 60,
                   ),

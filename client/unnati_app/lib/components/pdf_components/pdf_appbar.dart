@@ -32,8 +32,8 @@ class PdfAppBar extends StatelessWidget implements PreferredSizeWidget {
           CircleAvatar(
             radius: 18,
             backgroundImage:
-                const AssetImage("assets/images/unnatiLogoColourFix.png"),
-            foregroundImage: AssetImage("assets/images/$imageName"),
+                const AssetImage("assets/images/NGO.png"),
+            foregroundImage: AssetImage("assets/images/NGO.png"),
           ),
           SizedBox(width: 10),
           Flexible(

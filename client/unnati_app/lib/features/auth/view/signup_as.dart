@@ -15,106 +15,109 @@ class SignupAs extends StatefulWidget {
 class _SignupAsState extends State<SignupAs> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white, //Scaffold backgroud color
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 70.h,),
-            //unnati logo
-            Image.asset(
-              'assets/images/unnatiLogoColourFix.png',
-              height: 150.h,
-              width: 150.w,
-            ),
-            SizedBox(height: 50.h, width: double.infinity),
-            //lottie
-            Lottie.asset(
-              'assets/lottie/student.json',
-              height: 200.h,
-              width: 200.w,
-            ),
-            SizedBox(height: 70.h, width: double.infinity),
-        
-            Container(
-              child: Column(
-                children: [
-                  SizedBox(height: 20.h),
-                  Center(
-                    child: Text(
-                      'Sign Up As ',
-                      style: GoogleFonts.oswald(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.h, width: double.infinity),
-        
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      fixedSize: Size(200.w, 60.h),
-                      backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpVolunteer(),
-                        ),
-                      );
-                    },
-                    child: Center(
-                      child: Text(
-                        'Volunteer',
-                        style: GoogleFonts.cormorantSc(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 7.h, width: double.infinity),
-                  //student
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      fixedSize: Size(200.w, 60.h),
-                      backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignupStudent(),
-                        ),
-                      );
-                    },
-                    child: Center(
-                      child: Text(
-                        'Student',
-                        style: GoogleFonts.cormorantSc(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: Colors.white, //Scaffold backgroud color
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 70.h,),
+              //unnati logo
+              Image.asset(
+                'assets/images/NGO.png',
+                height: 150.h,
+                width: 150.w,
               ),
-            ),
-            SizedBox(height: 10.h),
-           
-          ],
+              SizedBox(height: 50.h, width: double.infinity),
+              //lottie
+              Lottie.asset(
+                'assets/lottie/student.json',
+                height: 200.h,
+                width: 200.w,
+              ),
+              SizedBox(height: 70.h, width: double.infinity),
+          
+              Container(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20.h),
+                    Center(
+                      child: Text(
+                        'Sign Up As ',
+                        style: GoogleFonts.oswald(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.h, width: double.infinity),
+          
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        fixedSize: Size(200.w, 60.h),
+                        backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignUpVolunteer(),
+                          ),
+                        );
+                      },
+                      child: Center(
+                        child: Text(
+                          'Volunteer',
+                          style: GoogleFonts.cormorantSc(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 7.h, width: double.infinity),
+                    //student
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        fixedSize: Size(200.w, 60.h),
+                        backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignupStudent(),
+                          ),
+                        );
+                      },
+                      child: Center(
+                        child: Text(
+                          'Student',
+                          style: GoogleFonts.cormorantSc(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10.h),
+             
+            ],
+          ),
         ),
       ),
     );

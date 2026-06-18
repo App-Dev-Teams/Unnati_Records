@@ -58,14 +58,14 @@ class _StudentHomePageState extends State<StudentHomePage> {
         : 'Student';
 
     return Scaffold(
-      appBar: MyAppBar(imageName: "unnatiLogoColourFix.png", name: name),
+      appBar: MyAppBar(imageName: "NGO.png", name: name),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MyCarouselSlider(), // carousel slider
-            // mid part
+            // mid par
             SizedBox(
               height: 200.h,
               width: 350.w,
