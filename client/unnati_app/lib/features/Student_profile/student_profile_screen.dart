@@ -309,7 +309,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       const CircleAvatar(
                         backgroundImage: AssetImage(
-                          'assets/images/NGO.png',
+                          'assets/images/studentSarthi.jpeg',
                         ),
                         radius: 60,
                       ),

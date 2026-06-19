@@ -20,7 +20,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PdfAppBar(imageName: "NGO.png", name: "Resources"), // to be replaced by backend username 
+      appBar: PdfAppBar(imageName: "studentSarthi.jpeg", name: "Resources"), // to be replaced by backend username 
       backgroundColor: Colors.white, 
       body: SafeArea(
         child: Center(

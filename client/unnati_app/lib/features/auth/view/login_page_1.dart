@@ -28,7 +28,7 @@ class _LoginPage1State extends State<LoginPage1> {
             children: [
               SizedBox(height: 70.h),
               Image.asset(
-                'assets/images/NGO.png',
+                'assets/images/studentSarthi.jpeg',
                 height: 150.h,
                 width: 150.w,
               ),
