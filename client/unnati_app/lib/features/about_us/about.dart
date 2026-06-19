@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
                     Icon(Icons.info, size: 60, color: Colors.white),
                     SizedBox(height: 12),
                     Text(
-                      'UNNATI Society',
+                      'Student Sarthi',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -53,7 +53,7 @@ class AboutPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About UNNATI'),
+                  _buildSectionTitle('About Student Sarthi'),
 
                   const SizedBox(height: 12),
 
@@ -94,7 +94,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'DigiXplore',
+                    'Digi',
                     'Digital Education Initiative',
                     'Introducing underprivileged students to technology and bridging the digital divide through interactive sessions.',
                     Icons.computer,
@@ -111,7 +111,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'Akshar',
+                    'Aksh',
                     'Foundational Education Initiative',
                     'Providing foundational literacy and numeracy to underprivileged children unable to attend formal schooling.',
                     Icons.auto_stories,
@@ -128,7 +128,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'Netritva',
+                    'Netri',
                     'Career Guidance & Mentorship',
                     'Helping underprivileged students discover their potential through career guidance, mentorship, and leadership development.',
                     Icons.trending_up,
@@ -182,7 +182,7 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'What is UNNATI?',
+            'What is Student Sarthi?',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 8),
 
           Text(
-            'UNNATI Society is an Institute Outreach Activity and social outreach initiative associated with IIIT Bhagalpur, focused on empowering underprivileged communities through education, mentorship, literacy, and digital inclusion.',
+            'Student Sarthi Society is an Institute Outreach Activity and social outreach initiative associated with IIIT Bhagalpur, focused on empowering underprivileged communities through education, mentorship, literacy, and digital inclusion.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
@@ -227,7 +227,7 @@ class AboutPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'IIIT Bhagalpur',
+                      'XYZ Bhagalpur',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -445,7 +445,8 @@ class AboutPage extends StatelessWidget {
               ),
 
               Text(
-                'unnati.ir@iiitbh.ac.in',
+                // 'unnati.ir@iiitbh.ac.in',
+                'studentSarthi@xyz.ac.in',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

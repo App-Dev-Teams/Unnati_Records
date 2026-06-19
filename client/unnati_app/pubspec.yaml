@@ -71,7 +71,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: ture
-  image_path: "assets/images/unnatiLogoColourFix.png"
+  image_path: "assets/images/studentSarthi.jpeg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

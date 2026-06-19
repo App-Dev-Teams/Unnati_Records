@@ -26,7 +26,7 @@ class NetritvaPage extends StatelessWidget {
                     Icon(Icons.trending_up, size: 80, color: Colors.white),
                     SizedBox(height: 16),
                     Text(
-                      'Netritva',
+                      'Netri',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -54,10 +54,10 @@ class NetritvaPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Netritva'),
+                  _buildSectionTitle('About Netri'),
                   SizedBox(height: 12),
                   _buildDescriptionCard(
-                    'Netritva is UNNATI\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
+                    'Netri is UNNATI\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
                     Icons.info_outline,
                   ),
                   SizedBox(height: 30),

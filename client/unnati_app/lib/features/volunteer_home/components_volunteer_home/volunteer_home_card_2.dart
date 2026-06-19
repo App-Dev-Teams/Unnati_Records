@@ -48,7 +48,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
                       height: 40,
                       width: 40,
                       child: Image.asset(
-                        'assets/images/unnatiLogoColourFix.png',
+                        'assets/images/studentSarthi.jpeg',
                       ),
                     ),
 

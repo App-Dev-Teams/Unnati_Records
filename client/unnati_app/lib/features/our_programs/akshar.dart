@@ -26,7 +26,7 @@ class AksharPage extends StatelessWidget {
                     Icon(Icons.auto_stories, size: 80, color: Colors.white),
                     SizedBox(height: 16),
                     Text(
-                      'Akshar',
+                      'Aksh',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -54,10 +54,10 @@ class AksharPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Akshar'),
+                  _buildSectionTitle('About Aksh'),
                   SizedBox(height: 12),
                   _buildDescriptionCard(
-                    'Akshar is UNNATI Society\'s foundational education initiative focused on underprivileged children designed for those unable to afford formal schooling and built around community-based learning.',
+                    'Aksh is UNNATI Society\'s foundational education initiative focused on underprivileged children designed for those unable to afford formal schooling and built around community-based learning.',
                     Icons.info_outline,
                   ),
                   SizedBox(height: 30),

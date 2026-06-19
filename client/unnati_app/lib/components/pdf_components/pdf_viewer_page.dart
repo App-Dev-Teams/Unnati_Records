@@ -20,7 +20,7 @@ class PdfViewerPage extends StatelessWidget {
 
     return Scaffold(
       appBar: PdfAppBar(
-        imageName: "unnatiLogoColourFix.png",
+        imageName: "NGO.png",
         name: title,
       ),
       body: isNetwork 
