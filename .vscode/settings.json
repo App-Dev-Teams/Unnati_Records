@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/Flutter_Projects/Unnati_Records/client/unnati_app/linux"
+    "cmake.sourceDirectory": "D:/Flutter_Projects/Unnati_Records/client/unnati_app/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
