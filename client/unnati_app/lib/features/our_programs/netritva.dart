@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NetrivaPage extends StatelessWidget {
-  const NetrivaPage({super.key});
+class NetritvaPage extends StatelessWidget {
+  const NetritvaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class NetrivaPage extends StatelessWidget {
                     Icon(Icons.trending_up, size: 80, color: Colors.white),
                     SizedBox(height: 16),
                     Text(
-                      'Netritva',
+                      'Netri',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -54,10 +54,10 @@ class NetrivaPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Netritva'),
+                  _buildSectionTitle('About Netri'),
                   SizedBox(height: 12),
                   _buildDescriptionCard(
-                    'Netritva is UNNATI\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
+                    'Netri is UNNATI\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
                     Icons.info_outline,
                   ),
                   SizedBox(height: 30),
@@ -75,11 +75,17 @@ class NetrivaPage extends StatelessWidget {
                   SizedBox(height: 12),
                   Row(
                     children: [
-                      _buildBeneficiaryCard('Underprivileged\nStudents', Icons.person),
+                      _buildBeneficiaryCard(
+                        'Underprivileged\nStudents',
+                        Icons.person,
+                      ),
                       SizedBox(width: 12),
                       _buildBeneficiaryCard('Rural\nLearners', Icons.map),
                       SizedBox(width: 12),
-                      _buildBeneficiaryCard('First-Generation\nLearners', Icons.family_restroom),
+                      _buildBeneficiaryCard(
+                        'First-Generation\nLearners',
+                        Icons.family_restroom,
+                      ),
                     ],
                   ),
                   SizedBox(height: 30),
@@ -115,20 +121,43 @@ class NetrivaPage extends StatelessWidget {
                   SizedBox(height: 30),
                   _buildSectionTitle('How Netritva Works'),
                   SizedBox(height: 12),
-                  _buildProcessStep('1', 'Workshops', 'Interactive career and skill workshops', Colors.orange),
-                  _buildProcessStep('2', 'Counseling', 'Personalized career counseling sessions', Colors.deepOrange),
-                  _buildProcessStep('3', 'Mentorship', 'Connect with mentors and industry professionals', Colors.deepOrangeAccent),
+                  _buildProcessStep(
+                    '1',
+                    'Workshops',
+                    'Interactive career and skill workshops',
+                    Colors.orange,
+                  ),
+                  _buildProcessStep(
+                    '2',
+                    'Counseling',
+                    'Personalized career counseling sessions',
+                    Colors.deepOrange,
+                  ),
+                  _buildProcessStep(
+                    '3',
+                    'Mentorship',
+                    'Connect with mentors and industry professionals',
+                    Colors.deepOrangeAccent,
+                  ),
                   SizedBox(height: 30),
                   _buildSectionTitle('Our Impact'),
                   SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Career', 'Clarity Gained', Color(0xFFFFA726)),
+                        child: _buildImpactCard(
+                          'Career',
+                          'Clarity Gained',
+                          Color(0xFFFFA726),
+                        ),
                       ),
                       SizedBox(width: 12),
                       Expanded(
-                        child: _buildImpactCard('Exam', 'Awareness', Color(0xFFFFB74D)),
+                        child: _buildImpactCard(
+                          'Exam',
+                          'Awareness',
+                          Color(0xFFFFB74D),
+                        ),
                       ),
                     ],
                   ),
@@ -136,11 +165,19 @@ class NetrivaPage extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Education', 'Pathways Clear', Color(0xFFFFC95D)),
+                        child: _buildImpactCard(
+                          'Education',
+                          'Pathways Clear',
+                          Color(0xFFFFC95D),
+                        ),
                       ),
                       SizedBox(width: 12),
                       Expanded(
-                        child: _buildImpactCard('Confusion', 'Overcome', Color(0xFFFFD54F)),
+                        child: _buildImpactCard(
+                          'Confusion',
+                          'Overcome',
+                          Color(0xFFFFD54F),
+                        ),
                       ),
                     ],
                   ),
@@ -153,21 +190,38 @@ class NetrivaPage extends StatelessWidget {
                   SizedBox(height: 12),
                   _buildImpactListCard('Develop confidence', Icons.verified),
                   SizedBox(height: 12),
-                  _buildImpactListCard('Create goal-oriented mindsets', Icons.trending_up),
+                  _buildImpactListCard(
+                    'Create goal-oriented mindsets',
+                    Icons.trending_up,
+                  ),
                   SizedBox(height: 30),
                   _buildSectionTitle('Future Plans'),
                   SizedBox(height: 12),
-                  _buildFutureCard('Create a structured mentorship network', Icons.hub),
+                  _buildFutureCard(
+                    'Create a structured mentorship network',
+                    Icons.hub,
+                  ),
                   SizedBox(height: 12),
-                  _buildFutureCard('Connect with industry professionals', Icons.business),
+                  _buildFutureCard(
+                    'Connect with industry professionals',
+                    Icons.business,
+                  ),
                   SizedBox(height: 12),
-                  _buildFutureCard('Connect with alumni network', Icons.people_alt),
+                  _buildFutureCard(
+                    'Connect with alumni network',
+                    Icons.people_alt,
+                  ),
                   SizedBox(height: 12),
-                  _buildFutureCard('Provide scholarship guidance', Icons.card_giftcard),
+                  _buildFutureCard(
+                    'Provide scholarship guidance',
+                    Icons.card_giftcard,
+                  ),
                   SizedBox(height: 12),
-                  _buildFutureCard('Offer internship opportunities', Icons.work),
+                  _buildFutureCard(
+                    'Offer internship opportunities',
+                    Icons.work,
+                  ),
                   SizedBox(height: 30),
-                 
                 ],
               ),
             ),
@@ -219,21 +273,23 @@ class NetrivaPage extends StatelessWidget {
   static Widget _buildFeaturesList(List<String> features) {
     return Column(
       children: features
-          .map((feature) => Padding(
-                padding: EdgeInsets.only(bottom: 12),
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Color(0xFFFFA726), size: 20),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        feature,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                      ),
+          .map(
+            (feature) => Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Color(0xFFFFA726), size: 20),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      feature,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     ),
-                  ],
-                ),
-              ))
+                  ),
+                ],
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -265,7 +321,12 @@ class NetrivaPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildFeatureCard(String title, String description, IconData icon, Color color) {
+  static Widget _buildFeatureCard(
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -302,7 +363,12 @@ class NetrivaPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildProcessStep(String number, String title, String description, Color color) {
+  static Widget _buildProcessStep(
+    String number,
+    String title,
+    String description,
+    Color color,
+  ) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16),
       child: Row(

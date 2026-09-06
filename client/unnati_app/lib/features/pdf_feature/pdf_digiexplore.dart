@@ -305,7 +305,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
       backgroundColor: const Color(0xFFF5F7FB),
       appBar: PdfAppBar(
         imageName: 'unnatiLogoColourFix.png',
-        name: 'DigiXplore Syllabus',
+        name: 'Digi Syllabus',
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -364,7 +364,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Digixplore Syllabus',
+                                        'Digi Syllabus',
                                         style: GoogleFonts.oswald(
                                           color: Colors.white,
                                           fontSize: 28,

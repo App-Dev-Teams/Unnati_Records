@@ -32,10 +32,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           SizedBox(width: 15),
           CircleAvatar(
             backgroundImage: AssetImage(
-              "assets/images/unnatiLogoColourFix.png",
+              "assets/images/studentSarthi.jpeg",
             ), //if no personal pic-> by default unnati logo
             foregroundImage: AssetImage(
-              "assets/images/$imageName",
+              "assets/images/studentSarthi.jpeg",
             ), // if profile pic -> new profile pic
             radius: 20, //user image
           ),

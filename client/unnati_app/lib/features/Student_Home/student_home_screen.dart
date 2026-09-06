@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/Providers/bottom_nav_provider.dart';
-import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/bottom_nav_bar.dart';
-import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/features/Student_quiz/student_quiz_screen.dart';
 import 'package:unnati_app/features/Student_profile/student_profile_screen.dart';
 import 'package:unnati_app/features/Student_Home/student_home_page.dart';
@@ -21,17 +19,19 @@ class StudentHomeScreen extends ConsumerWidget {
       const StudentHomePage(), //1 index
       const StudedntProfileScreen(), //2 index
     ];
-        return Scaffold(
-          backgroundColor: Colors.white,
-          
-          body: pages[currentIndex],
-          bottomNavigationBar: BottomNavBar(
-            navIcon1: Icons.fact_check_outlined,
-            navIcon2: Icons.home_outlined,
-            navIcon3: Icons.person_outline,
-            labelName1: "Quiz",
-            labelName2: "Home",
-            labelName3: "Profile",
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            
+            body: pages[currentIndex],
+            bottomNavigationBar: BottomNavBar(
+              navIcon1: Icons.fact_check_outlined,
+              navIcon2: Icons.home_outlined,
+              navIcon3: Icons.person_outline,
+              labelName1: "Quiz",
+              labelName2: "Home",
+              labelName3: "Profile",
+            ),
           ),
         );
       }

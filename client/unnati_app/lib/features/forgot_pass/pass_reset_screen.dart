@@ -18,6 +18,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController checkNewPasswordController = TextEditingController();
   bool _isUpdating = false;
+  bool _obsecureText = true;
+  bool _ConfirmObsecureText = true;
 
   @override
   void dispose() {
@@ -55,8 +57,18 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                 padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: TextField(
                   controller: newPasswordController,
-                  obscureText: true,
+                  obscureText: _obsecureText,
                   decoration: InputDecoration(
+                    suffixIcon: IconButton(onPressed: (){
+                      setState(() {
+                        _obsecureText = !_obsecureText;
+                      });
+                    }, icon: Icon(
+                      
+                      (_obsecureText) ?
+                      Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                      )),
                     label: Text('Enter new password'),
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                     enabledBorder: OutlineInputBorder(
@@ -75,8 +87,18 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                 padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: TextField(
                   controller: checkNewPasswordController,
-                  obscureText: true,
+                  obscureText: _ConfirmObsecureText,
                   decoration: InputDecoration(
+                    suffixIcon: IconButton(onPressed: (){
+                      setState(() {
+                        _ConfirmObsecureText = !_ConfirmObsecureText;
+                      });
+                    }, icon: Icon(
+                      
+                      (_ConfirmObsecureText) ?
+                      Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                      )),
                     label: Text('Re-enter new password'),
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                     enabledBorder: OutlineInputBorder(

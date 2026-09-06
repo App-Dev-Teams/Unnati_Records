@@ -56,36 +56,69 @@ class ApiService {
     }
   }
 
-//all about permissions-----------
+  //all about permissions-----------
   static Future<void> savePermissions(List permissions) async {
-  final prefs = await _preferences;
-  await prefs.setStringList(
-    'user_permissions',
-    permissions.map((e) => e.toString()).toList(),
-  );
-}
+    final prefs = await _preferences;
+    await prefs.setStringList(
+      'user_permissions',
+      permissions.map((e) => e.toString()).toList(),
+    );
+  }
 
-static Future<List<String>> getPermissions() async {
-  final prefs = await _preferences;
-  return prefs.getStringList('user_permissions') ?? [];
-}
+  static Future<List<String>> getPermissions() async {
+    final prefs = await _preferences;
+    return prefs.getStringList('user_permissions') ?? [];
+  }
 
-static Future<bool> hasPermission(String permission) async {
-  final permissions = await getPermissions();
-  print("Stored Permissions: $permissions");
-  print("Checking Permission: $permission");
-  
-  return permissions.contains(permission);
-}
-//-----------------------------
+  static Future<bool> hasPermission(String permission) async {
+    final permissions = await getPermissions();
+    print("Stored Permissions: $permissions");
+    print("Checking Permission: $permission");
 
-  static Future<void> saveUserData(Map<String, dynamic> user) async {
+    return permissions.contains(permission);
+  }
+
+  static List<String> permissionsFromUserData(Map<String, dynamic>? user) {
+    final permissions = user?['permissions'];
+    if (permissions is List) {
+      return permissions.map((e) => e.toString()).toList();
+    }
+    return [];
+  }
+
+  static bool isStudentUserData(Map<String, dynamic>? user) {
+    if (user == null) return false;
+    return user['studentClass'] != null || user['school'] != null;
+  }
+  //-----------------------------
+
+  static Future<void> saveUserData(
+    Map<String, dynamic> user, {
+    bool preserveExistingFields = true,
+  }) async {
     final prefs = await _preferences;
     try {
       print("saveuserdata ${user}");
-      await prefs.setString('user_data', json.encode(user));
+      Map<String, dynamic> payload = Map<String, dynamic>.from(user);
+
+      if (preserveExistingFields) {
+        final current = await getUserData();
+        if (current != null) {
+          final merged = Map<String, dynamic>.from(current)..addAll(payload);
+          if (!payload.containsKey('role') && current.containsKey('role')) {
+            merged['role'] = current['role'];
+          }
+          if (!payload.containsKey('permissions') &&
+              current.containsKey('permissions')) {
+            merged['permissions'] = current['permissions'];
+          }
+          payload = merged;
+        }
+      }
+
+      await prefs.setString('user_data', json.encode(payload));
       if (!_userDataController.isClosed) {
-        _userDataController.add(user);
+        _userDataController.add(payload);
       }
     } catch (e) {
       print('❌ saveUserData error: ${e.toString()}');
@@ -110,12 +143,14 @@ static Future<bool> hasPermission(String permission) async {
     try {
       final prefs = await _preferences;
       await prefs.remove('user_role');
+      await prefs.remove('user_permissions');
 
       final current = await getUserData();
       if (current != null) {
         final updated = Map<String, dynamic>.from(current);
         updated.remove('role');
-        await saveUserData(updated);
+        updated.remove('permissions');
+        await saveUserData(updated, preserveExistingFields: false);
         if (!_userDataController.isClosed) _userDataController.add(updated);
       } else {
         if (!_userDataController.isClosed) _userDataController.add(null);
@@ -154,8 +189,8 @@ static Future<bool> hasPermission(String permission) async {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      // Handle auth errors centrally
-      if (response.statusCode == 401 || response.statusCode == 403) {
+      // Handle only real auth failures centrally.
+      if (response.statusCode == 401) {
         await _handleAuthError(response);
         final errorMessage =
             data['error'] as String? ??
@@ -188,7 +223,6 @@ static Future<bool> hasPermission(String permission) async {
         final responseData = data['data'] as Map<String, dynamic>?;
         print("responseData = $responseData");
 
-        
         //permission save
         final permissions = responseData?['permissions'];
         print("permissions✅ = $permissions");
@@ -260,6 +294,7 @@ static Future<bool> hasPermission(String permission) async {
             body: json.encode(body),
           )
           .timeout(_timeout);
+          print('📥 $operation Raw Response Status: ${response.body}');
 
       return await _handleResponse(response, operation);
     } on http.ClientException catch (e) {
@@ -585,7 +620,7 @@ static Future<bool> hasPermission(String permission) async {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode == 401 || response.statusCode == 403) {
+      if (response.statusCode == 401) {
         await _handleAuthError(response);
         final errorMessage =
             data['error'] as String? ??
@@ -632,7 +667,7 @@ static Future<bool> hasPermission(String permission) async {
         .timeout(_timeout);
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 401) {
       await _handleAuthError(response);
     }
 
@@ -655,9 +690,10 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/open'), headers: headers)
         .timeout(_timeout);
+    print(" OPEN DOUBTS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 401) {
       await _handleAuthError(response);
     }
 
@@ -680,9 +716,10 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
         .timeout(_timeout);
+        print(  " CLOSED DOUBTS: ${response.body}" );
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 401) {
       await _handleAuthError(response);
     }
 
@@ -705,9 +742,10 @@ static Future<bool> hasPermission(String permission) async {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
         .timeout(_timeout);
+        print(" DOUBT DETAILS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 401) {
       await _handleAuthError(response);
     }
 
@@ -734,9 +772,10 @@ static Future<bool> hasPermission(String permission) async {
           headers: headers,
         )
         .timeout(_timeout);
+        print(" DOUBT MESSAGES: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 401) {
       await _handleAuthError(response);
     }
 
@@ -770,7 +809,7 @@ static Future<bool> hasPermission(String permission) async {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode == 401 || response.statusCode == 403) {
+      if (response.statusCode == 401) {
         await _handleAuthError(response);
         final errorMessage =
             data['error'] as String? ??
@@ -826,7 +865,7 @@ static Future<bool> hasPermission(String permission) async {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode == 401 || response.statusCode == 403) {
+      if (response.statusCode == 401) {
         await _handleAuthError(response);
         final errorMessage =
             data['error'] as String? ??
@@ -878,7 +917,7 @@ static Future<bool> hasPermission(String permission) async {
 
       final data = json.decode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode == 401 || response.statusCode == 403) {
+      if (response.statusCode == 401) {
         await _handleAuthError(response);
         final errorMessage =
             data['error'] as String? ??
@@ -923,7 +962,10 @@ static Future<bool> hasPermission(String permission) async {
   /// Fetch all folders (courses/subjects)
   static Future<List<Map<String, dynamic>>> fetchFolders() async {
     final headers = await _authHeaders();
-    final res = await http.get(Uri.parse('$coreBaseUrl/folders'),headers:headers);
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/folders'),
+      headers: headers,
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -978,7 +1020,7 @@ static Future<bool> hasPermission(String permission) async {
     }
     final res = await http.patch(
       Uri.parse('$coreBaseUrl/folders/$id'),
-      headers:headers,
+      headers: headers,
       body: jsonEncode(body),
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -991,7 +1033,10 @@ static Future<bool> hasPermission(String permission) async {
   /// Get ImageKit auth parameters from backend
   static Future<Map<String, dynamic>> getImageKitAuth() async {
     final headers = await _authHeaders();
-    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'), headers: headers);
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/imagekit/auth'),
+      headers: headers,
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return json.decode(res.body) as Map<String, dynamic>;
     }
@@ -1005,7 +1050,7 @@ static Future<bool> hasPermission(String permission) async {
     final headers = await _authHeaders();
     final res = await http.get(
       Uri.parse('$coreBaseUrl/files/folder/$folderId'),
-      headers:headers
+      headers: headers,
     );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = json.decode(res.body) as List;

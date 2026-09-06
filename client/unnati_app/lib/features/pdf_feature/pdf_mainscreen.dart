@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 import 'package:unnati_app/components/pdf_components/pdf_cards.dart';
+import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/pdf_feature/comments.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_assignments.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_digiexplore.dart';
@@ -19,7 +20,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "Resources"), // to be replaced by backend username 
+      appBar: PdfAppBar(imageName: "studentSarthi.jpeg", name: "Resources"), // to be replaced by backend username 
       backgroundColor: Colors.white, 
       body: SafeArea(
         child: Center(
@@ -35,7 +36,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
                     MaterialPageRoute(builder: (_) => PdfDxscreen()),
                   );
                 },
-              child:  PdfCards(lottiePath: "assets/lottie/Exams.json", title: "DigiXplore Syllabus", Height: 220.h, width: 350.h, isLarge: true,),),
+              child:  PdfCards(lottiePath: "assets/lottie/Exams.json", title: "Digi Syllabus", Height: 220.h, width: 350.h, isLarge: true,),),
               SizedBox(height: 20.h),
              
               Row(
@@ -95,7 +96,7 @@ class _PdfMainscreenState extends State<PdfMainscreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => CommentsPage()),
+                    MaterialPageRoute(builder: (_) => HelpSupport()),
                   );
                 },
                 child: PdfCards(

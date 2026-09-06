@@ -22,7 +22,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
   bool isLoading = false;
 
   bool isValidVolunteerEmail(String email) {
-    final regex = RegExp(r'^[a-zA-Z]+\.([0-9]+)@iiitbh\.ac\.in$');
+    final regex = RegExp(r'^[a-zA-Z0-9]+\.([0-9]+)@iiitbh\.ac\.in$');
     return regex.hasMatch(email);
   }
 

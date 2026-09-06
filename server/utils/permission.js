@@ -1,6 +1,7 @@
 //==========Groups============================
 const groups = {
   DOUBT_MANAGER: [
+    "VIEW_DOUBTS",
     "REPLY_DOUBTS",
     "RESOLVE_DOUBTS"
   ],

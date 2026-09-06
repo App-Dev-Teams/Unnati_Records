@@ -33,7 +33,11 @@ const requireLogin = (req, res, next) => {
             }
 
             req.user = user;
-            req.role = payload.role;
+            // ensure role is available on req.user for downstream middlewares
+            if (payload && payload.role) {
+                req.user.role = payload.role;
+                req.role = payload.role;
+            }
             next();
         } catch (e) {
             console.error('AUTH MIDDLEWARE ERROR:', e);

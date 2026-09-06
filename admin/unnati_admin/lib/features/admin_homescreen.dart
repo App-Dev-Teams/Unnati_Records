@@ -40,7 +40,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
     final storedName = await AdminApiService.getAdminName();
     if (!mounted) return;
     setState(() {
-      adminName = (storedName != null && storedName.isNotEmpty) ? storedName : "Admin";
+      adminName = (storedName != null && storedName.isNotEmpty)
+          ? storedName
+          : "Admin";
     });
   }
 
@@ -50,14 +52,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
         _isLoadingLeads = true;
       });
       final assignedLeads = await AdminApiService.fetchAssignedLeads();
-      
+
       // Group assigned leads by program
       Map<String, List<Map<String, dynamic>>> grouped = {
         'DigiXplore': [],
         'Netritva': [],
         'Akshar': [],
       };
-      
+
       for (var lead in assignedLeads) {
         final program = lead['program'] ?? 'DigiXplore';
         if (grouped.containsKey(program)) {
@@ -113,7 +115,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 setState(() {
                   final program = lead['program'];
                   if (leadsByProgram.containsKey(program)) {
-                    leadsByProgram[program]!.removeWhere((l) => l['id'] == lead['id']);
+                    leadsByProgram[program]!.removeWhere(
+                      (l) => l['id'] == lead['id'],
+                    );
                   }
                 });
                 Navigator.pop(context);
@@ -206,16 +210,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     setState(() {
                       final program = lead['program'];
                       if (leadsByProgram.containsKey(program)) {
-                        final index = leadsByProgram[program]!.indexWhere((l) => l['id'] == lead['id']);
+                        final index = leadsByProgram[program]!.indexWhere(
+                          (l) => l['id'] == lead['id'],
+                        );
                         if (index != -1) {
-                          leadsByProgram[program]![index]['role'] = selectedRole;
+                          leadsByProgram[program]![index]['role'] =
+                              selectedRole;
                         }
                       }
                     });
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('${lead['name']} updated to $selectedRole'),
+                        content: Text(
+                          '${lead['name']} updated to $selectedRole',
+                        ),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -249,7 +258,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Text(
               "Admin Dashboard",
               style: GoogleFonts.oswald(
-                fontSize: 28.sp,
+                fontSize: 28,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -259,43 +268,53 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
             Text(
               "Manage volunteers and leads",
-              style: GoogleFonts.nunito(
-                color: Colors.white70,
-                fontSize: 14.sp,
-              ),
+              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
             ),
 
             SizedBox(height: 28.h),
 
-          
             Row(
               children: [
-                SizedBox(
-                  height: 180.h,
-                  width: MediaQuery.of(context).size.width / 2 - 30.w,
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push( context, MaterialPageRoute(builder: (context) => const AdminFileUploadPage(),) );
-                    },
-                    child: _AdminActionCard(
-                      icon: Icons.file_copy,
-                      title: "Upload Files",
-                      subtitle: "Provide students the study materials.",
+                Expanded(
+                  child: SizedBox(
+                    height: 180.h,
+                    width: MediaQuery.of(context).size.width / 2 - 30.w,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminFileUploadPage(),
+                          ),
+                        );
+                      },
+                      child: _AdminActionCard(
+                        icon: Icons.file_copy,
+                        title: "Upload Files",
+                        subtitle: "Provide students with study materials.",
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(width: 20.w),
-                SizedBox(
-                  height: 180.h,
-                  width: MediaQuery.of(context).size.width / 2 - 30.w,
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push( context, MaterialPageRoute(builder: (context) =>  AssignLeadsPage(),) );
-                    },
-                    child: _AdminActionCard(
-                      icon: Icons.admin_panel_settings_outlined,
-                      title: "Assign Leads",
-                      subtitle: "Promote & change roles",
+                SizedBox(width: 20),
+                Expanded(
+                  child: SizedBox(
+                    height: 180.h,
+                    width: MediaQuery.of(context).size.width / 2 - 30.w,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AssignLeadsPage(),
+                          ),
+                        );
+                      },
+                      child: _AdminActionCard(
+                        icon: Icons.admin_panel_settings_outlined,
+                        title: "Assign Leads",
+                        subtitle: "Promote & change roles",
+                      ),
                     ),
                   ),
                 ),
@@ -308,8 +327,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
               height: 180.h,
               width: double.infinity,
               child: InkWell(
-                onTap: (){
-                  Navigator.push( context, MaterialPageRoute(builder: (context) => const ViewVolunteersPage(),) );
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ViewVolunteersPage(),
+                    ),
+                  );
                 },
                 child: _AdminActionCard(
                   icon: Icons.people_outline,
@@ -324,7 +348,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Text(
               "Current Leads",
               style: GoogleFonts.oswald(
-                fontSize: 22.sp,
+                fontSize: 22,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
@@ -338,7 +362,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     children: programs.map((program) {
                       final leads = leadsByProgram[program] ?? [];
                       final isExpanded = expandedPrograms[program] ?? false;
-                      
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -350,23 +374,29 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             },
                             child: Container(
                               width: double.infinity,
-                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(255, 9, 75, 128),
-                                borderRadius: BorderRadius.circular(10.w),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.white10),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       Icon(
-                                        isExpanded ? Icons.expand_less : Icons.expand_more,
+                                        isExpanded
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
                                         color: Colors.white,
-                                        size: 20.w,
+                                        size: 20,
                                       ),
-                                      SizedBox(width: 12.w),
+                                      SizedBox(width: 12),
                                       Text(
                                         program,
                                         style: GoogleFonts.oswald(
@@ -379,9 +409,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                     ],
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: Colors.lightBlueAccent.withOpacity(0.2),
+                                      color: Colors.lightBlueAccent.withOpacity(
+                                        0.2,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -434,6 +469,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 }
+
 class _AdminActionCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -452,19 +488,12 @@ class _AdminActionCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF111212),
-            Color(0xFF1E2A3A),
-            Color(0xFF2B3D54),
-          ],
+          colors: [Color(0xFF111212), Color(0xFF1E2A3A), Color(0xFF2B3D54)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.35), blurRadius: 12),
         ],
       ),
       child: Column(
@@ -483,10 +512,7 @@ class _AdminActionCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             subtitle,
-            style: GoogleFonts.nunito(
-              fontSize: 13,
-              color: Colors.white70,
-            ),
+            style: GoogleFonts.nunito(fontSize: 13, color: Colors.white70),
           ),
         ],
       ),

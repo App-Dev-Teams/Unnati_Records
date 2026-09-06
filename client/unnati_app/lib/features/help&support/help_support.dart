@@ -14,18 +14,20 @@ class HelpSupport extends StatefulWidget {
 }
 
 class _HelpSupportState extends State<HelpSupport> {
-  String? _role;
+  bool _isStudent = false;
+  List<String> _permissions = [];
   StreamSubscription<Map<String, dynamic>?>? _userSub;
 
   @override
   void initState() {
     super.initState();
-    _loadRole();
-    // Subscribe to role/user changes so UI updates when auth/role is cleared
+    _loadAuthContext();
+    // Subscribe to user changes so UI updates when permissions or profile data change.
     _userSub = ApiService.userDataStream.listen((user) {
       if (!mounted) return;
       setState(() {
-        _role = user == null ? '' : (user['role'] as String? ?? '');
+        _permissions = ApiService.permissionsFromUserData(user);
+        _isStudent = ApiService.isStudentUserData(user);
       });
     });
   }
@@ -36,19 +38,20 @@ class _HelpSupportState extends State<HelpSupport> {
     super.dispose();
   }
 
-  Future<void> _loadRole() async {
-    final role = await ApiService.getRole();
+  Future<void> _loadAuthContext() async {
+    final user = await ApiService.getUserData();
     if (!mounted) return;
     setState(() {
-      _role = role;
+      _permissions = ApiService.permissionsFromUserData(user);
+      _isStudent = ApiService.isStudentUserData(user);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final role = (_role ?? '');
-    final isStudent = role == 'student';
-    final isLead = role == 'lead' || role == 'admin';
+    final canManageDoubts =
+        _permissions.contains('REPLY_DOUBTS') ||
+        _permissions.contains('RESOLVE_DOUBTS');
 
     return Scaffold(
       appBar: AppBar(title: const Text('Help & Support')),
@@ -65,7 +68,7 @@ class _HelpSupportState extends State<HelpSupport> {
           const SizedBox(height: 6),
           const Text('Ask, track, and resolve learning doubts from one place.'),
           const SizedBox(height: 18),
-          if (isStudent)
+          if (_isStudent)
             _SupportCard(
               title: 'My Doubts',
               subtitle: 'Create and track your doubt threads.',
@@ -79,7 +82,7 @@ class _HelpSupportState extends State<HelpSupport> {
                 );
               },
             ),
-          if (isLead)
+          if (canManageDoubts)
             _SupportCard(
               title: 'Open Doubts',
               subtitle: 'Respond to student doubts and resolve them.',
@@ -93,7 +96,7 @@ class _HelpSupportState extends State<HelpSupport> {
                 );
               },
             ),
-          if (isLead)
+          if (canManageDoubts)
             _SupportCard(
               title: 'Closed Doubts',
               subtitle: 'View resolved doubt threads.',

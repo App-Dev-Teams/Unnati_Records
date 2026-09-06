@@ -6,7 +6,7 @@ import 'package:unnati_app/features/developer/developers.dart';
 import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/our_programs/akshar.dart';
 import 'package:unnati_app/features/our_programs/digixplore.dart';
-import 'package:unnati_app/features/our_programs/netriva.dart';
+import 'package:unnati_app/features/our_programs/netritva.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
@@ -34,7 +34,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
             backgroundColor: const Color.fromARGB(255, 221, 221, 221),
 
             appBar: MyAppBar(
-              imageName: "unnatiLogoColourFix.png",
+              imageName: "studentSarthi.jpeg",
               name: user!["name"],
             ),
 
@@ -89,23 +89,23 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     ],
                   ),
                   ProgramsCardUtil(
-                    title: "DigiXplore",
+                    title: "Digi",
                     subtitle:
                         "Interactive live classes bridging the digital gap",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "studentSarthi.jpeg",
                     path: DigixplorePage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Netritva",
+                    title: "Netri",
                     subtitle:
                         "Holistic mentorship & doubt sessions for holistic growth",
-                    logo: "unnatiLogoColourFix.png",
-                    path: NetrivaPage(),
+                    logo: "studentSarthi.jpeg",
+                    path: NetritvaPage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Akshar",
+                    title: "Aksh",
                     subtitle: "Nukkad classes",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "studentSarthi.jpeg",
                     path: AksharPage(),
                   ),
                   SizedBox(height: 20.h),
