@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/services/download_service.dart';
-import 'package:unnati_app/services/database_service.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mydownloads.dart';
-import 'dart:io';
 
 class DownloadButton extends StatefulWidget {
   final String fileUrl;
@@ -31,13 +29,10 @@ class _DownloadButtonState extends State<DownloadButton> {
   bool isDownloading = false;
   double downloadProgress = 0.0;
   final DownloadService _downloadService = DownloadService();
-  final DatabaseService _dbService = DatabaseService();
 
   @override
   Widget build(BuildContext context) {
-    return isDownloading
-        ? _buildDownloadingState()
-        : _buildDownloadButton();
+    return isDownloading ? _buildDownloadingState() : _buildDownloadButton();
   }
 
   /// Build the download button
@@ -110,18 +105,10 @@ class _DownloadButtonState extends State<DownloadButton> {
         downloadProgress = 0.0;
       });
 
-      // Request permission
-      final hasPermission = await _downloadService.requestStoragePermission();
-      if (!hasPermission) {
-        if (mounted) {
-          widget.onError('Storage permission denied');
-          setState(() => isDownloading = false);
-        }
-        return;
-      }
-
       // Generate unique filename
-      final uniqueFileName = DownloadService.generateUniqueFileName(widget.fileName);
+      final uniqueFileName = DownloadService.generateUniqueFileName(
+        widget.fileName,
+      );
 
       // Download file with progress
       final filePath = await _downloadService.downloadFile(
@@ -226,16 +213,11 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
 
   Future<void> _performDownload() async {
     try {
-      final hasPermission = await _downloadService.requestStoragePermission();
-      if (!hasPermission) {
-        _updateStatus('Permission denied');
-        return;
-      }
-
       _updateStatus('Starting download...');
 
-      final uniqueFileName =
-          DownloadService.generateUniqueFileName(widget.fileName);
+      final uniqueFileName = DownloadService.generateUniqueFileName(
+        widget.fileName,
+      );
 
       final filePath = await _downloadService.downloadFile(
         fileUrl: widget.fileUrl,
@@ -298,10 +280,7 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
     return AlertDialog(
       title: Text(
         'Download Progress',
-        style: GoogleFonts.nunito(
-          fontWeight: FontWeight.w700,
-          fontSize: 18,
-        ),
+        style: GoogleFonts.nunito(fontWeight: FontWeight.w700, fontSize: 18),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,

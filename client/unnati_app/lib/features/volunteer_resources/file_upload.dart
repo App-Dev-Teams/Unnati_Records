@@ -1,15 +1,12 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:unnati_app/features/volunteer_resources/pdf_viewer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
@@ -42,48 +39,38 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
     super.initState();
 
     Future.microtask(() {
-      final subjects = ref.read(
-        subjectProvider,
-      );
+      final subjects = ref.read(subjectProvider);
 
       final current = subjects.firstWhere(
-        (s) =>
-            s.name == widget.subject &&
-            s.className == widget.className,
+        (s) => s.name == widget.subject && s.className == widget.className,
       );
 
       if (current.id != null) {
-        ref
-            .read(
-              subjectProvider.notifier,
-            )
-            .loadFiles(
-              current.id!,
-            );
+        ref.read(subjectProvider.notifier).loadFiles(current.id!);
       }
     });
     checkPermission();
   }
 
   Future<void> checkPermission() async {
-  try {
-  final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
+    try {
+      final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      hasResourcePermission = allowed;
-      isLoadingPermission = false;
-    });
-  } catch (e) {
-    if (!mounted) return;
+      setState(() {
+        hasResourcePermission = allowed;
+        isLoadingPermission = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
 
-    setState(() {
-      hasResourcePermission = false;
-      isLoadingPermission = false;
-    });
+      setState(() {
+        hasResourcePermission = false;
+        isLoadingPermission = false;
+      });
+    }
   }
-}
 
   //bottom sheet function
   void _showAddFileSheet(BuildContext scaffoldContext, WidgetRef ref) {
@@ -136,8 +123,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                       onPressed: () async {
                         final result = await FilePicker.platform.pickFiles(
                           type: FileType.custom,
-                          allowedExtensions: FileUploadPage
-                                  ._allowedExtensions,
+                          allowedExtensions: FileUploadPage._allowedExtensions,
                         );
 
                         if (result != null) {
@@ -244,12 +230,8 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
 
     final files = currentSubject.files;
     if (isLoadingPermission) {
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
@@ -387,127 +369,147 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               //EDIT
-                            if(hasResourcePermission)
-                              IconButton(
-                                icon: const Icon(Icons.edit, size: 18),
-                                onPressed: () async{
-                                  final controller = TextEditingController(
-                                    text: file.name,
-                                  );
+                              if (hasResourcePermission)
+                                IconButton(
+                                  icon: const Icon(Icons.edit, size: 18),
+                                  onPressed: () async {
+                                    final controller = TextEditingController(
+                                      text: file.name,
+                                    );
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: const Text('Edit File'),
-                                      content: TextField(
-                                        controller: controller,
-                                        decoration: const InputDecoration(
-                                          labelText: 'File Name',
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Edit File'),
+                                        content: TextField(
+                                          controller: controller,
+                                          decoration: const InputDecoration(
+                                            labelText: 'File Name',
+                                          ),
                                         ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              final newName = controller.text
+                                                  .trim();
+
+                                              if (newName.isEmpty) {
+                                                return;
+                                              }
+                                              try {
+                                                await ref
+                                                    .read(
+                                                      subjectProvider.notifier,
+                                                    )
+                                                    .renameFile(
+                                                      subjectName:
+                                                          widget.subject,
+                                                      className:
+                                                          widget.className,
+                                                      oldFile: file,
+                                                      newName: newName,
+                                                    );
+                                                //Navigator.pop(context);
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'File renamed successfully.',
+                                                    ),
+                                                  ),
+                                                );
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Failed to rename file.',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              'Save',
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: const Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () async{
-                                            final newName = controller.text
-                                                .trim();
-                                            
-                                            if (newName.isEmpty) {
-                                              return;        
-                                            }
-                                            try{
-                                              await ref.read(subjectProvider.notifier).renameFile(
-                                                subjectName: widget.subject,
-                                                className: widget.className,
-                                                oldFile: file,
-                                                newName: newName,
-                                              );
-                                              //Navigator.pop(context);
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('File renamed successfully.')),
-                                              );
-                                            } catch (e) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(content: Text('Failed to rename file.')),
-                                              );
-                                            }
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text(
-                                            'Save',
-                                            style: TextStyle(
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                                    );
+                                  },
+                                ),
 
                               //DELETE
-                              if(hasResourcePermission)
+                              if (hasResourcePermission)
                                 IconButton(
                                   icon: const Icon(
                                     Icons.delete,
                                     size: 18,
                                     color: Colors.red,
                                   ),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: const Text('Delete File'),
-                                      content: Text(
-                                        'Are you sure you want to delete "${file.name}"?',
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Delete File'),
+                                        content: Text(
+                                          'Are you sure you want to delete "${file.name}"?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                            ),
+                                            onPressed: () async {
+                                              await ref
+                                                  .read(
+                                                    subjectProvider.notifier,
+                                                  )
+                                                  .deleteFile(
+                                                    subjectName: widget.subject,
+                                                    className: widget.className,
+                                                    file: file,
+                                                  );
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                          ),
-                                          onPressed: ()async {
-                                            await ref
-                                                .read(subjectProvider.notifier)
-                                                .deleteFile(
-                                                  subjectName: widget.subject,
-                                                  className: widget.className,
-                                                  file: file,
-                                                );
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                                    );
+                                  },
+                                ),
                             ],
                           ),
                         ],
