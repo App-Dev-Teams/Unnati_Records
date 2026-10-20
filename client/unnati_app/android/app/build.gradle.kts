@@ -1,20 +1,12 @@
 import java.util.Properties
 import java.io.FileInputStream
-import org.gradle.api.GradleException
 
 val keystorePropertiesFile = rootProject.file("key.properties")
 val keystoreProperties = Properties()
+val hasReleaseSigning = keystorePropertiesFile.exists()
 
-// 1. FORCE CRASH IF FILE IS MISSING
-if (!keystorePropertiesFile.exists()) {
-    throw GradleException("FATAL ERROR: key.properties file is missing at ${keystorePropertiesFile.absolutePath}")
-}
-
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-// 2. FORCE CRASH IF PASSWORDS ARE MISSING
-if (keystoreProperties["storePassword"] == null) {
-    throw GradleException("FATAL ERROR: Could not read passwords from key.properties!")
+if (hasReleaseSigning) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 plugins {
@@ -46,17 +38,23 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+        if (hasReleaseSigning) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

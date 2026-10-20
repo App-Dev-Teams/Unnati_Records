@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class DownloadService {
   // Singleton pattern
@@ -27,64 +26,6 @@ class DownloadService {
     return downloadPath;
   }
 
-  /// Request storage permission
-  Future<bool> requestStoragePermission() async {
-    try {
-      // For Android 13+ (API 33+) - Request MANAGE_EXTERNAL_STORAGE
-      if (Platform.isAndroid) {
-        final androidInfo = await _getAndroidVersion();
-        
-        if (androidInfo >= 33) {
-          // Android 13+
-          final status = await Permission.manageExternalStorage.request();
-          
-          if (status.isDenied) {
-            print('Permission denied');
-            return false;
-          } else if (status.isPermanentlyDenied) {
-            print('Permission permanently denied, opening app settings');
-            openAppSettings();
-            return false;
-          }
-          
-          return status.isGranted;
-        } else {
-          // Android 12 and below
-          final status = await Permission.storage.request();
-          
-          if (status.isDenied) {
-            print('Permission denied');
-            return false;
-          } else if (status.isPermanentlyDenied) {
-            print('Permission permanently denied, opening app settings');
-            openAppSettings();
-            return false;
-          }
-          
-          return status.isGranted;
-        }
-      }
-      
-      // For iOS or other platforms
-      return true;
-    } catch (e) {
-      print('Error requesting permission: $e');
-      return false;
-    }
-  }
-
-  /// Get Android SDK version
-  Future<int> _getAndroidVersion() async {
-    try {
-      if (Platform.isAndroid) {
-        return 33;
-      }
-      return 0;
-    } catch (e) {
-      return 0;
-    }
-  }
-
   /// Download file from URL and save to local storage
   /// Returns the local file path on success, null on failure
   Future<String?> downloadFile({
@@ -93,12 +34,6 @@ class DownloadService {
     Function(int received, int total)? onProgress,
   }) async {
     try {
-      // Request permission
-      final hasPermission = await requestStoragePermission();
-      if (!hasPermission) {
-        throw Exception('Storage permission denied');
-      }
-
       // Get local path
       final localPath = await getLocalPath();
       final filePath = '$localPath/$fileName';
@@ -116,7 +51,9 @@ class DownloadService {
       );
 
       if (streamedResponse.statusCode != 200) {
-        throw Exception('Failed to download file: ${streamedResponse.statusCode}');
+        throw Exception(
+          'Failed to download file: ${streamedResponse.statusCode}',
+        );
       }
 
       final contentLength = streamedResponse.contentLength ?? 0;
@@ -125,17 +62,15 @@ class DownloadService {
       // Create file and write bytes
       final sink = file.openWrite();
 
-      await streamedResponse.stream.listen(
-        (List<int> chunk) {
-          received += chunk.length;
-          sink.add(chunk);
+      await streamedResponse.stream.listen((List<int> chunk) {
+        received += chunk.length;
+        sink.add(chunk);
 
-          // Callback for progress
-          if (onProgress != null) {
-            onProgress(received, contentLength);
-          }
-        },
-      ).asFuture();
+        // Callback for progress
+        if (onProgress != null) {
+          onProgress(received, contentLength);
+        }
+      }).asFuture();
 
       await sink.close();
 
@@ -210,5 +145,4 @@ class DownloadService {
     }
     return '${fileName}_$timestamp';
   }
-
 }
