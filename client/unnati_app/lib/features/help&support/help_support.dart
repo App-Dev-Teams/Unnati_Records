@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/help&support/doubt_list_screen.dart';
-import 'package:unnati_app/features/help&support/lead_open_doubts_screen.dart';
-import 'package:unnati_app/features/help&support/lead_closed_doubts_screen.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class HelpSupport extends StatefulWidget {
@@ -52,6 +50,8 @@ class _HelpSupportState extends State<HelpSupport> {
     final canManageDoubts =
         _permissions.contains('REPLY_DOUBTS') ||
         _permissions.contains('RESOLVE_DOUBTS');
+    final canViewDoubts =
+        canManageDoubts || _permissions.contains('VIEW_DOUBTS');
 
     return Scaffold(
       appBar: AppBar(title: const Text('Help & Support')),
@@ -82,21 +82,27 @@ class _HelpSupportState extends State<HelpSupport> {
                 );
               },
             ),
-          if (canManageDoubts)
+          if (canViewDoubts)
             _SupportCard(
               title: 'Open Doubts',
-              subtitle: 'Respond to student doubts and resolve them.',
+              subtitle: canManageDoubts
+                  ? 'Respond to student doubts and resolve them.'
+                  : 'View student doubts.',
               icon: Icons.support_agent,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const LeadOpenDoubtsScreen(),
+                    builder: (_) => DoubtListScreen(
+                      showOpenDoubts: true,
+                      title: 'Open Doubts',
+                      readOnly: !canManageDoubts,
+                    ),
                   ),
                 );
               },
             ),
-          if (canManageDoubts)
+          if (canViewDoubts)
             _SupportCard(
               title: 'Closed Doubts',
               subtitle: 'View resolved doubt threads.',
@@ -105,7 +111,11 @@ class _HelpSupportState extends State<HelpSupport> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const LeadClosedDoubtsScreen(),
+                    builder: (_) => DoubtListScreen(
+                      showClosedDoubts: true,
+                      title: 'Closed Doubts',
+                      readOnly: !canManageDoubts,
+                    ),
                   ),
                 );
               },
