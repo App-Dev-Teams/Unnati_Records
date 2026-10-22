@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   lottie: ^3.3.2
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   pdfx: ^2.9.2
   flutter_riverpod: ^3.0.3
   # The following adds the Cupertino Icons font to your application.
@@ -71,7 +71,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: ture
-  image_path: "assets/images/studentSarthi.jpeg"
+  image_path: "assets/images/unnatiLogoColourFix.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

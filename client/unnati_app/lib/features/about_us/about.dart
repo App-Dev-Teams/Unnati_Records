@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
                     Icon(Icons.info, size: 60, color: Colors.white),
                     SizedBox(height: 12),
                     Text(
-                      'Student Sarthi',
+                      'Unnati Society',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -53,7 +53,7 @@ class AboutPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Student Sarthi'),
+                  _buildSectionTitle('About Unnati'),
 
                   const SizedBox(height: 12),
 
@@ -94,7 +94,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'Digi',
+                    'DigiXplore',
                     'Digital Education Initiative',
                     'Introducing underprivileged students to technology and bridging the digital divide through interactive sessions.',
                     Icons.computer,
@@ -111,7 +111,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'Aksh',
+                    'Akshar',
                     'Foundational Education Initiative',
                     'Providing foundational literacy and numeracy to underprivileged children unable to attend formal schooling.',
                     Icons.auto_stories,
@@ -128,7 +128,7 @@ class AboutPage extends StatelessWidget {
 
                   _buildProgramCard(
                     context,
-                    'Netri',
+                    'Netritva',
                     'Career Guidance & Mentorship',
                     'Helping underprivileged students discover their potential through career guidance, mentorship, and leadership development.',
                     Icons.trending_up,
@@ -182,7 +182,7 @@ class AboutPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'What is Student Sarthi?',
+            'What is Unnati?',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 8),
 
           Text(
-            'Student Sarthi Society is an Institute Outreach Activity and social outreach initiative associated with IIIT Bhagalpur, focused on empowering underprivileged communities through education, mentorship, literacy, and digital inclusion.',
+            'Unnati Society is an Institute Outreach Activity and social outreach initiative associated with IIIT Bhagalpur, focused on empowering underprivileged communities through education, mentorship, literacy, and digital inclusion.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
@@ -218,7 +218,10 @@ class AboutPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.school, color: Colors.blue, size: 28),
+               SizedBox(
+                height: 30,
+                width: 30,
+                child: Image.asset('assets/images/collegeLogo.png')),
 
               const SizedBox(width: 12),
 
@@ -227,7 +230,7 @@ class AboutPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'XYZ Bhagalpur',
+                      'IIIT Bhagalpur',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -446,7 +449,7 @@ class AboutPage extends StatelessWidget {
 
               Text(
                 // 'unnati.ir@iiitbh.ac.in',
-                'studentSarthi@xyz.ac.in',
+                'unnati.ir@iiitbh.ac.in',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

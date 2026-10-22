@@ -27,7 +27,7 @@ class _SignupAsState extends State<SignupAs> {
               SizedBox(height: 70.h,),
               //unnati logo
               Image.asset(
-                'assets/images/studentSarthi.jpeg',
+                'assets/images/unnatiLogoColourFix.png',
                 height: 150.h,
                 width: 150.w,
               ),
