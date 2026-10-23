@@ -1,4 +1,4 @@
-package com.example.unnati_app
+package com.unnati.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -71,19 +71,16 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
     final title = (file['displayName'] ?? 'PDF').toString();
 
     if (link.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid file link')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Invalid file link')));
       return;
     }
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PdfViewerPage(
-          pdfPath: link,
-          title: title,
-        ),
+        builder: (_) => PdfViewerPage(pdfPath: link, title: title),
       ),
     );
   }
@@ -188,10 +185,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                 },
               ),
               const SizedBox(width: 8),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Color(0xFF94A3B8),
-              ),
+              const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8)),
             ],
           ),
         ),
@@ -240,11 +234,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
               ),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(
-              Icons.folder_rounded,
-              color: accent,
-              size: 27,
-            ),
+            child: Icon(Icons.folder_rounded, color: accent, size: 27),
           ),
           title: Text(
             folderName,
@@ -285,9 +275,7 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                 ),
               )
             else
-              Column(
-                children: files.map(_buildFileTile).toList(),
-              ),
+              Column(children: files.map(_buildFileTile).toList()),
           ],
         ),
       ),
@@ -361,7 +349,8 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                                 const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'DigiXplore Syllabus',
@@ -434,7 +423,9 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                               Container(
                                 padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF2B3D54).withOpacity(0.08),
+                                  color: const Color(
+                                    0xFF2B3D54,
+                                  ).withOpacity(0.08),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -471,7 +462,8 @@ class _PdfDxscreenState extends ConsumerState<PdfDxscreen> {
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) => _buildFolderCard(folders[index], index),
+                          (context, index) =>
+                              _buildFolderCard(folders[index], index),
                           childCount: folders.length,
                         ),
                       ),
@@ -517,10 +509,7 @@ class _StatChip extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: GoogleFonts.nunito(
-              color: Colors.white70,
-              fontSize: 12,
-            ),
+            style: GoogleFonts.nunito(color: Colors.white70, fontSize: 12),
           ),
         ],
       ),
