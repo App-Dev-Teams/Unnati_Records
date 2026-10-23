@@ -9,11 +9,13 @@ import 'package:unnati_app/services/api_service.dart';
 class DoubtThreadScreen extends ConsumerStatefulWidget {
   final String doubtId;
   final bool isLeadView;
+  final bool readOnly;
 
   const DoubtThreadScreen({
     super.key,
     required this.doubtId,
     this.isLeadView = false,
+    this.readOnly = false,
   });
 
   @override
@@ -48,7 +50,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
       });
 
       // If this screen is lead-only and doubts permissions were revoked, close it.
-      if (widget.isLeadView && !_canManageDoubts) {
+      if (widget.isLeadView && !_canManageDoubts && !widget.readOnly) {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
@@ -108,7 +110,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
       _isSending = true;
     });
 
-    if (widget.isLeadView && !_canManageDoubts) {
+    if (widget.isLeadView && (!_canManageDoubts || widget.readOnly)) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Permission revoked.')));
@@ -232,7 +234,9 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                         },
                       ),
                     ),
-                    if (doubt.isOpen)
+                    if (doubt.isOpen &&
+                        (!widget.isLeadView ||
+                            (_canManageDoubts && !widget.readOnly)))
                       SafeArea(
                         top: false,
                         child: Padding(
