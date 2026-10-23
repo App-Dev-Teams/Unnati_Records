@@ -65,7 +65,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MyCarouselSlider(), // carousel slider
-            // mid par
+            // mid part
             SizedBox(
               height: 200.h,
               width: 350.w,

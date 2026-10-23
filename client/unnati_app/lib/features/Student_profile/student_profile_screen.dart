@@ -47,15 +47,54 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
 
     // Ensure selectedSchool is in the schools list, otherwise set to first available or current value.
     String? selectedSchool = schools.contains(currentSchool)
-      ? currentSchool
-      : (schools.isNotEmpty ? schools.first : null);
+        ? currentSchool
+        : (schools.isNotEmpty ? schools.first : null);
 
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Edit Profile'),
+          backgroundColor: const Color(0xFFF5F5F5),
+          surfaceTintColor: Colors.transparent,
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+          contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+
+          title: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF061A22),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Update your personal information',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 14),
+              Divider(
+                color: Color(0xFF29B6F6),
+                thickness: 3,
+                height: 3,
+                endIndent: 180,
+              ),
+            ],
+          ),
+
           content: SingleChildScrollView(
             child: Form(
               key: formKey,
@@ -64,9 +103,37 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                 children: [
                   TextFormField(
                     controller: nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Name',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.person_outline_rounded,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -78,13 +145,43 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16),
+
                   TextFormField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Phone',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.phone_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -96,13 +193,45 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16),
+
                   DropdownButtonFormField<int>(
                     value: selectedClass,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Class',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.school_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
                     ),
+                    dropdownColor: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
                     items: selectClass.map((cls) {
                       return DropdownMenuItem<int>(
                         value: cls,
@@ -121,17 +250,60 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       });
                     },
                   ),
+
                   const SizedBox(height: 16),
+
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     value: selectedSchool,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'School',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.apartment_rounded,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
                     ),
+                    dropdownColor: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
                     items: schools.map((s) {
                       return DropdownMenuItem<String>(
                         value: s,
-                        child: Text(s),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                s,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
                     validator: (value) {
@@ -150,94 +322,212 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
               ),
             ),
           ),
+
           actions: [
-            TextButton(
-              style: TextButton.styleFrom(backgroundColor: Colors.green),
-              onPressed: () async {
-                if (!(formKey.currentState?.validate() ?? false)) {
-                  return;
-                }
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF29B6F6),
+                  foregroundColor: const Color(0xFF061A22),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 2,
+                ),
+                onPressed: () async {
+                  if (!(formKey.currentState?.validate() ?? false)) {
+                    return;
+                  }
 
-                final newName = nameController.text.trim();
-                final newPhone = phoneController.text.trim();
-                final newClass = selectedClass?.toString() ?? currentClass;
-                final newSchool = selectedSchool ?? currentSchool;
+                  final newName = nameController.text.trim();
+                  final newPhone = phoneController.text.trim();
+                  final newClass = selectedClass?.toString() ?? currentClass;
+                  final newSchool = selectedSchool ?? currentSchool;
 
-                final res = await ApiService.updateProfile(
-                  name: newName,
-                  phoneNo: newPhone,
-                  studentClass: newClass,
-                  school: newSchool,
-                );
-
-                if (!mounted) return;
-
-                if (res['success'] == true) {
-                  final updated = res['data'] as Map<String, dynamic>?;
-                  final updatedName = updated?['name']?.toString() ?? newName;
-                  final updatedPhone = updated?['phoneNo']?.toString() ?? newPhone;
-                  final updatedClass = updated?['studentClass']?.toString() ?? newClass;
-                  final updatedSchool = updated?['school']?.toString() ?? newSchool;
-
-                  setState(() {
-                    _name = updatedName;
-                    phone = updatedPhone;
-                    studentClass = updatedClass;
-                    school = updatedSchool;
-                  });
-
-                  Navigator.of(dialogContext).pop();
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile updated')),
+                  final res = await ApiService.updateProfile(
+                    name: newName,
+                    phoneNo: newPhone,
+                    studentClass: newClass,
+                    school: newSchool,
                   );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(res['message'] ?? 'Update failed')),
-                  );
-                }
-              },
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+
+                  if (!mounted) return;
+
+                  if (res['success'] == true) {
+                    final updated = res['data'] as Map<String, dynamic>?;
+
+                    final updatedName = updated?['name']?.toString() ?? newName;
+                    final updatedPhone =
+                        updated?['phoneNo']?.toString() ?? newPhone;
+                    final updatedClass =
+                        updated?['studentClass']?.toString() ?? newClass;
+                    final updatedSchool =
+                        updated?['school']?.toString() ?? newSchool;
+
+                    setState(() {
+                      _name = updatedName;
+                      phone = updatedPhone;
+                      studentClass = updatedClass;
+                      school = updatedSchool;
+                    });
+
+                    Navigator.of(dialogContext).pop();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Profile updated')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(res['message'] ?? 'Update failed'),
+                      ),
+                    );
+                  }
+                },
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(
+                    color: Color(0xFF061A22),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
-    
     );
   }
 
   Future<void> _handleLogout() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+
+showDialog(
+  context: context,
+  builder: (BuildContext context) => AlertDialog(
+    backgroundColor: const Color(0xFFF5F5F5),
+    surfaceTintColor: Colors.transparent,
+    elevation: 12,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+    contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
+    actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+
+    title: const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.logout_rounded,
+              color: Color(0xFF147DAD),
+              size: 27,
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Confirm Logout',
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF061A22),
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 14),
+        Divider(
+          color: Color(0xFF29B6F6),
+          thickness: 3,
+          height: 3,
+          endIndent: 180,
+        ),
+      ],
+    ),
+
+    content: const Text(
+      'Are you sure you want to logout?',
+      style: TextStyle(
+        fontSize: 15,
+        height: 1.5,
+        color: Color(0xFF52616B),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+
+    actions: [
+      Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF061A22),
+                side: const BorderSide(
+                  color: Color(0xFFD5DEE3),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context); // Close dialog
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFF29B6F6),
+                foregroundColor: const Color(0xFF061A22),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
 
-              // Clear all stored data
-              await ApiService.clearAllData();
+                // Clear all stored data
+                await ApiService.clearAllData();
 
-              // Navigate to auth check (which will route to login)
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AuthCheck()),
-                  (route) => false,
-                );
-              }
-            },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                // Navigate to auth check (which will route to login)
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AuthCheck(),
+                    ),
+                    (route) => false,
+                  );
+                }
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-    );
+    ],
+  ),
+);
   }
 
   @override
@@ -309,7 +599,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       const CircleAvatar(
                         backgroundImage: AssetImage(
-                          'assets/images/studentSarthi.jpeg',
+                          'assets/images/unnatiLogoColourFix.png',
                         ),
                         radius: 60,
                       ),

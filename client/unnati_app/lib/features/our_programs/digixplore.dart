@@ -26,7 +26,7 @@ class DigixplorePage extends StatelessWidget {
                     Icon(Icons.computer, size: 80, color: Colors.white),
                     SizedBox(height: 16),
                     Text(
-                      'Digi',
+                      'DigiXplore',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -54,10 +54,10 @@ class DigixplorePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Digi'),
+                  _buildSectionTitle('About DigiXplore'),
                   SizedBox(height: 12),
                   _buildDescriptionCard(
-                    'Digi is UNNATI Society\'s digital education initiative focused on introducing underprivileged school students to technology and bridging the digital divide through weekly interactive sessions.',
+                    'DigiXplore is UNNATI Society\'s digital education initiative focused on introducing underprivileged school students to technology and bridging the digital divide through weekly interactive sessions.',
                     Icons.info_outline,
                   ),
                   SizedBox(height: 30),

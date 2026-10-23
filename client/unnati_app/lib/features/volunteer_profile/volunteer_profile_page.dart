@@ -116,224 +116,556 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         ? currentBranch
         : _branchOptions.first;
 
-    showDialog(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Edit Profile'),
-          content: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Username is required';
-                      }
-                      if (value.trim().length < 3) {
-                        return 'Username must be at least 3 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    maxLength: 10,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: 'Phone',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    validator: (value) {
-                      final text = value?.trim() ?? '';
-                      if (text.isEmpty) {
-                        return 'Phone number is required';
-                      }
-                      if (!RegExp(r'^\d{10}$').hasMatch(text)) {
-                        return 'Phone number must be 10 digits';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: batchController,
-                    keyboardType: TextInputType.number,
-                    maxLength: 4,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(4),
-                    ],
-                    decoration: const InputDecoration(
-                      labelText: 'Batch Start Year',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    validator: (value) {
-                      final text = value?.trim() ?? '';
-                      final year = int.tryParse(text);
-                      if (text.isEmpty) {
-                        return 'Batch year is required';
-                      }
-                      if (year == null || year < 2000 || year > 2100) {
-                        return 'Batch year must be between 2000 and 2100';
-                      }
-                      return null;
-                    },
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: selectedProgram,
-                    decoration: const InputDecoration(
-                      labelText: 'Program',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    items: _programOptions
-                        .map(
-                          (item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(item),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setDialogState(() {
-                          selectedProgram = value;
-                        });
-                      }
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Program is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: selectedBranch,
-                    decoration: const InputDecoration(
-                      labelText: 'Branch',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    items: _branchOptions
-                        .map(
-                          (item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(item),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setDialogState(() {
-                          selectedBranch = value;
-                        });
-                      }
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Branch is required';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(backgroundColor: Colors.green),
-              onPressed: () async {
-                if (!(formKey.currentState?.validate() ?? false)) {
-                  return;
-                }
-
-                final newName = nameController.text.trim();
-                final newPhone = phoneController.text.trim();
-                final newBatchYear = int.parse(batchController.text.trim());
-
-                final res = await ApiService.updateProfile(
-                  name: newName,
-                  phoneNo: newPhone,
-                  program: selectedProgram,
-                  branch: selectedBranch,
-                  batchYear: newBatchYear,
-                );
-
-                if (res['success'] == true) {
-                  setState(() {
-                    _name = newName;
-                    phone = newPhone;
-                    batch = '$newBatchYear-${newBatchYear + 4}';
-                    program = selectedProgram;
-                    branch = selectedBranch;
-                  });
-                  if (dialogContext.mounted) {
-                    Navigator.pop(dialogContext);
-                  }
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Profile updated')),
-                    );
-                  }
-                } else {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(res['message'] ?? 'Update failed'),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
+showDialog(
+  context: context,
+  builder: (dialogContext) => StatefulBuilder(
+    builder: (context, setDialogState) => AlertDialog(
+      backgroundColor: const Color(0xFFF5F5F5),
+      surfaceTintColor: Colors.transparent,
+      elevation: 12,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
       ),
-    );
-  }
-
-  Future<void> _handleLogout() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+      contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+      actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+      title: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Edit Profile',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF061A22),
+              letterSpacing: -0.5,
+            ),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context); // Close dialog
-
-              // Clear all stored data
-              await ApiService.clearAllData();
-
-              // Navigate to auth check (which will route to login)
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AuthCheck()),
-                  (route) => false,
-                );
-              }
-            },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          SizedBox(height: 6),
+          Text(
+            'Update your personal information',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black54,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 14),
+          Divider(
+            color: Color(0xFF29B6F6),
+            thickness: 3,
+            height: 3,
+            endIndent: 180,
           ),
         ],
       ),
-    );
+      content: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF52616B),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.person_outline_rounded,
+                    color: Color(0xFF147DAD),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFE0E6E9),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF29B6F6),
+                      width: 2,
+                    ),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.redAccent),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Colors.redAccent,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Username is required';
+                  }
+                  if (value.trim().length < 3) {
+                    return 'Username must be at least 3 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Phone',
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF52616B),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.phone_outlined,
+                    color: Color(0xFF147DAD),
+                  ),
+                  counterStyle: const TextStyle(
+                    color: Colors.black45,
+                    fontSize: 11,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFE0E6E9),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF29B6F6),
+                      width: 2,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  final text = value?.trim() ?? '';
+                  if (text.isEmpty) {
+                    return 'Phone number is required';
+                  }
+                  if (!RegExp(r'^\d{10}$').hasMatch(text)) {
+                    return 'Phone number must be 10 digits';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: batchController,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(4),
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Batch Start Year',
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF52616B),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.calendar_month_outlined,
+                    color: Color(0xFF147DAD),
+                  ),
+                  counterStyle: const TextStyle(
+                    color: Colors.black45,
+                    fontSize: 11,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFE0E6E9),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF29B6F6),
+                      width: 2,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  final text = value?.trim() ?? '';
+                  final year = int.tryParse(text);
+                  if (text.isEmpty) {
+                    return 'Batch year is required';
+                  }
+                  if (year == null || year < 2000 || year > 2100) {
+                    return 'Batch year must be between 2000 and 2100';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: selectedProgram,
+                decoration: InputDecoration(
+                  labelText: 'Program',
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF52616B),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.school_outlined,
+                    color: Color(0xFF147DAD),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFE0E6E9),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF29B6F6),
+                      width: 2,
+                    ),
+                  ),
+                ),
+                dropdownColor: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                items: _programOptions
+                    .map(
+                      (item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setDialogState(() {
+                      selectedProgram = value;
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Program is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: selectedBranch,
+                decoration: InputDecoration(
+                  labelText: 'Branch',
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF52616B),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.account_tree_outlined,
+                    color: Color(0xFF147DAD),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFE0E6E9),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF29B6F6),
+                      width: 2,
+                    ),
+                  ),
+                ),
+                dropdownColor: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                items: _branchOptions
+                    .map(
+                      (item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setDialogState(() {
+                      selectedBranch = value;
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Branch is required';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF29B6F6),
+              foregroundColor: const Color(0xFF061A22),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              elevation: 2,
+            ),
+            onPressed: () async {
+              if (!(formKey.currentState?.validate() ?? false)) {
+                return;
+              }
+
+              final newName = nameController.text.trim();
+              final newPhone = phoneController.text.trim();
+              final newBatchYear =
+                  int.parse(batchController.text.trim());
+
+              final res = await ApiService.updateProfile(
+                name: newName,
+                phoneNo: newPhone,
+                program: selectedProgram,
+                branch: selectedBranch,
+                batchYear: newBatchYear,
+              );
+
+              if (res['success'] == true) {
+                setState(() {
+                  _name = newName;
+                  phone = newPhone;
+                  batch = '$newBatchYear-${newBatchYear + 4}';
+                  program = selectedProgram;
+                  branch = selectedBranch;
+                });
+                if (dialogContext.mounted) {
+                  Navigator.pop(dialogContext);
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Profile updated'),
+                    ),
+                  );
+                }
+              } else {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        res['message'] ?? 'Update failed',
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text(
+              'Save Changes',
+              style: TextStyle(
+                color: Color(0xFF061A22),
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+  }
+
+  Future<void> _handleLogout() async {
+showDialog(
+  context: context,
+  builder: (BuildContext context) => AlertDialog(
+    backgroundColor: const Color(0xFFF5F5F5),
+    surfaceTintColor: Colors.transparent,
+    elevation: 12,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+    contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
+    actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+
+    title: const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.logout_rounded,
+              color: Color(0xFF147DAD),
+              size: 27,
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Confirm Logout',
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF061A22),
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 14),
+        Divider(
+          color: Color(0xFF29B6F6),
+          thickness: 3,
+          height: 3,
+          endIndent: 180,
+        ),
+      ],
+    ),
+
+    content: const Text(
+      'Are you sure you want to logout?',
+      style: TextStyle(
+        fontSize: 15,
+        height: 1.5,
+        color: Color(0xFF52616B),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+
+    actions: [
+      Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF061A22),
+                side: const BorderSide(
+                  color: Color(0xFFD5DEE3),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFF29B6F6),
+                foregroundColor: const Color(0xFF061A22),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+
+                // Clear all stored data
+                await ApiService.clearAllData();
+
+                // Navigate to auth check (which will route to login)
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AuthCheck(),
+                    ),
+                    (route) => false,
+                  );
+                }
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+);
   }
 
   @override
@@ -406,7 +738,7 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
                   const CircleAvatar(backgroundColor: Colors.black, radius: 63),
                   const CircleAvatar(
                     backgroundImage: AssetImage(
-                      'assets/images/studentSarthi.jpeg',
+                      'assets/images/unnatiLogoColourFix.png',
                     ),
                     radius: 60,
                   ),
