@@ -159,7 +159,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EmailVerification(),
+                      builder: (context) => EmailVerification(accountType: 'student'),
                     ),
                   );
                 },

@@ -8,8 +8,9 @@ import 'package:unnati_app/services/api_service.dart';
 
 class OtpVerification extends StatefulWidget {
   final String emailSent;
+  final String accountType;
 
-  const OtpVerification({super.key, required this.emailSent});
+  const OtpVerification({super.key, required this.emailSent, required this.accountType});
 
   @override
   State<OtpVerification> createState() => _OtpVerificationState();
@@ -143,6 +144,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                               MaterialPageRoute(
                                 builder: (context) => PasswordResetScreen(
                                   email: widget.emailSent,
+                                  accountType: widget.accountType, 
                                 ),
                               ),
                             );

@@ -17,15 +17,22 @@ class VolunteerResourcesPage extends ConsumerStatefulWidget {
 class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage> {
   bool hasResourcePermission = false;
   bool isLoadingPermission = true;
+  bool isLoadingSubjects = true;
   
   @override
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      ref
-        .read(subjectProvider.notifier)
-        .loadSubjects();
+    Future.microtask(() async {
+      try {
+        await ref.read(subjectProvider.notifier).loadSubjects();
+      } finally {
+        if (mounted) {
+          setState(() {
+            isLoadingSubjects = false;
+          });
+        }
+      }
     });
     checkPermission();
   }
@@ -244,7 +251,11 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
         child: Icon(Icons.add, color: Colors.white),
       ),
 
-      body: subjects.isEmpty
+      body:isLoadingSubjects
+          ? const Center(
+        child: CircularProgressIndicator(),
+      ) 
+      :subjects.isEmpty
           ? Center(
               child: Text(
                 'No subjects added yet',
