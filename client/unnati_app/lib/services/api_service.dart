@@ -451,14 +451,18 @@ class ApiService {
   static Future<Map<String, dynamic>> updatePassword({
     required String email,
     required String newPassword,
-    required String accountType,
+    String accountType = 'volunteer',
   }) async {
     try {
       final response = await http
           .post(
             Uri.parse('$baseUrl/update-password'),
             headers: _headers,
-            body: json.encode({'email': email, 'newPassword': newPassword,'accountType': accountType,}),
+            body: json.encode({
+              'email': email.trim().toLowerCase(),
+              'newPassword': newPassword,
+              'accountType': accountType,
+            }),
           )
           .timeout(_timeout);
 

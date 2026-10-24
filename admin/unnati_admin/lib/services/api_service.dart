@@ -3,12 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminApiService {
-  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
+  static const String baseUrl = 'https://unnati-records-qhgb.onrender.com/api/auth';
+  static const String coreBaseUrl = 'https://unnati-records-qhgb.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
+
 
   static SharedPreferences? _prefs;
 
@@ -189,7 +190,10 @@ class AdminApiService {
 
   static Future<Map<String, dynamic>> getImageKitAuth() async {
     final headers = await _authHeaders();
-    final res = await http.get(Uri.parse('$coreBaseUrl/imagekit/auth'), headers: headers);
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/imagekit/auth'),
+      headers: headers,
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return jsonDecode(res.body) as Map<String, dynamic>;
     }
@@ -226,8 +230,10 @@ class AdminApiService {
 
   static Future<List<Map<String, dynamic>>> fetchFolders() async {
     final headers = await _authHeaders();
-    final res = await http.get(Uri.parse('$coreBaseUrl/folders'), headers: headers);
-    
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/folders'),
+      headers: headers,
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = jsonDecode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -259,7 +265,10 @@ class AdminApiService {
     String folderId,
   ) async {
     final headers = await _authHeaders();
-    final res = await http.get(Uri.parse('$coreBaseUrl/files/folder/$folderId'), headers: headers);
+    final res = await http.get(
+      Uri.parse('$coreBaseUrl/files/folder/$folderId'),
+      headers: headers,
+    );
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final data = jsonDecode(res.body) as List;
       return data.cast<Map<String, dynamic>>();
@@ -269,7 +278,11 @@ class AdminApiService {
 
   static Future<List<Map<String, dynamic>>> fetchVolunteers() async {
     try {
-      final res = await http.get(Uri.parse('$coreBaseUrl/volunteers/get-volunteers'));
+      final headers = await _authHeaders();
+      final res = await http.get(
+        Uri.parse('$coreBaseUrl/volunteers/get-volunteers'),
+        headers: headers,
+      );
       if (res.statusCode >= 200 && res.statusCode < 300) {
         final data = jsonDecode(res.body);
         if (data is Map && data['data'] != null) {
@@ -291,6 +304,8 @@ class AdminApiService {
         'Netritva': [],
         'Akshar': [],
       };
+
+      final headers = await _authHeaders();
       
       // Fetch volunteers for each program separately
       final programs = ['DigiXplore', 'Netritva', 'Akshar'];
@@ -298,7 +313,7 @@ class AdminApiService {
         final uri = Uri.parse('$coreBaseUrl/volunteers/program/get-volunteers')
             .replace(queryParameters: {'program': program});
         
-        final res = await http.get(uri);
+        final res = await http.get(uri, headers: headers);
         
         if (res.statusCode >= 200 && res.statusCode < 300) {
           final data = jsonDecode(res.body);
@@ -314,65 +329,65 @@ class AdminApiService {
     }
   }
 
-  // static Future<Map<String, dynamic>> assignRoleToVolunteer(String userId, String role) async {
-  //   try {
-  //     final response = await http.put(
-  //       Uri.parse('$coreBaseUrl/volunteers/assign-role'),
-  //       headers: _headers,
-  //       body: jsonEncode({
-  //         'userId': userId,
-  //         'role': role,
-  //       }),
-  //     ).timeout(_timeout);
+  /// Assign or update volunteer role (alias for updateRole)
+  static Future<Map<String, dynamic>> assignRoleToVolunteer(
+    String userId,
+    String role,
+  ) =>
+      updateRole(userId, role);
 
-  //     if (response.body.isEmpty) {
-  //       return {'success': false, 'message': 'Empty response from server'};
-  //     }
-
-  //     final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-  //     if (response.statusCode >= 200 && response.statusCode < 300) {
-  //       return {'success': true, 'message': data['message'], 'data': data['data']};
-  //     } else {
-  //       return {
-  //         'success': false,
-  //         'message': data['message'] ?? 'Failed to assign role',
-  //       };
-  //     }
-  //   } catch (e) {
-  //     return {'success': false, 'message': 'Network error: $e'};
-  //   }
-  // }
+  /// Remove a lead by resetting their role to 'Volunteer'
+  static Future<Map<String, dynamic>> deleteLead(String userId) =>
+      updateRole(userId, 'Volunteer');
 
   static Future<Map<String, dynamic>> updateRole(
     String userId,
     String role,
   ) async {
     try {
+      final headers = await _authHeaders();
+      final url = Uri.parse('$coreBaseUrl/volunteers/update-role');
+      final bodyStr = jsonEncode({'userId': userId, 'role': role});
+
+      // ignore: avoid_print
+      print('[AdminApiService] PUT $url | body: $bodyStr | headers: $headers');
+
       final response = await http.put(
-        Uri.parse('$coreBaseUrl/volunteers/update-role'),
-        headers: _headers,
-        body: jsonEncode({
-          'userId': userId,
-          'role': role,
-        }),
+        url,
+        headers: headers,
+        body: bodyStr,
       ).timeout(_timeout);
 
+      // ignore: avoid_print
+      print('[AdminApiService] Response ${response.statusCode}: ${response.body}');
+
       if (response.body.isEmpty) {
+        return {'success': false, 'message': 'Empty response from server'};
+      }
+
+      // Guard against HTML error pages (e.g. Render 502/503)
+      Map<String, dynamic> data;
+      try {
+        data = jsonDecode(response.body) as Map<String, dynamic>;
+      } catch (_) {
+        // Surface the actual raw body so the developer can diagnose
+        final snippet = response.body.length > 200
+            ? '${response.body.substring(0, 200)}…'
+            : response.body;
         return {
           'success': false,
-          'message': 'Empty response from server'
+          'message': 'Status ${response.statusCode} — raw: $snippet',
         };
       }
 
-      final data = jsonDecode(response.body);
-
-      return {
-        'success': response.statusCode >= 200 &&
-            response.statusCode < 300,
-        'message': data['message'],
-        'data': data['data'],
-      };
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'message': data['message'], 'data': data['data']};
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? data['error'] ?? 'Failed to update role',
+        };
+      }
     } catch (e) {
       return {
         'success': false,
@@ -466,12 +481,20 @@ class AdminApiService {
   }
 
   // Update Password (Reset Password)
-  static Future<Map<String, dynamic>> updatePassword(String email, String newPassword) async {
+  static Future<Map<String, dynamic>> updatePassword(
+    String email,
+    String newPassword, {
+    String accountType = 'volunteer',
+  }) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/update-password'),
         headers: _headers,
-        body: jsonEncode({'email': email, 'newPassword': newPassword}),
+        body: jsonEncode({
+          'email': email.trim().toLowerCase(),
+          'newPassword': newPassword,
+          'accountType': accountType,
+        }),
       ).timeout(_timeout);
 
       if (response.body.isEmpty) {

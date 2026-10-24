@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:unnati_admin/features/adminappbar.dart';
+import 'package:unnati_admin/features/pdf_viewer.dart';
 import 'package:unnati_admin/services/api_service.dart';
 
 const String _imageKitPublicKey = 'public_60qksZwRpQMzV2CigoPfMTFSwGo=';
@@ -377,8 +378,9 @@ class _AdminFolderUploadPageState extends State<AdminFolderUploadPage> {
         uploadedFiles = files
             .map(
               (f) => {
-                'name': (f['displayName'] ?? '').toString(),
+                'name': (f['displayName'] ?? f['originalName'] ?? '').toString(),
                 'type': (f['type'] ?? '').toString(),
+                'link': (f['link'] ?? f['url'] ?? '').toString(),
               },
             )
             .toList();
@@ -603,6 +605,7 @@ class _AdminFolderUploadPageState extends State<AdminFolderUploadPage> {
                                   uploadedFiles.insert(0, {
                                     'name': (fileMeta['displayName'] ?? name).toString(),
                                     'type': (fileMeta['type'] ?? '').toString(),
+                                    'link': (fileMeta['link'] ?? imageUrl).toString(),
                                   });
                                 });
 
@@ -695,33 +698,70 @@ class _AdminFolderUploadPageState extends State<AdminFolderUploadPage> {
                           itemCount: uploadedFiles.length,
                           itemBuilder: (context, index) {
                             final file = uploadedFiles[index];
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                              decoration: BoxDecoration(
+                            final fileLink = file['link'] ?? '';
+
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
                                 borderRadius: BorderRadius.circular(14),
-                                color: const Color.fromARGB(255, 14, 22, 33),
-                                border: Border.all(color: Colors.white10),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.picture_as_pdf, color: Colors.redAccent),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      file['name'] ?? '',
-                                      style: GoogleFonts.nunito(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
+                                onTap: () {
+                                  if (fileLink.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('File link is not available'),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AdminPdfViewerPage(
+                                        title: file['name']?.isNotEmpty == true
+                                            ? file['name']!
+                                            : 'PDF Document',
+                                        url: fileLink,
                                       ),
                                     ),
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: const Color.fromARGB(255, 14, 22, 33),
+                                    border: Border.all(color: Colors.white10),
                                   ),
-                                  Text(
-                                    (file['type'] ?? '').toUpperCase(),
-                                    style: GoogleFonts.nunito(color: Colors.white70),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.picture_as_pdf, color: Colors.redAccent),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          file['name'] ?? '',
+                                          style: GoogleFonts.nunito(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        (file['type'] ?? '').toUpperCase(),
+                                        style: GoogleFonts.nunito(color: Colors.white70),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Icon(
+                                        Icons.chevron_right,
+                                        color: Colors.white38,
+                                        size: 20,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             );
                           },
