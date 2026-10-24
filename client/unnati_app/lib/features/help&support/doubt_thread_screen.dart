@@ -235,52 +235,57 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                       ),
                     ),
                     if (doubt.isOpen &&
-                        (!widget.isLeadView ||
-                            (_canManageDoubts && !widget.readOnly)))
-                      SafeArea(
-                        top: false,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _messageController,
-                                  maxLength: 300,
-                                  minLines: 1,
-                                  maxLines: 4,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Type your message',
-                                    border: OutlineInputBorder(),
-                                  ),
+                      (!widget.isLeadView ||
+                          (_canManageDoubts && !widget.readOnly)))
+                    SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _messageController,
+                                maxLength: 300,
+                                minLines: 1,
+                                maxLines: 4,
+                                decoration: const InputDecoration(
+                                  hintText: 'Type your message',
+                                  border: OutlineInputBorder(),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              IconButton.filled(
-                                onPressed: _isSending ? null : _sendMessage,
-                                icon: _isSending
-                                    ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : const Icon(Icons.send),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else
-                      const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text(
-                          'This doubt is closed. You can no longer send messages.',
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton.filled(
+                              onPressed: _isSending ? null : _sendMessage,
+                              icon: _isSending
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(Icons.send),
+                            ),
+                          ],
                         ),
                       ),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        doubt.isOpen
+                            ? 'Open doubts — only assigned leads can send messages.'
+                            : 'This doubt is closed. You can no longer send messages.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );
