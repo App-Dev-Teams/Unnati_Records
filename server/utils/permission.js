@@ -27,47 +27,76 @@ const rolePermissions = {
     ...groups.DOUBT_MANAGER
   ],
 
-  "JS-Public Relations": [],
+  "JS-Public Relations": [
+    "VIEW_DOUBTS"
+  ],
 
-  "JS-Technical": [],
+  "JS-Technical": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Finance Lead": [],
+  "Finance Lead": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Video Editing Lead": [],
+  "Video Editing Lead": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Outreach Lead": [],
+  "Outreach Lead": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Social Media Lead": [],
+  "Social Media Lead": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Membership Lead": [],
+  "Membership Lead": [
+    "VIEW_DOUBTS"
+  ],
 
-  "Design Lead": [],
+  "Design Lead": [
+    "VIEW_DOUBTS"
+  ],
 
   "Operations Lead": [
+    "VIEW_DOUBTS",
     ...groups.ATTENDANCE_MANAGER
   ],
 
   "DigiXplore Lead": [
+    "VIEW_DOUBTS",
     ...groups.ATTENDANCE_MANAGER,
     ...groups.RESOURCE_MANAGER
   ],
 
   "Netritva Lead": [
+    "VIEW_DOUBTS",
     ...groups.ATTENDANCE_MANAGER,
     ...groups.RESOURCE_MANAGER
   ],
 
   "Akshar Lead": [
+    "VIEW_DOUBTS",
     ...groups.ATTENDANCE_MANAGER,
     ...groups.RESOURCE_MANAGER
   ],
 
   "JS-Program": [
+    "VIEW_DOUBTS",
     ...groups.RESOURCE_MANAGER
   ],
 
   "R&D Lead": [
     ...groups.DOUBT_MANAGER
+  ],
+
+  "Volunteer": [
+    "VIEW_DOUBTS"
+  ],
+
+  "volunteer": [
+    "VIEW_DOUBTS"
   ],
 };
 
