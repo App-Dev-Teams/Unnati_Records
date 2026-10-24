@@ -6,7 +6,7 @@ class LeadCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onEdit;
 
-  const LeadCard({
+  const LeadCard({super.key, 
     required this.name,
     required this.role,
     required this.onDelete,

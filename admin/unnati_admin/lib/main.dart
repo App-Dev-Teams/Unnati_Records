@@ -18,6 +18,14 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark().copyWith(
+            scaffoldBackgroundColor: const Color.fromARGB(255, 9, 12, 19),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color.fromARGB(255, 9, 12, 19),
+              iconTheme: IconThemeData(color: Colors.white),
+              actionsIconTheme: IconThemeData(color: Colors.white),
+            ),
+          ),
           home: const AuthGate(),
         );
       },
