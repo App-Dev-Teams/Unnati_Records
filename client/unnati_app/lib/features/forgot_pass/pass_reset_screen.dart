@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:unnati_app/features/auth/view/login_page_student.dart';
 import 'package:unnati_app/features/auth/view/login_page_volunteer.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class PasswordResetScreen extends StatefulWidget {
   final String email;
+  final String accountType;
 
-  const PasswordResetScreen({super.key, required this.email});
+  const PasswordResetScreen({super.key, required this.email, required this.accountType});
 
   @override
   State<PasswordResetScreen> createState() => _PasswordResetScreenState();
@@ -161,6 +163,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                           final response = await ApiService.updatePassword(
                             email: widget.email,
                             newPassword: newPassword,
+                            accountType: widget.accountType,
                           );
 
                           setState(() {
@@ -177,7 +180,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const LoginPageVolunteer(),
+                                builder: (_) => widget.accountType == 'student'
+                                  ? const LoginPageStudent()
+                                  : const LoginPageVolunteer(),
                               ),
                               (route) => false,
                             );

@@ -7,7 +7,8 @@ import 'package:unnati_app/features/forgot_pass/otp_verification.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class EmailVerification extends StatefulWidget {
-  const EmailVerification({super.key});
+  final String accountType;
+  const EmailVerification({super.key,required this.accountType});
 
   @override
   State<EmailVerification> createState() => _EmailVerificationState();
@@ -134,7 +135,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    OtpVerification(emailSent: email),
+                                    OtpVerification(emailSent: email,accountType: widget.accountType,),
                               ),
                             );
                           } else {

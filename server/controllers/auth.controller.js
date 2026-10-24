@@ -314,36 +314,57 @@ const studentLogin = async (req, res) => {
 
 const updatePassword = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { email, newPassword, accountType } = req.body;
 
-    if (!email || !newPassword) {
+    if (!email || !newPassword || !accountType) {
       return res.status(400).json({
-        error: "Email and new password are required"
+        error: "Email, new password and account type are required"
       });
     }
 
-    // hash new password
+    if (!["student", "volunteer"].includes(accountType)) {
+      return res.status(400).json({
+        error: "Invalid account type"
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        error: "Password must be at least 6 characters long"
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // update password in DB
-    const user = await USER.findOneAndUpdate(
-      { email },
-      { password: hashedPassword },
-      { new: true }
-    );
+    let user;
+
+    if (accountType === "student") {
+      user = await STUDENT.findOneAndUpdate(
+        { email: email.trim().toLowerCase() },
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+    } else {
+      user = await USER.findOneAndUpdate(
+        { email: email.trim().toLowerCase() },
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+    }
 
     if (!user) {
       return res.status(404).json({
-        error: "User not found"
+        error: "Account not found"
       });
     }
 
-    return res.json({
+    return res.status(200).json({
       message: "Password updated successfully"
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("Password update error:", err.message);
+
     return res.status(500).json({
       error: "Failed to update password"
     });

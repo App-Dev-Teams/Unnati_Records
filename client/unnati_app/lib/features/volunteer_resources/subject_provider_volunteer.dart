@@ -8,6 +8,7 @@ import 'package:unnati_app/services/api_service.dart';
 
 class SubjectNotifier extends StateNotifier<List<Subject>> {
   SubjectNotifier() : super([]);
+  bool _hasLoadedSubjects = false;
 
   // void addSubject(String name, String className) {
   //   state = [...state, Subject(name: name, className: className)];
@@ -23,6 +24,7 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
 
 //load folders(subjects)
   Future<void> loadSubjects() async {
+    if (_hasLoadedSubjects) return;
     try {
       final folders = await ApiService.fetchFolders();
 
@@ -33,6 +35,7 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
           className: folder['className'],
         );
       }).toList();
+      _hasLoadedSubjects = true;
     } catch (e) {
       print(e);
     }

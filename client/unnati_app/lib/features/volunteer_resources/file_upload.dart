@@ -258,7 +258,9 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
       body: files.isEmpty
           ? Center(
               child: Text(
-                'No files uploaded yet\nTap + to upload',
+                hasResourcePermission
+              ? 'No files uploaded yet\nTap + to upload'
+              : 'No files uploaded yet',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey, fontSize: 16.sp),
               ),

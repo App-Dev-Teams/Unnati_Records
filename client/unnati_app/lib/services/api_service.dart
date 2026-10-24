@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records.onrender.com/api';
+  static const String baseUrl = 'http://localhost:3000/api/auth';
+  static const String coreBaseUrl = 'http://localhost:3000/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -408,7 +408,7 @@ class ApiService {
     } catch (e) {
       return {
         'success': false,
-        'message': 'Unable to send OTP. Please try again.',
+        'message': 'Unable to send OTP. Please try again $e',
       };
     }
   }
@@ -443,7 +443,7 @@ class ApiService {
     } catch (e) {
       return {
         'success': false,
-        'message': 'Unable to verify OTP. Please try again.',
+        'message': 'Unable to verify OTP. Please try again $e',
       };
     }
   }
@@ -451,13 +451,14 @@ class ApiService {
   static Future<Map<String, dynamic>> updatePassword({
     required String email,
     required String newPassword,
+    required String accountType,
   }) async {
     try {
       final response = await http
           .post(
             Uri.parse('$baseUrl/update-password'),
             headers: _headers,
-            body: json.encode({'email': email, 'newPassword': newPassword}),
+            body: json.encode({'email': email, 'newPassword': newPassword,'accountType': accountType,}),
           )
           .timeout(_timeout);
 

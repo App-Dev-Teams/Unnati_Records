@@ -145,7 +145,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EmailVerification(),
+                      builder: (context) => EmailVerification(accountType: 'volunteer'),
                     ),
                   );
                 },
