@@ -11,12 +11,14 @@ import 'package:unnati_app/models/doubt.dart';
 class DoubtListScreen extends ConsumerStatefulWidget {
   final bool showOpenDoubts;
   final bool showClosedDoubts;
+  final bool readOnly;
   final String title;
 
   const DoubtListScreen({
     super.key,
     this.showOpenDoubts = false,
     this.showClosedDoubts = false,
+    this.readOnly = false,
     this.title = 'My Doubts',
   });
 
@@ -115,7 +117,9 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
                       MaterialPageRoute(
                         builder: (_) => DoubtThreadScreen(
                           doubtId: doubt.id,
-                          isLeadView: widget.showOpenDoubts,
+                          isLeadView:
+                              widget.showOpenDoubts || widget.showClosedDoubts,
+                          readOnly: widget.readOnly,
                         ),
                       ),
                     );
