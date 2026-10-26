@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class NetritvaPage extends StatelessWidget {
   const NetritvaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
       body: CustomScrollView(
@@ -67,7 +69,7 @@ class NetritvaPage extends StatelessWidget {
                       ),
                       SizedBox(height: 14.h),
                       Text(
-                        'Netritva',
+                        l10n.netritvaNetritva,
                         style: GoogleFonts.oswald(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -79,7 +81,7 @@ class NetritvaPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.w),
                         child: Text(
-                          'Career Guidance & Mentorship Program',
+                          l10n.netritvaCareerGuidanceMentorshipProgram,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(
                             color: Colors.grey,
@@ -100,106 +102,106 @@ class NetritvaPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Netritva'),
+                  _buildSectionTitle(l10n.netritvaAboutNetritva),
                   SizedBox(height: 12.h),
                   _buildDescriptionCard(
-                    'Netritva is UNNATI Society\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
+                    l10n.netritvaNetritvaIsUNNATISocietySCareerGuidanceAndMentorshipProgramDesignedForUnderprivilegedStudentsFocusedOnCareerAwarenessSelfDevelopmentAndHelpingThemDiscoverTheirPotential,
                     Icons.explore_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Purpose'),
+                  _buildSectionTitle(l10n.netritvaOurPurpose),
                   SizedBox(height: 12.h),
                   _buildFeaturesList([
-                    'Help students make informed and confident career choices',
-                    'Provide dedicated personalized mentorship support',
-                    'Develop essential leadership and communication qualities',
-                    'Build self-confidence, self-esteem, and resilience',
-                    'Increase awareness about higher education, competitive exams, and careers',
+                    l10n.netritvaHelpStudentsMakeInformedAndConfidentCareerChoices,
+                    l10n.netritvaProvideDedicatedPersonalizedMentorshipSupport,
+                    l10n.netritvaDevelopEssentialLeadershipAndCommunicationQualities,
+                    l10n.netritvaBuildSelfConfidenceSelfEsteemAndResilience,
+                    l10n.netritvaIncreaseAwarenessAboutHigherEducationCompetitiveExamsAndCareers,
                   ]),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Who We Serve'),
+                  _buildSectionTitle(l10n.netritvaWhoWeServe),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
                       _buildBeneficiaryCard(
-                        'Underprivileged\nStudents',
+                        l10n.netritvaUnderprivilegedStudents,
                         Icons.person_rounded,
                       ),
                       SizedBox(width: 10.w),
                       _buildBeneficiaryCard(
-                        'Rural\nLearners',
+                        l10n.netritvaRuralLearners,
                         Icons.map_rounded,
                       ),
                       SizedBox(width: 10.w),
                       _buildBeneficiaryCard(
-                        'First-Generation\nLearners',
+                        l10n.netritvaFirstGenerationLearners,
                         Icons.family_restroom_rounded,
                       ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Program Features'),
+                  _buildSectionTitle(l10n.netritvaProgramFeatures),
                   SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Career Guidance',
-                    'Expert counseling for career path selection and stream choices.',
+                    l10n.netritvaCareerGuidance,
+                    l10n.netritvaExpertCounselingForCareerPathSelectionAndStreamChoices,
                     Icons.explore_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Mentorship Sessions',
-                    'One-to-one interactions with experienced academic and professional mentors.',
+                    l10n.netritvaMentorshipSessions,
+                    l10n.netritvaOneToOneInteractionsWithExperiencedAcademicAndProfessionalMentors,
                     Icons.groups_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Skill Development',
-                    'Workshops focused on practical skill enhancement, resume writing, and interviews.',
+                    l10n.netritvaSkillDevelopment,
+                    l10n.netritvaWorkshopsFocusedOnPracticalSkillEnhancementResumeWritingAndInterviews,
                     Icons.school_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Leadership Training',
-                    'Cultivate leadership qualities, team coordination, and self-belief.',
+                    l10n.netritvaLeadershipTraining,
+                    l10n.netritvaCultivateLeadershipQualitiesTeamCoordinationAndSelfBelief,
                     Icons.military_tech_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('How Netritva Works'),
+                  _buildSectionTitle(l10n.netritvaHowNetritvaWorks),
                   SizedBox(height: 12.h),
                   _buildProcessStep(
                     '1',
-                    'Interactive Workshops',
-                    'Comprehensive career and skill awareness workshops.',
+                    l10n.netritvaInteractiveWorkshops,
+                    l10n.netritvaComprehensiveCareerAndSkillAwarenessWorkshops,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '2',
-                    'Personal Counseling',
-                    'One-on-one personalized career mapping and counseling sessions.',
+                    l10n.netritvaPersonalCounseling,
+                    l10n.netritvaOneOnOnePersonalizedCareerMappingAndCounselingSessions,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '3',
-                    'Long-Term Mentorship',
-                    'Continuous guidance from college students and industry professionals.',
+                    l10n.netritvaLongTermMentorship,
+                    l10n.netritvaContinuousGuidanceFromCollegeStudentsAndIndustryProfessionals,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Impact'),
+                  _buildSectionTitle(l10n.netritvaOurImpact),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
                         child: _buildImpactCard(
-                          'Career Clarity',
-                          'Gained by Hundreds',
+                          l10n.netritvaCareerClarity,
+                          l10n.netritvaGainedByHundreds,
                           Colors.blue,
                         ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: _buildImpactCard(
-                          'Exam Guidance',
-                          'Higher Education Paths',
+                          l10n.netritvaExamGuidance,
+                          l10n.netritvaHigherEducationPaths,
                           Colors.black,
                         ),
                       ),
@@ -210,41 +212,65 @@ class NetritvaPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildImpactCard(
-                          'Clear Direction',
-                          'Pathways Mapped Out',
+                          l10n.netritvaClearDirection,
+                          l10n.netritvaPathwaysMappedOut,
                           Colors.black,
                         ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: _buildImpactCard(
-                          'Confidence',
-                          'Confusion Overcome',
+                          l10n.netritvaConfidence,
+                          l10n.netritvaConfusionOvercome,
                           Colors.blue,
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Personal Development Impact'),
+                  _buildSectionTitle(l10n.netritvaPersonalDevelopmentImpact),
                   SizedBox(height: 12.h),
-                  _buildImpactListCard('Overcome career confusion, anxiety, and peer pressure', Icons.check_circle_outline_rounded),
+                  _buildImpactListCard(
+                    l10n.netritvaOvercomeCareerConfusionAnxietyAndPeerPressure,
+                    Icons.check_circle_outline_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Build clear academic ambition and actionable career goals', Icons.flag_outlined),
+                  _buildImpactListCard(
+                    l10n.netritvaBuildClearAcademicAmbitionAndActionableCareerGoals,
+                    Icons.flag_outlined,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Develop strong interpersonal confidence and public speaking', Icons.verified_outlined),
+                  _buildImpactListCard(
+                    l10n.netritvaDevelopStrongInterpersonalConfidenceAndPublicSpeaking,
+                    Icons.verified_outlined,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Create goal-oriented mindsets with positive work ethic', Icons.trending_up_rounded),
+                  _buildImpactListCard(
+                    l10n.netritvaCreateGoalOrientedMindsetsWithPositiveWorkEthic,
+                    Icons.trending_up_rounded,
+                  ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Future Plans'),
+                  _buildSectionTitle(l10n.netritvaFuturePlans),
                   SizedBox(height: 12.h),
-                  _buildImpactListCard('Expand mentor network across colleges and corporate alumni', Icons.hub_outlined),
+                  _buildImpactListCard(
+                    l10n.netritvaExpandMentorNetworkAcrossCollegesAndCorporateAlumni,
+                    Icons.hub_outlined,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Integrate vocational guidance, apprenticeships, and job preparation', Icons.work_outline_rounded),
+                  _buildImpactListCard(
+                    l10n.netritvaIntegrateVocationalGuidanceApprenticeshipsAndJobPreparation,
+                    Icons.work_outline_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Connect deserving students with scholarship and higher-ed funding', Icons.card_giftcard_rounded),
+                  _buildImpactListCard(
+                    l10n.netritvaConnectDeservingStudentsWithScholarshipAndHigherEdFunding,
+                    Icons.card_giftcard_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildImpactListCard('Build peer-mentorship ecosystems within school alumni communities', Icons.diversity_3_outlined),
+                  _buildImpactListCard(
+                    l10n.netritvaBuildPeerMentorshipEcosystemsWithinSchoolAlumniCommunities,
+                    Icons.diversity_3_outlined,
+                  ),
                   SizedBox(height: 30.h),
                 ],
               ),
@@ -263,11 +289,7 @@ class NetritvaPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4),
-          child: Container(
-            height: 25.h,
-            width: 7.h,
-            color: Colors.black,
-          ),
+          child: Container(height: 25.h, width: 7.h, color: Colors.black),
         ),
         SizedBox(width: 10.w),
         Text(
@@ -286,9 +308,7 @@ class NetritvaPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -324,9 +344,7 @@ class NetritvaPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -338,7 +356,11 @@ class NetritvaPage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.black87, size: 20),
+                  const Icon(
+                    Icons.check_circle,
+                    color: Colors.black87,
+                    size: 20,
+                  ),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
@@ -401,13 +423,15 @@ class NetritvaPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildFeatureCard(String title, String description, IconData icon) {
+  static Widget _buildFeatureCard(
+    String title,
+    String description,
+    IconData icon,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -455,13 +479,15 @@ class NetritvaPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildProcessStep(String number, String title, String description) {
+  static Widget _buildProcessStep(
+    String number,
+    String title,
+    String description,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -520,7 +546,11 @@ class NetritvaPage extends StatelessWidget {
   }
 
   // Exact matching VolunteerCardUtil from homescreen
-  static Widget _buildImpactCard(String subtitle, String title, Color curvedColor) {
+  static Widget _buildImpactCard(
+    String subtitle,
+    String title,
+    Color curvedColor,
+  ) {
     return Container(
       height: 120.h,
       decoration: BoxDecoration(
@@ -588,9 +618,7 @@ class NetritvaPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),

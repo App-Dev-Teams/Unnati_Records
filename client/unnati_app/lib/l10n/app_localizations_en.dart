@@ -601,4 +601,412 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allClasses => 'All Classes';
+
+  @override
+  String get digixploreDigiXplore => 'DigiXplore';
+
+  @override
+  String get digixploreEmpoweringYoungMindsWithTheSkillsOfTomorrow => 'Empowering young minds with the skills of tomorrow';
+
+  @override
+  String get digixploreAboutDigiXplore => 'About DigiXplore';
+
+  @override
+  String get digixploreDigiXploreIsUNNATISocietySDigitalEducationInitiativeFocusedOnIntroducingUnderprivilegedSchoolStudentsToTechnologyAndBridgingTheDigitalDivideThroughWeeklyInteractiveSessions => 'DigiXplore is UNNATI Society\'s digital education initiative focused on introducing underprivileged school students to technology and bridging the digital divide through weekly interactive sessions.';
+
+  @override
+  String get digixploreOurPurpose => 'Our Purpose';
+
+  @override
+  String get digixploreTeachComputerFundamentalsAndPracticalOperation => 'Teach computer fundamentals and practical operation';
+
+  @override
+  String get digixploreImproveDigitalLiteracyAndInternetAwareness => 'Improve digital literacy and internet awareness';
+
+  @override
+  String get digixploreEncourageSafeAndResponsibleTechnologyUse => 'Encourage safe and responsible technology use';
+
+  @override
+  String get digixploreFamiliarizeStudentsWithModernDigitalTools => 'Familiarize students with modern digital tools';
+
+  @override
+  String get digixplorePrepareLearnersForAcademicProfessionalEnvironments => 'Prepare learners for academic & professional environments';
+
+  @override
+  String get digixploreWhoWeServe => 'Who We Serve';
+
+  @override
+  String get digixploreUnderprivilegedStudents => 'Underprivileged\nStudents';
+
+  @override
+  String get digixploreGovernmentSchools => 'Government\nSchools';
+
+  @override
+  String get digixploreRuralLearners => 'Rural\nLearners';
+
+  @override
+  String get digixploreWhatStudentsLearn => 'What Students Learn';
+
+  @override
+  String get digixploreComputerFundamentals => 'Computer Fundamentals';
+
+  @override
+  String get digixploreLearnBasicsOfComputersHardwareOperatingSystemsAndTyping => 'Learn basics of computers, hardware, operating systems, and typing.';
+
+  @override
+  String get digixploreDigitalSkills => 'Digital Skills';
+
+  @override
+  String get digixploreMasterEssentialProductivityToolsWebBrowsingAndDigitalSafety => 'Master essential productivity tools, web browsing, and digital safety.';
+
+  @override
+  String get digixploreProblemSolving => 'Problem Solving';
+
+  @override
+  String get digixploreDevelopCriticalThinkingThroughInteractiveChallengesAndActivities => 'Develop critical thinking through interactive challenges and activities.';
+
+  @override
+  String get digixploreHowDigiXploreWorks => 'How DigiXplore Works';
+
+  @override
+  String get digixploreWeeklySessions => 'Weekly Sessions';
+
+  @override
+  String get digixploreStructuredInteractiveLearningSessionsWithHandsOnPractice => 'Structured interactive learning sessions with hands-on practice.';
+
+  @override
+  String get digixploreActivityBased => 'Activity-Based';
+
+  @override
+  String get digixplorePracticalEngagingProjectDrivenComputerEducation => 'Practical, engaging project-driven computer education.';
+
+  @override
+  String get digixploreDigitalWorkshops => 'Digital Workshops';
+
+  @override
+  String get digixploreSpecialAwarenessAndSkillDevelopmentGuestWorkshops => 'Special awareness and skill development guest workshops.';
+
+  @override
+  String get digixploreOurImpact => 'Our Impact';
+
+  @override
+  String get digixploreHundreds => 'Hundreds';
+
+  @override
+  String get digixploreStudentsEmpowered => 'Students Empowered';
+
+  @override
+  String get digixploreDigital => 'Digital';
+
+  @override
+  String get digixploreDivideBridged => 'Divide Bridged';
+
+  @override
+  String get digixploreEnhanced => 'Enhanced';
+
+  @override
+  String get digixploreIncreased => 'Increased';
+
+  @override
+  String get digixploreStudentEngagement => 'Student Engagement';
+
+  @override
+  String get digixploreFutureVision => 'Future Vision';
+
+  @override
+  String get digixploreExpandToMoreRuralAndGovernmentPartnerSchools => 'Expand to more rural and government partner schools';
+
+  @override
+  String get digixploreIntroduceBasicCodingLogicBuildingAndAIAwarenessModules => 'Introduce basic coding, logic building, and AI awareness modules';
+
+  @override
+  String get digixploreCreateDigitallyConfidentAndFutureReadyGenerations => 'Create digitally confident and future-ready generations';
+
+  @override
+  String get netritvaNetritva => 'Netritva';
+
+  @override
+  String get netritvaCareerGuidanceMentorshipProgram => 'Career Guidance & Mentorship Program';
+
+  @override
+  String get netritvaAboutNetritva => 'About Netritva';
+
+  @override
+  String get netritvaNetritvaIsUNNATISocietySCareerGuidanceAndMentorshipProgramDesignedForUnderprivilegedStudentsFocusedOnCareerAwarenessSelfDevelopmentAndHelpingThemDiscoverTheirPotential => 'Netritva is UNNATI Society\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.';
+
+  @override
+  String get netritvaOurPurpose => 'Our Purpose';
+
+  @override
+  String get netritvaHelpStudentsMakeInformedAndConfidentCareerChoices => 'Help students make informed and confident career choices';
+
+  @override
+  String get netritvaProvideDedicatedPersonalizedMentorshipSupport => 'Provide dedicated personalized mentorship support';
+
+  @override
+  String get netritvaDevelopEssentialLeadershipAndCommunicationQualities => 'Develop essential leadership and communication qualities';
+
+  @override
+  String get netritvaBuildSelfConfidenceSelfEsteemAndResilience => 'Build self-confidence, self-esteem, and resilience';
+
+  @override
+  String get netritvaIncreaseAwarenessAboutHigherEducationCompetitiveExamsAndCareers => 'Increase awareness about higher education, competitive exams, and careers';
+
+  @override
+  String get netritvaWhoWeServe => 'Who We Serve';
+
+  @override
+  String get netritvaUnderprivilegedStudents => 'Underprivileged\nStudents';
+
+  @override
+  String get netritvaRuralLearners => 'Rural\nLearners';
+
+  @override
+  String get netritvaFirstGenerationLearners => 'First-Generation\nLearners';
+
+  @override
+  String get netritvaProgramFeatures => 'Program Features';
+
+  @override
+  String get netritvaCareerGuidance => 'Career Guidance';
+
+  @override
+  String get netritvaExpertCounselingForCareerPathSelectionAndStreamChoices => 'Expert counseling for career path selection and stream choices.';
+
+  @override
+  String get netritvaMentorshipSessions => 'Mentorship Sessions';
+
+  @override
+  String get netritvaOneToOneInteractionsWithExperiencedAcademicAndProfessionalMentors => 'One-to-one interactions with experienced academic and professional mentors.';
+
+  @override
+  String get netritvaSkillDevelopment => 'Skill Development';
+
+  @override
+  String get netritvaWorkshopsFocusedOnPracticalSkillEnhancementResumeWritingAndInterviews => 'Workshops focused on practical skill enhancement, resume writing, and interviews.';
+
+  @override
+  String get netritvaLeadershipTraining => 'Leadership Training';
+
+  @override
+  String get netritvaCultivateLeadershipQualitiesTeamCoordinationAndSelfBelief => 'Cultivate leadership qualities, team coordination, and self-belief.';
+
+  @override
+  String get netritvaHowNetritvaWorks => 'How Netritva Works';
+
+  @override
+  String get netritvaInteractiveWorkshops => 'Interactive Workshops';
+
+  @override
+  String get netritvaComprehensiveCareerAndSkillAwarenessWorkshops => 'Comprehensive career and skill awareness workshops.';
+
+  @override
+  String get netritvaPersonalCounseling => 'Personal Counseling';
+
+  @override
+  String get netritvaOneOnOnePersonalizedCareerMappingAndCounselingSessions => 'One-on-one personalized career mapping and counseling sessions.';
+
+  @override
+  String get netritvaLongTermMentorship => 'Long-Term Mentorship';
+
+  @override
+  String get netritvaContinuousGuidanceFromCollegeStudentsAndIndustryProfessionals => 'Continuous guidance from college students and industry professionals.';
+
+  @override
+  String get netritvaOurImpact => 'Our Impact';
+
+  @override
+  String get netritvaCareerClarity => 'Career Clarity';
+
+  @override
+  String get netritvaGainedByHundreds => 'Gained by Hundreds';
+
+  @override
+  String get netritvaExamGuidance => 'Exam Guidance';
+
+  @override
+  String get netritvaHigherEducationPaths => 'Higher Education Paths';
+
+  @override
+  String get netritvaClearDirection => 'Clear Direction';
+
+  @override
+  String get netritvaPathwaysMappedOut => 'Pathways Mapped Out';
+
+  @override
+  String get netritvaConfidence => 'Confidence';
+
+  @override
+  String get netritvaConfusionOvercome => 'Confusion Overcome';
+
+  @override
+  String get netritvaPersonalDevelopmentImpact => 'Personal Development Impact';
+
+  @override
+  String get netritvaOvercomeCareerConfusionAnxietyAndPeerPressure => 'Overcome career confusion, anxiety, and peer pressure';
+
+  @override
+  String get netritvaBuildClearAcademicAmbitionAndActionableCareerGoals => 'Build clear academic ambition and actionable career goals';
+
+  @override
+  String get netritvaDevelopStrongInterpersonalConfidenceAndPublicSpeaking => 'Develop strong interpersonal confidence and public speaking';
+
+  @override
+  String get netritvaCreateGoalOrientedMindsetsWithPositiveWorkEthic => 'Create goal-oriented mindsets with positive work ethic';
+
+  @override
+  String get netritvaFuturePlans => 'Future Plans';
+
+  @override
+  String get netritvaExpandMentorNetworkAcrossCollegesAndCorporateAlumni => 'Expand mentor network across colleges and corporate alumni';
+
+  @override
+  String get netritvaIntegrateVocationalGuidanceApprenticeshipsAndJobPreparation => 'Integrate vocational guidance, apprenticeships, and job preparation';
+
+  @override
+  String get netritvaConnectDeservingStudentsWithScholarshipAndHigherEdFunding => 'Connect deserving students with scholarship and higher-ed funding';
+
+  @override
+  String get netritvaBuildPeerMentorshipEcosystemsWithinSchoolAlumniCommunities => 'Build peer-mentorship ecosystems within school alumni communities';
+
+  @override
+  String get aksharAkshar => 'Akshar';
+
+  @override
+  String get aksharFoundationalLiteracyCommunityEducation => 'Foundational Literacy & Community Education';
+
+  @override
+  String get aksharAboutAkshar => 'About Akshar';
+
+  @override
+  String get aksharAksharIsUNNATISocietySFoundationalEducationInitiativeFocusedOnUnderprivilegedChildrenDesignedForThoseUnableToAffordFormalSchoolingAndBuiltAroundCommunityBasedLearning => 'Akshar is UNNATI Society\'s foundational education initiative focused on underprivileged children designed for those unable to afford formal schooling and built around community-based learning.';
+
+  @override
+  String get aksharOurPurpose => 'Our Purpose';
+
+  @override
+  String get aksharProvideAccessToEducationForOutOfSchoolChildren => 'Provide access to education for out-of-school children';
+
+  @override
+  String get aksharDeliverFoundationalLiteracySkillsAndReadingHabits => 'Deliver foundational literacy skills and reading habits';
+
+  @override
+  String get aksharTeachNumeracyAndEssentialBasicMathematics => 'Teach numeracy and essential basic mathematics';
+
+  @override
+  String get aksharImproveEnglishCommunicationAndVocabulary => 'Improve English communication and vocabulary';
+
+  @override
+  String get aksharSupportChildrenExcludedFromFormalSchooling => 'Support children excluded from formal schooling';
+
+  @override
+  String get aksharWhoWeServe => 'Who We Serve';
+
+  @override
+  String get aksharUnderprivilegedChildren => 'Underprivileged\nChildren';
+
+  @override
+  String get aksharOutOfSchoolChildren => 'Out-of-School\nChildren';
+
+  @override
+  String get aksharRuralDisadvantaged => 'Rural &\nDisadvantaged';
+
+  @override
+  String get aksharWhatStudentsLearn => 'What Students Learn';
+
+  @override
+  String get aksharReadingWriting => 'Reading & Writing';
+
+  @override
+  String get aksharBuildStrongLiteracyFoundationsWithVernacularAndHindiReading => 'Build strong literacy foundations with vernacular and Hindi reading.';
+
+  @override
+  String get aksharNumeracySkills => 'Numeracy Skills';
+
+  @override
+  String get aksharMasterBasicMathematicsCountingAdditionAndMoneyConcepts => 'Master basic mathematics, counting, addition, and money concepts.';
+
+  @override
+  String get aksharEnglishCommunication => 'English Communication';
+
+  @override
+  String get aksharDevelopVerbalAndWrittenCommunicationConfidence => 'Develop verbal and written communication confidence.';
+
+  @override
+  String get aksharHowAksharWorks => 'How Akshar Works';
+
+  @override
+  String get aksharCommunityCenters => 'Community Centers';
+
+  @override
+  String get aksharLearningInAccessibleCommunityEnvironmentsAndNukkadLocations => 'Learning in accessible community environments and nukkad locations.';
+
+  @override
+  String get aksharSupportiveTeaching => 'Supportive Teaching';
+
+  @override
+  String get aksharPersonalizedAttentionStudentEngagementAndSupportivePedagogy => 'Personalized attention, student engagement, and supportive pedagogy.';
+
+  @override
+  String get aksharFoundationalFocus => 'Foundational Focus';
+
+  @override
+  String get aksharBuildingStrongLiteracyAndNumeracyBasesToPrepareForSchool => 'Building strong literacy and numeracy bases to prepare for school.';
+
+  @override
+  String get aksharOurImpact => 'Our Impact';
+
+  @override
+  String get aksharEducation => 'Education';
+
+  @override
+  String get aksharAccessProvided => 'Access Provided';
+
+  @override
+  String get aksharChildren => 'Children';
+
+  @override
+  String get aksharLearningToRead => 'Learning to Read';
+
+  @override
+  String get aksharConfidence => 'Confidence';
+
+  @override
+  String get aksharGreatlyImproved => 'Greatly Improved';
+
+  @override
+  String get aksharInequality => 'Inequality';
+
+  @override
+  String get aksharActivelyReduced => 'Actively Reduced';
+
+  @override
+  String get aksharEmotionalSocialImpact => 'Emotional & Social Impact';
+
+  @override
+  String get aksharIgnitedALifelongLoveForLearningInYoungMinds => 'Ignited a lifelong love for learning in young minds';
+
+  @override
+  String get aksharCreatedHopeAndAspirationsAmongFamiliesAndCommunities => 'Created hope and aspirations among families and communities';
+
+  @override
+  String get aksharEncouragedSustainedEducationalParticipationForGirlsAndBoys => 'Encouraged sustained educational participation for girls and boys';
+
+  @override
+  String get aksharFutureVision => 'Future Vision';
+
+  @override
+  String get aksharExpandToMoreRuralAndSlumCommunityClusters => 'Expand to more rural and slum community clusters';
+
+  @override
+  String get aksharIntroduceBridgeCoursesForAcademicTransitions => 'Introduce bridge courses for academic transitions';
+
+  @override
+  String get aksharMainstreamStudentsIntoRecognizedFormalSchools => 'Mainstream students into recognized formal schools';
+
+  @override
+  String get aksharIntegrateFoundationalDigitalLearningModules => 'Integrate foundational digital learning modules';
+
+  @override
+  String get aksharIntroduceLifeSkillsAndHygieneEducation => 'Introduce life-skills and hygiene education';
 }

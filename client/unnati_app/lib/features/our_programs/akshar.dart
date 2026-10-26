@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class AksharPage extends StatelessWidget {
   const AksharPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
       body: CustomScrollView(
@@ -67,7 +69,7 @@ class AksharPage extends StatelessWidget {
                       ),
                       SizedBox(height: 14.h),
                       Text(
-                        'Akshar',
+                        l10n.aksharAkshar,
                         style: GoogleFonts.oswald(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -79,7 +81,7 @@ class AksharPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.w),
                         child: Text(
-                          'Foundational Literacy & Community Education',
+                          l10n.aksharFoundationalLiteracyCommunityEducation,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(
                             color: Colors.grey,
@@ -100,85 +102,102 @@ class AksharPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Akshar'),
+                  _buildSectionTitle(l10n.aksharAboutAkshar),
                   SizedBox(height: 12.h),
                   _buildDescriptionCard(
-                    'Akshar is UNNATI Society\'s foundational education initiative focused on underprivileged children designed for those unable to afford formal schooling and built around community-based learning.',
+                    l10n.aksharAksharIsUNNATISocietySFoundationalEducationInitiativeFocusedOnUnderprivilegedChildrenDesignedForThoseUnableToAffordFormalSchoolingAndBuiltAroundCommunityBasedLearning,
                     Icons.auto_stories_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Purpose'),
+                  _buildSectionTitle(l10n.aksharOurPurpose),
                   SizedBox(height: 12.h),
                   _buildFeaturesList([
-                    'Provide access to education for out-of-school children',
-                    'Deliver foundational literacy skills and reading habits',
-                    'Teach numeracy and essential basic mathematics',
-                    'Improve English communication and vocabulary',
-                    'Support children excluded from formal schooling',
+                    l10n.aksharProvideAccessToEducationForOutOfSchoolChildren,
+                    l10n.aksharDeliverFoundationalLiteracySkillsAndReadingHabits,
+                    l10n.aksharTeachNumeracyAndEssentialBasicMathematics,
+                    l10n.aksharImproveEnglishCommunicationAndVocabulary,
+                    l10n.aksharSupportChildrenExcludedFromFormalSchooling,
                   ]),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Who We Serve'),
+                  _buildSectionTitle(l10n.aksharWhoWeServe),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
-                      _buildBeneficiaryCard('Underprivileged\nChildren', Icons.child_care_rounded),
+                      _buildBeneficiaryCard(
+                        l10n.aksharUnderprivilegedChildren,
+                        Icons.child_care_rounded,
+                      ),
                       SizedBox(width: 10.w),
-                      _buildBeneficiaryCard('Out-of-School\nChildren', Icons.school_outlined),
+                      _buildBeneficiaryCard(
+                        l10n.aksharOutOfSchoolChildren,
+                        Icons.school_outlined,
+                      ),
                       SizedBox(width: 10.w),
-                      _buildBeneficiaryCard('Rural &\nDisadvantaged', Icons.public_rounded),
+                      _buildBeneficiaryCard(
+                        l10n.aksharRuralDisadvantaged,
+                        Icons.public_rounded,
+                      ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('What Students Learn'),
+                  _buildSectionTitle(l10n.aksharWhatStudentsLearn),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'Reading & Writing',
-                    'Build strong literacy foundations with vernacular and Hindi reading.',
+                    l10n.aksharReadingWriting,
+                    l10n.aksharBuildStrongLiteracyFoundationsWithVernacularAndHindiReading,
                     Icons.menu_book_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'Numeracy Skills',
-                    'Master basic mathematics, counting, addition, and money concepts.',
+                    l10n.aksharNumeracySkills,
+                    l10n.aksharMasterBasicMathematicsCountingAdditionAndMoneyConcepts,
                     Icons.calculate_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'English Communication',
-                    'Develop verbal and written communication confidence.',
+                    l10n.aksharEnglishCommunication,
+                    l10n.aksharDevelopVerbalAndWrittenCommunicationConfidence,
                     Icons.chat_bubble_outline_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('How Akshar Works'),
+                  _buildSectionTitle(l10n.aksharHowAksharWorks),
                   SizedBox(height: 12.h),
                   _buildProcessStep(
                     '1',
-                    'Community Centers',
-                    'Learning in accessible community environments and nukkad locations.',
+                    l10n.aksharCommunityCenters,
+                    l10n.aksharLearningInAccessibleCommunityEnvironmentsAndNukkadLocations,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '2',
-                    'Supportive Teaching',
-                    'Personalized attention, student engagement, and supportive pedagogy.',
+                    l10n.aksharSupportiveTeaching,
+                    l10n.aksharPersonalizedAttentionStudentEngagementAndSupportivePedagogy,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '3',
-                    'Foundational Focus',
-                    'Building strong literacy and numeracy bases to prepare for school.',
+                    l10n.aksharFoundationalFocus,
+                    l10n.aksharBuildingStrongLiteracyAndNumeracyBasesToPrepareForSchool,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Impact'),
+                  _buildSectionTitle(l10n.aksharOurImpact),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Education', 'Access Provided', Colors.blue),
+                        child: _buildImpactCard(
+                          l10n.aksharEducation,
+                          l10n.aksharAccessProvided,
+                          Colors.blue,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
-                        child: _buildImpactCard('Children', 'Learning to Read', Colors.black),
+                        child: _buildImpactCard(
+                          l10n.aksharChildren,
+                          l10n.aksharLearningToRead,
+                          Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -186,34 +205,66 @@ class AksharPage extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Confidence', 'Greatly Improved', Colors.black),
+                        child: _buildImpactCard(
+                          l10n.aksharConfidence,
+                          l10n.aksharGreatlyImproved,
+                          Colors.black,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
-                        child: _buildImpactCard('Inequality', 'Actively Reduced', Colors.blue),
+                        child: _buildImpactCard(
+                          l10n.aksharInequality,
+                          l10n.aksharActivelyReduced,
+                          Colors.blue,
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Emotional & Social Impact'),
+                  _buildSectionTitle(l10n.aksharEmotionalSocialImpact),
                   SizedBox(height: 12.h),
-                  _buildVisionCard('Ignited a lifelong love for learning in young minds', Icons.favorite_border_rounded),
+                  _buildVisionCard(
+                    l10n.aksharIgnitedALifelongLoveForLearningInYoungMinds,
+                    Icons.favorite_border_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Created hope and aspirations among families and communities', Icons.home_outlined),
+                  _buildVisionCard(
+                    l10n.aksharCreatedHopeAndAspirationsAmongFamiliesAndCommunities,
+                    Icons.home_outlined,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Encouraged sustained educational participation for girls and boys', Icons.people_outline_rounded),
+                  _buildVisionCard(
+                    l10n.aksharEncouragedSustainedEducationalParticipationForGirlsAndBoys,
+                    Icons.people_outline_rounded,
+                  ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Future Vision'),
+                  _buildSectionTitle(l10n.aksharFutureVision),
                   SizedBox(height: 12.h),
-                  _buildVisionCard('Expand to more rural and slum community clusters', Icons.public_rounded),
+                  _buildVisionCard(
+                    l10n.aksharExpandToMoreRuralAndSlumCommunityClusters,
+                    Icons.public_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Introduce bridge courses for academic transitions', Icons.trending_up_rounded),
+                  _buildVisionCard(
+                    l10n.aksharIntroduceBridgeCoursesForAcademicTransitions,
+                    Icons.trending_up_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Mainstream students into recognized formal schools', Icons.school_outlined),
+                  _buildVisionCard(
+                    l10n.aksharMainstreamStudentsIntoRecognizedFormalSchools,
+                    Icons.school_outlined,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Integrate foundational digital learning modules', Icons.computer_rounded),
+                  _buildVisionCard(
+                    l10n.aksharIntegrateFoundationalDigitalLearningModules,
+                    Icons.computer_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Introduce life-skills and hygiene education', Icons.lightbulb_outline_rounded),
+                  _buildVisionCard(
+                    l10n.aksharIntroduceLifeSkillsAndHygieneEducation,
+                    Icons.lightbulb_outline_rounded,
+                  ),
                   SizedBox(height: 30.h),
                 ],
               ),
@@ -232,11 +283,7 @@ class AksharPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4),
-          child: Container(
-            height: 25.h,
-            width: 7.h,
-            color: Colors.black,
-          ),
+          child: Container(height: 25.h, width: 7.h, color: Colors.black),
         ),
         SizedBox(width: 10.w),
         Text(
@@ -255,9 +302,7 @@ class AksharPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -293,9 +338,7 @@ class AksharPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -307,7 +350,11 @@ class AksharPage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.black87, size: 20),
+                  const Icon(
+                    Icons.check_circle,
+                    color: Colors.black87,
+                    size: 20,
+                  ),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
@@ -370,13 +417,15 @@ class AksharPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildSkillCard(String title, String description, IconData icon) {
+  static Widget _buildSkillCard(
+    String title,
+    String description,
+    IconData icon,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -424,13 +473,15 @@ class AksharPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildProcessStep(String number, String title, String description) {
+  static Widget _buildProcessStep(
+    String number,
+    String title,
+    String description,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -489,7 +540,11 @@ class AksharPage extends StatelessWidget {
   }
 
   // Exact matching VolunteerCardUtil from homescreen
-  static Widget _buildImpactCard(String subtitle, String title, Color curvedColor) {
+  static Widget _buildImpactCard(
+    String subtitle,
+    String title,
+    Color curvedColor,
+  ) {
     return Container(
       height: 120.h,
       decoration: BoxDecoration(
@@ -557,9 +612,7 @@ class AksharPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
