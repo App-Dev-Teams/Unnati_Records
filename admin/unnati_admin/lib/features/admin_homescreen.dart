@@ -322,253 +322,255 @@ class _AdminHomePageState extends State<AdminHomePage> {
         imageName: "unnatiLogoColourFix.png",
       ),
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-      body: RefreshIndicator(
-        color: const Color.fromARGB(255, 9, 75, 128),
-        backgroundColor: const Color.fromARGB(255, 14, 22, 33),
-        onRefresh: _refreshData,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Admin Dashboard",
-                style: GoogleFonts.oswald(
-                  fontSize: 28,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: const Color.fromARGB(255, 9, 75, 128),
+          backgroundColor: const Color.fromARGB(255, 14, 22, 33),
+          onRefresh: _refreshData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Admin Dashboard",
+                  style: GoogleFonts.oswald(
+                    fontSize: 28,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-
-              SizedBox(height: 6.h),
-
-              Text(
-                "Manage volunteers and leads",
-                style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
-              ),
-
-              SizedBox(height: 28.h),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 180.h,
-                      width: MediaQuery.of(context).size.width / 2 - 30.w,
-                      child: InkWell(
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AdminFileUploadPage(),
-                            ),
-                          );
-                        },
-                        child: _AdminActionCard(
-                          icon: Icons.file_copy,
-                          title: "Upload Files",
-                          subtitle: "Provide students with study materials.",
+        
+                SizedBox(height: 6.h),
+        
+                Text(
+                  "Manage volunteers and leads",
+                  style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
+                ),
+        
+                SizedBox(height: 28.h),
+        
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 180.h,
+                        width: MediaQuery.of(context).size.width / 2 - 30.w,
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AdminFileUploadPage(),
+                              ),
+                            );
+                          },
+                          child: _AdminActionCard(
+                            icon: Icons.file_copy,
+                            title: "Upload Files",
+                            subtitle: "Provide students with study materials.",
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: SizedBox(
-                      height: 180.h,
-                      width: MediaQuery.of(context).size.width / 2 - 30.w,
-                      child: InkWell(
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AssignLeadsPage(),
-                            ),
-                          );
-                          if (mounted) {
-                            _loadCurrentLeads();
-                          }
-                        },
-                        child: _AdminActionCard(
-                          icon: Icons.admin_panel_settings_outlined,
-                          title: "Assign Leads",
-                          subtitle: "Promote & change roles",
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: SizedBox(
+                        height: 180.h,
+                        width: MediaQuery.of(context).size.width / 2 - 30.w,
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AssignLeadsPage(),
+                              ),
+                            );
+                            if (mounted) {
+                              _loadCurrentLeads();
+                            }
+                          },
+                          child: _AdminActionCard(
+                            icon: Icons.admin_panel_settings_outlined,
+                            title: "Assign Leads",
+                            subtitle: "Promote & change roles",
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 20.h),
-
-              SizedBox(
-                height: 180.h,
-                width: double.infinity,
-                child: InkWell(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ViewVolunteersPage(),
-                      ),
-                    );
-                    if (mounted) {
-                      _loadCurrentLeads();
-                    }
-                  },
-                  child: _AdminActionCard(
-                    icon: Icons.people_outline,
-                    title: "View Unnati Volunteers",
-                    subtitle: "Browse all volunteers and their details",
-                  ),
+                  ],
                 ),
-              ),
-
-              SizedBox(height: 40.h),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Current Leads",
-                    style: GoogleFonts.oswald(
-                      fontSize: 22,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
+        
+                SizedBox(height: 20.h),
+        
+                SizedBox(
+                  height: 180.h,
+                  width: double.infinity,
+                  child: InkWell(
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ViewVolunteersPage(),
+                        ),
+                      );
+                      if (mounted) {
+                        _loadCurrentLeads();
+                      }
+                    },
+                    child: _AdminActionCard(
+                      icon: Icons.people_outline,
+                      title: "View Unnati Volunteers",
+                      subtitle: "Browse all volunteers and their details",
                     ),
                   ),
-                  IconButton(
-                    tooltip: "Refresh Leads",
-                    icon: _isLoadingLeads
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.lightBlueAccent,
-                            ),
-                          )
-                        : const Icon(Icons.refresh, color: Colors.white70, size: 22),
-                    onPressed: _isLoadingLeads ? null : _loadCurrentLeads,
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 16.h),
-
-            _isLoadingLeads
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
-                    children: programs.map((program) {
-                      final leads = leadsByProgram[program] ?? [];
-                      final isExpanded = expandedPrograms[program] ?? false;
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                expandedPrograms[program] = !isExpanded;
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
+                ),
+        
+                SizedBox(height: 40.h),
+        
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Current Leads",
+                      style: GoogleFonts.oswald(
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: "Refresh Leads",
+                      icon: _isLoadingLeads
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.lightBlueAccent,
                               ),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 9, 75, 128),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        isExpanded
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 12),
-                                      Text(
-                                        program,
-                                        style: GoogleFonts.oswald(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                            )
+                          : const Icon(Icons.refresh, color: Colors.white70, size: 22),
+                      onPressed: _isLoadingLeads ? null : _loadCurrentLeads,
+                    ),
+                  ],
+                ),
+        
+                SizedBox(height: 16.h),
+        
+              _isLoadingLeads
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: programs.map((program) {
+                        final leads = leadsByProgram[program] ?? [];
+                        final isExpanded = expandedPrograms[program] ?? false;
+        
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  expandedPrograms[program] = !isExpanded;
+                                });
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 9, 75, 128),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.white10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          isExpanded
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
                                           color: Colors.white,
-                                          letterSpacing: 0.5,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 12),
+                                        Text(
+                                          program,
+                                          style: GoogleFonts.oswald(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.lightBlueAccent.withOpacity(
+                                          0.2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        '${leads.length}',
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.lightBlueAccent,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlueAccent.withOpacity(
-                                        0.2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      '${leads.length}',
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.lightBlueAccent,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          if (isExpanded && leads.isNotEmpty) ...[
+                            if (isExpanded && leads.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              ...leads.map((lead) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: LeadCard(
+                                    name: lead['name'],
+                                    role: lead['role'],
+                                    onEdit: () => _editLead(lead),
+                                    onDelete: () => _deleteLead(lead),
+                                  ),
+                                );
+                              }),
+                            ],
+                            if (isExpanded && leads.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Text(
+                                  'No leads assigned in $program',
+                                  style: GoogleFonts.nunito(
+                                    color: Colors.white54,
+                                    fontSize: 13,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
                             const SizedBox(height: 12),
-                            ...leads.map((lead) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: LeadCard(
-                                  name: lead['name'],
-                                  role: lead['role'],
-                                  onEdit: () => _editLead(lead),
-                                  onDelete: () => _deleteLead(lead),
-                                ),
-                              );
-                            }),
                           ],
-                          if (isExpanded && leads.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: Text(
-                                'No leads assigned in $program',
-                                style: GoogleFonts.nunito(
-                                  color: Colors.white54,
-                                  fontSize: 13,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ),
-                          const SizedBox(height: 12),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-          ],
+                        );
+                      }).toList(),
+                    ),
+            ],
+          ),
         ),
+            ),
       ),
-    ),
   );
   }
 }
