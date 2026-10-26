@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_page.dart';
-import 'package:unnati_app/features/volunteer_profile/volunteer_profile_page.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
+
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerHomeCard extends StatelessWidget {
   const VolunteerHomeCard({super.key});
@@ -21,7 +22,7 @@ class VolunteerHomeCard extends StatelessWidget {
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               colors: [Color(0xFF111212), Color(0xFF2B3D54)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -40,9 +41,9 @@ class VolunteerHomeCard extends StatelessWidget {
                     //title
                     SizedBox(
                       height: 40,
-                      width: 210,
+                      // width: 210,
                       child: Text(
-                        "EMPOWERING DREAMS",
+                        AppLocalizations.of(context)!.eMPOWERINGdREAMS,
                         style: GoogleFonts.oswald(
                           fontSize: 25,
                           color: Colors.white,
@@ -55,7 +56,9 @@ class VolunteerHomeCard extends StatelessWidget {
 
                     //subtitle
                     Text(
-                      'Join the journey of bridging the digital divide through DigiXplore, Netritva & Akshar.',
+                      AppLocalizations.of(
+                        context,
+                      )!.jointhejourneyofbridgingthedigitaldividethroughdigiXplorenetritvaakshar,
                       style: GoogleFonts.roboto(
                         color: Colors.grey,
                         fontSize: 10,
@@ -87,7 +90,7 @@ class VolunteerHomeCard extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                'Attendance',
+                                AppLocalizations.of(context)!.attendance,
                                 style: GoogleFonts.oswald(
                                   color: Colors.black,
                                   fontSize: 15,
@@ -116,7 +119,7 @@ class VolunteerHomeCard extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                'Resources',
+                                AppLocalizations.of(context)!.resources,
                                 style: GoogleFonts.oswald(
                                   color: Colors.black,
                                   fontSize: 15,

@@ -3,6 +3,8 @@ import '../our_programs/digixplore.dart';
 import '../our_programs/akshar.dart';
 import '../our_programs/netritva.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
@@ -16,20 +18,20 @@ class AboutPage extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF6200EA), Color(0xFF3700B3)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.info, size: 60, color: Colors.white),
                     SizedBox(height: 12),
                     Text(
-                      'Unnati Society',
+                      AppLocalizations.of(context)!.unnatisociety,
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -38,7 +40,7 @@ class AboutPage extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Social Outreach Initiative',
+                      AppLocalizations.of(context)!.socialoutreachinitiative,
                       style: TextStyle(fontSize: 14, color: Colors.white70),
                     ),
                   ],
@@ -49,40 +51,42 @@ class AboutPage extends StatelessWidget {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle('About Unnati'),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
-                  _buildAboutCard(),
+                  _buildAboutCard(context),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
 
                   _buildSectionTitle('Parent Institution'),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
-                  _buildInstitutionCard(),
+                  _buildInstitutionCard(context),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
 
                   _buildSectionTitle('Our Mission'),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
-                  _buildMissionCard(),
+                  _buildMissionCard(context),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
 
                   _buildSectionTitle('Our Programs'),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
                   Text(
-                    'Click on any program card to explore in detail',
+                    AppLocalizations.of(
+                      context,
+                    )!.clickonanyprogramcardtoexploreindetail,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -90,7 +94,7 @@ class AboutPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   _buildProgramCard(
                     context,
@@ -98,16 +102,14 @@ class AboutPage extends StatelessWidget {
                     'Digital Education Initiative',
                     'Introducing underprivileged students to technology and bridging the digital divide through interactive sessions.',
                     Icons.computer,
-                    const Color(0xFF1E88E5),
+                    Color(0xFF1E88E5),
                     () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const DigixplorePage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => DigixplorePage()),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   _buildProgramCard(
                     context,
@@ -115,16 +117,14 @@ class AboutPage extends StatelessWidget {
                     'Foundational Education Initiative',
                     'Providing foundational literacy and numeracy to underprivileged children unable to attend formal schooling.',
                     Icons.auto_stories,
-                    const Color(0xFFE91E63),
+                    Color(0xFFE91E63),
                     () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const AksharPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => AksharPage()),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   _buildProgramCard(
                     context,
@@ -132,24 +132,22 @@ class AboutPage extends StatelessWidget {
                     'Career Guidance & Mentorship',
                     'Helping underprivileged students discover their potential through career guidance, mentorship, and leadership development.',
                     Icons.trending_up,
-                    const Color(0xFFFFA726),
+                    Color(0xFFFFA726),
                     () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const NetritvaPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => NetritvaPage()),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
 
                   _buildSectionTitle('Contact Us'),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
-                  _buildContactCard(),
+                  _buildContactCard(context),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
@@ -162,7 +160,7 @@ class AboutPage extends StatelessWidget {
   static Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: Color(0xFF3700B3),
@@ -170,19 +168,19 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildAboutCard() {
+  static Widget _buildAboutCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF6200EA).withOpacity(0.1),
+        color: Color(0xFF6200EA).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF6200EA), width: 1),
+        border: Border.all(color: Color(0xFF6200EA), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'What is Unnati?',
+          Text(
+            AppLocalizations.of(context)!.whatisunnati,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -190,10 +188,12 @@ class AboutPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
           Text(
-            'Unnati Society is an Institute Outreach Activity and social outreach initiative associated with IIIT Bhagalpur, focused on empowering underprivileged communities through education, mentorship, literacy, and digital inclusion.',
+            AppLocalizations.of(
+              context,
+            )!.unnatisocietyisaninstituteoutreachactivityandsocialoutreachinitiativeassociatedwithiIITbhagalpurfocusedonempoweringunderprivilegedcommunitiesthrougheducationmentorshipliteracyanddigitalinclusion,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
@@ -205,11 +205,11 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildInstitutionCard() {
+  static Widget _buildInstitutionCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.blue, width: 1),
       ),
@@ -218,19 +218,20 @@ class AboutPage extends StatelessWidget {
         children: [
           Row(
             children: [
-               SizedBox(
+              SizedBox(
                 height: 30,
                 width: 30,
-                child: Image.asset('assets/images/collegeLogo.png')),
+                child: Image.asset('assets/images/collegeLogo.png'),
+              ),
 
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
 
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'IIIT Bhagalpur',
+                      AppLocalizations.of(context)!.iIITbhagalpur,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -239,7 +240,9 @@ class AboutPage extends StatelessWidget {
                     ),
 
                     Text(
-                      'An Institute of National Importance',
+                      AppLocalizations.of(
+                        context,
+                      )!.aninstituteofnationalimportance,
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],
@@ -248,17 +251,17 @@ class AboutPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           Row(
             children: [
-              const Icon(Icons.location_on, color: Colors.grey, size: 18),
+              Icon(Icons.location_on, color: Colors.grey, size: 18),
 
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
 
               Expanded(
                 child: Text(
-                  'Sabour, Bhagalpur, Bihar 813210, India',
+                  AppLocalizations.of(context)!.sabourbhagalpurbihar813210india,
                   style: TextStyle(fontSize: 13, color: Colors.grey[700]),
                 ),
               ),
@@ -269,20 +272,20 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildMissionCard() {
+  static Widget _buildMissionCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF3700B3).withOpacity(0.1),
+        color: Color(0xFF3700B3).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF3700B3), width: 1),
+        border: Border.all(color: Color(0xFF3700B3), width: 1),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _MissionPoint(
             emoji: '🎓',
-            title: 'Educational Empowerment',
+            title: AppLocalizations.of(context)!.educationalempowerment,
             description: 'Literacy, digital, and career guidance',
           ),
 
@@ -290,7 +293,7 @@ class AboutPage extends StatelessWidget {
 
           _MissionPoint(
             emoji: '👥',
-            title: 'Social Empowerment',
+            title: AppLocalizations.of(context)!.socialempowerment,
             description:
                 'Reducing inequality & supporting marginalized communities',
           ),
@@ -299,7 +302,7 @@ class AboutPage extends StatelessWidget {
 
           _MissionPoint(
             emoji: '⭐',
-            title: 'Youth Development',
+            title: AppLocalizations.of(context)!.youthdevelopment,
             description: 'Leadership, skill development & confidence building',
           ),
 
@@ -307,7 +310,7 @@ class AboutPage extends StatelessWidget {
 
           _MissionPoint(
             emoji: '🚀',
-            title: 'Community Impact',
+            title: AppLocalizations.of(context)!.communityimpact,
             description: 'Bridging educational & digital divides',
           ),
         ],
@@ -327,16 +330,16 @@ class AboutPage extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color, width: 2),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 8,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -348,15 +351,15 @@ class AboutPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 32),
                 ),
 
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
 
                 Expanded(
                   child: Column(
@@ -371,7 +374,7 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
 
                       Text(
                         subtitle,
@@ -389,7 +392,7 @@ class AboutPage extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
 
             Text(
               description,
@@ -400,13 +403,13 @@ class AboutPage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'Tap to explore',
+                  AppLocalizations.of(context)!.taptoexplore,
                   style: TextStyle(
                     fontSize: 11,
                     color: color,
@@ -414,7 +417,7 @@ class AboutPage extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 Icon(Icons.touch_app, size: 14, color: color),
               ],
             ),
@@ -424,9 +427,9 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildContactCard() {
+  static Widget _buildContactCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
@@ -437,13 +440,13 @@ class AboutPage extends StatelessWidget {
         children: [
           Icon(Icons.email, color: Colors.grey[700], size: 24),
 
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
 
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Email',
+                AppLocalizations.of(context)!.email,
                 style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
 
@@ -480,9 +483,9 @@ class _MissionPoint extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 20)),
+        Text(emoji, style: TextStyle(fontSize: 20)),
 
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
 
         Expanded(
           child: Column(

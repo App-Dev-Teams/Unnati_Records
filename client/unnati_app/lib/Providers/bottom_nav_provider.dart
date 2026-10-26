@@ -1,4 +1,4 @@
 //contains the current bottom navigation index
 import 'package:flutter_riverpod/legacy.dart';
 
-final bottomNavIndexProvider = StateProvider<int>((ref)=>1);
+final bottomNavIndexProvider = StateProvider<int>((ref) => 1);

@@ -10,8 +10,9 @@ import 'package:unnati_app/features/our_programs/netritva.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
-import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card_2.dart';
 import 'package:unnati_app/services/api_service.dart';
+
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerHomePage extends StatefulWidget {
   const VolunteerHomePage({super.key});
@@ -31,7 +32,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
         } else {
           var user = asyncSnapshot.data;
           return Scaffold(
-            backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+            backgroundColor: Color.fromARGB(255, 221, 221, 221),
 
             appBar: MyAppBar(
               imageName: "unnatiLogoColourFix.png",
@@ -51,13 +52,13 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       VolunteerCardUtil(
-                        title: "Students\nmentored",
-                        subtitle: "1200+",
+                        title: AppLocalizations.of(context)!.studentsnmentored,
+                        subtitle: AppLocalizations.of(context)!.text1200,
                         curvedColor: Colors.blue,
                       ),
                       VolunteerCardUtil(
-                        title: "Classes taken",
-                        subtitle: "500+",
+                        title: AppLocalizations.of(context)!.classestaken,
+                        subtitle: AppLocalizations.of(context)!.text500,
                         curvedColor: Colors.black,
                       ),
                     ],
@@ -70,7 +71,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: 10),
                         child: Container(
                           height: 25.h,
                           width: 7.h,
@@ -79,7 +80,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                       ),
                       SizedBox(width: 10.w),
                       Text(
-                        "OUR PROGRAMS",
+                        AppLocalizations.of(context)!.oURpROGRAMS,
                         style: GoogleFonts.oswald(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -124,7 +125,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                       padding: EdgeInsets.all(16.r),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.r),
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -134,26 +135,24 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => const HelpSupport(),
-                            ),
+                            MaterialPageRoute(builder: (_) => HelpSupport()),
                           );
                         },
                         child: ListTile(
                           leading: Container(
                             padding: EdgeInsets.all(8.r),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.15),
+                              color: Colors.orange.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8.r),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.support_agent,
                               color: Colors.orange,
                               size: 15,
                             ),
                           ),
                           title: Text(
-                            "Help & Support",
+                            AppLocalizations.of(context)!.helpsupport,
                             style: GoogleFonts.oswald(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -161,10 +160,12 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            "Open and resolve student doubts",
+                            AppLocalizations.of(
+                              context,
+                            )!.openandresolvestudentdoubts,
                             style: GoogleFonts.oswald(color: Colors.grey),
                           ),
-                          trailing: const Icon(
+                          trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.grey,
                           ),
@@ -183,7 +184,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   //     padding: EdgeInsets.all(16.r),
                   //     decoration: BoxDecoration(
                   //       borderRadius: BorderRadius.circular(16.r),
-                  //       gradient: const LinearGradient(
+                  //       gradient: LinearGradient(
                   //         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                   //         begin: Alignment.topLeft,
                   //         end: Alignment.bottomRight,
@@ -200,7 +201,9 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   //         leading: Container(
                   //           padding: EdgeInsets.all(8.r),
                   //           decoration: BoxDecoration(
-                  //             color: Colors.lightBlueAccent.withOpacity(0.10),
+                  //             color: Colors.lightBlueAccent.withValues(
+                  //               alpha: 0.10,
+                  //             ),
                   //             borderRadius: BorderRadius.circular(8.r),
                   //           ),
                   //           child: Icon(
@@ -210,7 +213,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   //           ),
                   //         ),
                   //         title: Text(
-                  //           "Developers",
+                  //           AppLocalizations.of(context)!.developers,
                   //           style: GoogleFonts.oswald(
                   //             fontSize: 18,
                   //             fontWeight: FontWeight.w600,
@@ -218,7 +221,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   //           ),
                   //         ),
                   //         subtitle: Text(
-                  //           "Meet our developers",
+                  //           AppLocalizations.of(context)!.meetourdevelopers,
                   //           style: GoogleFonts.oswald(color: Colors.grey),
                   //         ),
                   //         trailing: Icon(

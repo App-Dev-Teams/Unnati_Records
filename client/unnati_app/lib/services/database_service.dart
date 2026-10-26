@@ -94,11 +94,7 @@ class DatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'unnati_downloads.db');
 
-    return openDatabase(
-      path,
-      version: 1,
-      onCreate: _createTables,
-    );
+    return openDatabase(path, version: 1, onCreate: _createTables);
   }
 
   // Create database tables
@@ -142,10 +138,7 @@ class DatabaseService {
         return [];
       }
 
-      return List.generate(
-        maps.length,
-        (i) => Download.fromMap(maps[i]),
-      );
+      return List.generate(maps.length, (i) => Download.fromMap(maps[i]));
     } catch (e) {
       print('Error fetching downloads: $e');
       return [];
@@ -226,10 +219,7 @@ class DatabaseService {
         return [];
       }
 
-      return List.generate(
-        maps.length,
-        (i) => Download.fromMap(maps[i]),
-      );
+      return List.generate(maps.length, (i) => Download.fromMap(maps[i]));
     } catch (e) {
       print('Error fetching downloads by type: $e');
       return [];
@@ -256,11 +246,7 @@ class DatabaseService {
   Future<int> deleteDownload(int id) async {
     try {
       final db = await database;
-      return await db.delete(
-        'downloads',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
+      return await db.delete('downloads', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
       print('Error deleting download: $e');
       return -1;
@@ -282,7 +268,9 @@ class DatabaseService {
   Future<int> getTotalDownloadsCount() async {
     try {
       final db = await database;
-      final result = await db.rawQuery('SELECT COUNT(*) as count FROM downloads');
+      final result = await db.rawQuery(
+        'SELECT COUNT(*) as count FROM downloads',
+      );
       return Sqflite.firstIntValue(result) ?? 0;
     } catch (e) {
       print('Error getting downloads count: $e');
@@ -305,10 +293,7 @@ class DatabaseService {
         return [];
       }
 
-      return List.generate(
-        maps.length,
-        (i) => Download.fromMap(maps[i]),
-      );
+      return List.generate(maps.length, (i) => Download.fromMap(maps[i]));
     } catch (e) {
       print('Error searching downloads: $e');
       return [];

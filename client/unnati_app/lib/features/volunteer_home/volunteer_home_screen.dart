@@ -27,7 +27,8 @@ class VolunteerHomeScreen extends ConsumerWidget {
           navIcon1: Icons.add_to_photos_outlined,
           navIcon2: Icons.home_outlined,
           navIcon3: Icons.person_outline,
-          labelName1: "Resources", //for testing it is directed to resources page in future it can be replaced by any additional feature
+          labelName1:
+              "Resources", //for testing it is directed to resources page in future it can be replaced by any additional feature
           labelName2: "Home",
           labelName3: "Profile",
           navColor: const Color.fromARGB(255, 211, 211, 211),

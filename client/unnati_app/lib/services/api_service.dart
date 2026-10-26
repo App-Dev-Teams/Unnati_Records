@@ -4,8 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records-qhgb.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records-qhgb.onrender.com/api';
+  static const String baseUrl =
+      'https://unnati-records-qhgb.onrender.com/api/auth';
+  static const String coreBaseUrl =
+      'https://unnati-records-qhgb.onrender.com/api';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -98,7 +100,7 @@ class ApiService {
   }) async {
     final prefs = await _preferences;
     try {
-      print("saveuserdata ${user}");
+      print("saveuserdata $user");
       Map<String, dynamic> payload = Map<String, dynamic>.from(user);
 
       if (preserveExistingFields) {
@@ -131,7 +133,7 @@ class ApiService {
     if (str == null) return null;
     try {
       final Map<String, dynamic> data = json.decode(str);
-      print("getuserdata ${data}");
+      print("getuserdata $data");
       return data;
     } catch (e) {
       print('❌ getUserData parse error: ${e.toString()}');
@@ -294,7 +296,7 @@ class ApiService {
             body: json.encode(body),
           )
           .timeout(_timeout);
-          print('📥 $operation Raw Response Status: ${response.body}');
+      print('📥 $operation Raw Response Status: ${response.body}');
 
       return await _handleResponse(response, operation);
     } on http.ClientException catch (e) {
@@ -721,7 +723,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
         .timeout(_timeout);
-        print(  " CLOSED DOUBTS: ${response.body}" );
+    print(" CLOSED DOUBTS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -747,7 +749,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
         .timeout(_timeout);
-        print(" DOUBT DETAILS: ${response.body}");
+    print(" DOUBT DETAILS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -777,7 +779,7 @@ class ApiService {
           headers: headers,
         )
         .timeout(_timeout);
-        print(" DOUBT MESSAGES: ${response.body}");
+    print(" DOUBT MESSAGES: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {

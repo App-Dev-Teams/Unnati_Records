@@ -4,11 +4,10 @@ import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendan
 // date-wise attendance provider
 final attendanceProvider =
     StateNotifierProvider<AttendanceNotifier, Map<DateTime, AttendanceDay>>(
-  (ref) => AttendanceNotifier(),
-);
+      (ref) => AttendanceNotifier(),
+    );
 
-class AttendanceNotifier
-    extends StateNotifier<Map<DateTime, AttendanceDay>> {
+class AttendanceNotifier extends StateNotifier<Map<DateTime, AttendanceDay>> {
   AttendanceNotifier() : super({});
 
   // normalize date (remove time)
@@ -27,12 +26,9 @@ class AttendanceNotifier
     final day = state[d] ?? AttendanceDay();
 
     // remove volunteer from all lists first
-    final present =
-        day.present.where((v) => v.id != volunteer.id).toList();
-    final absent =
-        day.absent.where((v) => v.id != volunteer.id).toList();
-    final deferred =
-        day.deferred.where((v) => v.id != volunteer.id).toList();
+    final present = day.present.where((v) => v.id != volunteer.id).toList();
+    final absent = day.absent.where((v) => v.id != volunteer.id).toList();
+    final deferred = day.deferred.where((v) => v.id != volunteer.id).toList();
 
     // add to selected status list
     if (status == AttendanceStatus.present) {
@@ -45,14 +41,9 @@ class AttendanceNotifier
 
     state = {
       ...state,
-      d: AttendanceDay(
-        present: present,
-        absent: absent,
-        deferred: deferred,
-      ),
+      d: AttendanceDay(present: present, absent: absent, deferred: deferred),
     };
   }
-
 
   void setAttendanceFromBackend(
     DateTime date,
@@ -64,14 +55,9 @@ class AttendanceNotifier
 
     state = {
       ...state,
-      d: AttendanceDay(
-        present: present,
-        absent: absent,
-        deferred: cancelled,
-      ),
+      d: AttendanceDay(present: present, absent: absent, deferred: cancelled),
     };
   }
-
 
   // remove volunteer completely from a date
   void removeVolunteer(DateTime date, Volunteer volunteer) {
@@ -83,12 +69,9 @@ class AttendanceNotifier
     state = {
       ...state,
       d: AttendanceDay(
-        present:
-            day.present.where((v) => v.id != volunteer.id).toList(),
-        absent:
-            day.absent.where((v) => v.id != volunteer.id).toList(),
-        deferred:
-            day.deferred.where((v) => v.id != volunteer.id).toList(),
+        present: day.present.where((v) => v.id != volunteer.id).toList(),
+        absent: day.absent.where((v) => v.id != volunteer.id).toList(),
+        deferred: day.deferred.where((v) => v.id != volunteer.id).toList(),
       ),
     };
   }

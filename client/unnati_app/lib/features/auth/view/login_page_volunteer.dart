@@ -7,6 +7,8 @@ import 'package:unnati_app/features/forgot_pass/email_verification.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class LoginPageVolunteer extends StatefulWidget {
   const LoginPageVolunteer({super.key});
 
@@ -30,8 +32,10 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
 
     if (!isValidVolunteerEmail(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a valid IIITBH email"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pleaseenteravalidiIITBHemail,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -41,8 +45,8 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
 
     if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your password"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryourpassword),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -65,7 +69,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
         SnackBar(
           content: Text(result['message'] ?? 'Login successful'),
           backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
       // Ensure role and user data are saved (defensive)
@@ -83,7 +87,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
       }
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        MaterialPageRoute(builder: (_) => AuthCheck()),
         (route) => false, // Remove all previous routes
       );
     } else {
@@ -91,7 +95,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
         SnackBar(
           content: Text(result['message'] ?? 'Login failed'),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }
@@ -117,10 +121,10 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
               ),
               SizedBox(height: 10.h, width: double.infinity),
               Text(
-                'Volunteer',
+                AppLocalizations.of(context)!.volunteer,
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 30.sp,
-                  color: const Color.fromARGB(255, 9, 75, 128),
+                  color: Color.fromARGB(255, 9, 75, 128),
                 ),
               ),
               SizedBox(height: 10.h, width: double.infinity),
@@ -135,7 +139,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Password',
+                  title: AppLocalizations.of(context)!.password,
                   controller: passwordController,
                 ),
               ),
@@ -145,12 +149,13 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EmailVerification(accountType: 'volunteer'),
+                      builder: (context) =>
+                          EmailVerification(accountType: 'volunteer'),
                     ),
                   );
                 },
                 child: Text(
-                  'Forgot password?',
+                  AppLocalizations.of(context)!.forgotpassword,
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
@@ -159,17 +164,14 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
               ElevatedButton(
                 onPressed: isLoading ? null : handleLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 15,
-                  ),
+                  backgroundColor: Color.fromARGB(255, 9, 75, 128),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
@@ -180,7 +182,7 @@ class _LoginPageVolunteerState extends State<LoginPageVolunteer> {
                         ),
                       )
                     : Text(
-                        'Login',
+                        AppLocalizations.of(context)!.login,
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
               ),

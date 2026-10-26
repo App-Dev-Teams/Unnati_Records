@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/features/forgot_pass/otp_verification.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class EmailVerification extends StatefulWidget {
   final String accountType;
-  const EmailVerification({super.key,required this.accountType});
+  const EmailVerification({super.key, required this.accountType});
 
   @override
   State<EmailVerification> createState() => _EmailVerificationState();
@@ -47,7 +48,7 @@ class _EmailVerificationState extends State<EmailVerification> {
             children: [
               Center(
                 //lottie
-                child: Container(
+                child: SizedBox(
                   height: 200.h,
                   width: 200.w,
                   child: Lottie.asset(
@@ -59,7 +60,7 @@ class _EmailVerificationState extends State<EmailVerification> {
               Padding(
                 padding: EdgeInsets.only(left: 30.w),
                 child: Text(
-                  'Enter your email address',
+                  AppLocalizations.of(context)!.enteryouremailaddress,
                   style: GoogleFonts.oswald(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -74,7 +75,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                 child: TextField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    label: Text('email'),
+                    label: Text(AppLocalizations.of(context)!.email),
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(7),
@@ -98,7 +99,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7),
                     ),
-                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                    backgroundColor: Color.fromARGB(255, 9, 75, 128),
                   ),
                   onPressed: _isSending
                       ? null
@@ -106,8 +107,12 @@ class _EmailVerificationState extends State<EmailVerification> {
                           final email = emailController.text.trim();
                           if (email.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter your email'),
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.pleaseenteryouremail,
+                                ),
                               ),
                             );
                             return;
@@ -134,8 +139,10 @@ class _EmailVerificationState extends State<EmailVerification> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    OtpVerification(emailSent: email,accountType: widget.accountType,),
+                                builder: (context) => OtpVerification(
+                                  emailSent: email,
+                                  accountType: widget.accountType,
+                                ),
                               ),
                             );
                           } else {
@@ -148,9 +155,9 @@ class _EmailVerificationState extends State<EmailVerification> {
                         },
                   child: Center(
                     child: _isSending
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            'Send OTP',
+                            AppLocalizations.of(context)!.sendoTP,
                             style: GoogleFonts.cormorantSc(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,

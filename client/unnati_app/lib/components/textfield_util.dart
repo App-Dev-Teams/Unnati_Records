@@ -5,7 +5,7 @@ class TextfieldUtil extends StatefulWidget {
   final String title;
   final TextEditingController? controller;
   final bool obscureText;
-  
+
   const TextfieldUtil({
     super.key,
     required this.title,
@@ -23,11 +23,11 @@ class _TextfieldUtilState extends State<TextfieldUtil> {
   @override
   Widget build(BuildContext context) {
     final isPassword = widget.title.toLowerCase().contains('password');
-    
+
     return TextField(
       controller: widget.controller,
-      keyboardType: isPassword 
-          ? TextInputType.visiblePassword 
+      keyboardType: isPassword
+          ? TextInputType.visiblePassword
           : TextInputType.emailAddress,
       obscureText: isPassword ? _obscureText : widget.obscureText,
       decoration: InputDecoration(
@@ -42,13 +42,15 @@ class _TextfieldUtilState extends State<TextfieldUtil> {
           borderSide: BorderSide(color: Color.fromARGB(255, 152, 199, 246)),
         ),
         labelText: widget.title,
-        labelStyle: GoogleFonts.oswald(color: Colors.black.withOpacity(0.5)),
+        labelStyle: GoogleFonts.oswald(
+          color: Colors.black.withValues(alpha: 0.5),
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                 ),
                 onPressed: () {
                   setState(() {

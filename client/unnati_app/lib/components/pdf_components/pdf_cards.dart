@@ -45,7 +45,7 @@ class PdfCards extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
               border: Border.all(
-                color: Colors.white.withOpacity(0.06),
+                color: Colors.white.withValues(alpha: 0.06),
                 width: 1,
               ),
             ),
@@ -129,7 +129,7 @@ class PdfModuleCard extends StatelessWidget {
                 end: Alignment.centerRight,
               ),
               border: Border.all(
-                color: Colors.white.withOpacity(0.06),
+                color: Colors.white.withValues(alpha: 0.06),
                 width: 1,
               ),
             ),
@@ -139,14 +139,10 @@ class PdfModuleCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(12.r),
                   decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.15),
+                    color: iconColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                    size: 24.sp,
-                  ),
+                  child: Icon(icon, color: iconColor, size: 24.sp),
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
