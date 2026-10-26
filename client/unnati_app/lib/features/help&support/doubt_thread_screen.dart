@@ -6,6 +6,8 @@ import 'package:unnati_app/Providers/doubt_provider.dart';
 import 'package:unnati_app/models/doubt.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class DoubtThreadScreen extends ConsumerStatefulWidget {
   final String doubtId;
   final bool isLeadView;
@@ -52,14 +54,16 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
       // If this screen is lead-only and doubts permissions were revoked, close it.
       if (widget.isLeadView && !_canManageDoubts && !widget.readOnly) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Permission revoked.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.permissionrevoked),
+            ),
+          );
           Navigator.of(context).maybePop();
         }
       }
     });
-    _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    _autoRefreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
       if (!mounted) return;
       _refresh();
     });
@@ -99,8 +103,10 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     final text = _messageController.text.trim();
     if (text.length < 5 || text.length > 300) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Message must be between 5 and 300 characters.'),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.messagemustbebetween5and300characters,
+          ),
         ),
       );
       return;
@@ -111,9 +117,11 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     });
 
     if (widget.isLeadView && (!_canManageDoubts || widget.readOnly)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Permission revoked.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.permissionrevoked),
+        ),
+      );
       Navigator.of(context).maybePop();
       return;
     }
@@ -161,7 +169,11 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
 
     if (result['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doubt resolved successfully.')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.doubtresolvedsuccessfully,
+          ),
+        ),
       );
       _refresh();
       return;
@@ -182,7 +194,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     final messagesAsync = ref.watch(doubtMessagesProvider(widget.doubtId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Doubt Thread')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.doubtthread)),
       body: detailsAsync.when(
         data: (doubt) {
           // If current user is a student and does not own this doubt, block access
@@ -192,17 +204,19 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
               doubt.studentId != _userId) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'You do not have permission to view this doubt.',
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.youdonothavepermissiontoviewthisdoubt,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).maybePop(),
-                      child: const Text('Go Back'),
+                      child: Text(AppLocalizations.of(context)!.goback),
                     ),
                   ],
                 ),
@@ -224,7 +238,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
@@ -235,57 +249,57 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                       ),
                     ),
                     if (doubt.isOpen &&
-                      (!widget.isLeadView ||
-                          (_canManageDoubts && !widget.readOnly)))
-                    SafeArea(
-                      top: false,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _messageController,
-                                maxLength: 300,
-                                minLines: 1,
-                                maxLines: 4,
-                                decoration: const InputDecoration(
-                                  hintText: 'Type your message',
-                                  border: OutlineInputBorder(),
+                        (!widget.isLeadView ||
+                            (_canManageDoubts && !widget.readOnly)))
+                      SafeArea(
+                        top: false,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(12, 6, 12, 12),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _messageController,
+                                  maxLength: 300,
+                                  minLines: 1,
+                                  maxLines: 4,
+                                  decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(
+                                      context,
+                                    )!.typeyourmessage,
+                                    border: OutlineInputBorder(),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton.filled(
-                              onPressed: _isSending ? null : _sendMessage,
-                              icon: _isSending
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Icon(Icons.send),
-                            ),
-                          ],
+                              SizedBox(width: 8),
+                              IconButton.filled(
+                                onPressed: _isSending ? null : _sendMessage,
+                                icon: _isSending
+                                    ? SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Icon(Icons.send),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text(
+                          doubt.isOpen
+                              ? 'Open doubts — only assigned leads can send messages.'
+                              : 'This doubt is closed. You can no longer send messages.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        doubt.isOpen
-                            ? 'Open doubts — only assigned leads can send messages.'
-                            : 'This doubt is closed. You can no longer send messages.',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               );
@@ -295,31 +309,34 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Failed to load messages: $error',
+                    "Failed to load messages: $error",
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: _refresh,
-                    child: const Text('Retry'),
+                    child: Text(AppLocalizations.of(context)!.retry),
                   ),
                 ],
               ),
             ),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => Center(child: CircularProgressIndicator()),
           );
         },
         error: (error, _) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to load doubt: $error', textAlign: TextAlign.center),
-              const SizedBox(height: 10),
-              ElevatedButton(onPressed: _refresh, child: const Text('Retry')),
+              Text("Failed to load doubt: $error", textAlign: TextAlign.center),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _refresh,
+                child: Text(AppLocalizations.of(context)!.retry),
+              ),
             ],
           ),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -342,9 +359,9 @@ class _DoubtHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = doubt.isOpen ? Colors.green : Colors.red;
     return Card(
-      margin: const EdgeInsets.all(12),
+      margin: EdgeInsets.all(12),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -353,19 +370,13 @@ class _DoubtHeader extends StatelessWidget {
                 Expanded(
                   child: Text(
                     doubt.title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
+                    color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -378,9 +389,9 @@ class _DoubtHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
-              'Subject: ${doubt.subject.isEmpty ? 'General' : doubt.subject}',
+              "Subject: ${doubt.subject.isEmpty ? 'General' : doubt.subject}",
             ),
             if (showResolve)
               Align(
@@ -388,13 +399,13 @@ class _DoubtHeader extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: isResolving ? null : onResolve,
                   icon: isResolving
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Icon(Icons.check_circle_outline),
-                  label: const Text('Resolve'),
+                      : Icon(Icons.check_circle_outline),
+                  label: Text(AppLocalizations.of(context)!.resolve),
                 ),
               ),
           ],
@@ -413,15 +424,15 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final isStudent = message.isStudent;
     final bubbleColor = isStudent
-        ? const Color(0xFF1F4A7A)
-        : const Color.fromARGB(255, 236, 236, 236);
+        ? Color(0xFF1F4A7A)
+        : Color.fromARGB(255, 236, 236, 236);
     final textColor = isStudent ? Colors.white : Colors.black;
 
     return Align(
       alignment: isStudent ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.all(10),
+        margin: EdgeInsets.symmetric(vertical: 6),
+        padding: EdgeInsets.all(10),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.78,
         ),
@@ -433,22 +444,25 @@ class _MessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${message.senderName} (${message.senderRole})',
+              "${message.senderName} (${message.senderRole})",
               style: TextStyle(
-                color: textColor.withOpacity(0.85),
+                color: textColor.withValues(alpha: 0.85),
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               message.message,
               style: TextStyle(color: textColor, fontSize: 14),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               _formatTime(message.createdAt),
-              style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 11),
+              style: TextStyle(
+                color: textColor.withValues(alpha: 0.7),
+                fontSize: 11,
+              ),
             ),
           ],
         ),
@@ -463,6 +477,6 @@ class _MessageBubble extends StatelessWidget {
     final minute = local.minute.toString().padLeft(2, '0');
     final day = local.day.toString().padLeft(2, '0');
     final month = local.month.toString().padLeft(2, '0');
-    return '$day/$month ${hour}:$minute';
+    return '$day/$month $hour:$minute';
   }
 }

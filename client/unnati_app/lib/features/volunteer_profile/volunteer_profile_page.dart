@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/self_attendance_page.dart';
 import 'package:unnati_app/features/volunteer_profile/Volunteer_profile_listtile.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
+
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerProfilePage extends StatefulWidget {
   const VolunteerProfilePage({super.key});
@@ -16,12 +17,12 @@ class VolunteerProfilePage extends StatefulWidget {
 }
 
 class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
-  static const List<String> _programOptions = [
+  static final List<String> _programOptions = [
     'DigiXplore',
     'Netritva',
     'Akshar',
   ];
-  static const List<String> _branchOptions = ['CSE', 'MAE', 'ECE', 'MNC'];
+  static final List<String> _branchOptions = ['CSE', 'MAE', 'ECE', 'MNC'];
 
   String _name = "Priyanshu Kumar";
   String phone = "xxxxxxxxxxxx";
@@ -116,562 +117,533 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         ? currentBranch
         : _branchOptions.first;
 
-showDialog(
-  context: context,
-  builder: (dialogContext) => StatefulBuilder(
-    builder: (context, setDialogState) => AlertDialog(
-      backgroundColor: const Color(0xFFF5F5F5),
-      surfaceTintColor: Colors.transparent,
-      elevation: 12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-      contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
-      actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
-      title: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Edit Profile',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF061A22),
-              letterSpacing: -0.5,
-            ),
+    showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: Color(0xFFF5F5F5),
+          surfaceTintColor: Colors.transparent,
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
           ),
-          SizedBox(height: 6),
-          Text(
-            'Update your personal information',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.black54,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 14),
-          Divider(
-            color: Color(0xFF29B6F6),
-            thickness: 3,
-            height: 3,
-            endIndent: 180,
-          ),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 8),
+          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 8),
+          actionsPadding: EdgeInsets.fromLTRB(24, 8, 24, 20),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF52616B),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.person_outline_rounded,
-                    color: Color(0xFF147DAD),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 17,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFE0E6E9),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF29B6F6),
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Colors.redAccent),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Colors.redAccent,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Username is required';
-                  }
-                  if (value.trim().length < 3) {
-                    return 'Username must be at least 3 characters';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                decoration: InputDecoration(
-                  labelText: 'Phone',
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF52616B),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.phone_outlined,
-                    color: Color(0xFF147DAD),
-                  ),
-                  counterStyle: const TextStyle(
-                    color: Colors.black45,
-                    fontSize: 11,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 17,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFE0E6E9),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF29B6F6),
-                      width: 2,
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  final text = value?.trim() ?? '';
-                  if (text.isEmpty) {
-                    return 'Phone number is required';
-                  }
-                  if (!RegExp(r'^\d{10}$').hasMatch(text)) {
-                    return 'Phone number must be 10 digits';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: batchController,
-                keyboardType: TextInputType.number,
-                maxLength: 4,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(4),
-                ],
-                decoration: InputDecoration(
-                  labelText: 'Batch Start Year',
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF52616B),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.calendar_month_outlined,
-                    color: Color(0xFF147DAD),
-                  ),
-                  counterStyle: const TextStyle(
-                    color: Colors.black45,
-                    fontSize: 11,
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 17,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFE0E6E9),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF29B6F6),
-                      width: 2,
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  final text = value?.trim() ?? '';
-                  final year = int.tryParse(text);
-                  if (text.isEmpty) {
-                    return 'Batch year is required';
-                  }
-                  if (year == null || year < 2000 || year > 2100) {
-                    return 'Batch year must be between 2000 and 2100';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                value: selectedProgram,
-                decoration: InputDecoration(
-                  labelText: 'Program',
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF52616B),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.school_outlined,
-                    color: Color(0xFF147DAD),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 17,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFE0E6E9),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF29B6F6),
-                      width: 2,
-                    ),
-                  ),
-                ),
-                dropdownColor: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                items: _programOptions
-                    .map(
-                      (item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setDialogState(() {
-                      selectedProgram = value;
-                    });
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Program is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: selectedBranch,
-                decoration: InputDecoration(
-                  labelText: 'Branch',
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF52616B),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.account_tree_outlined,
-                    color: Color(0xFF147DAD),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 17,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFE0E6E9),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF29B6F6),
-                      width: 2,
-                    ),
-                  ),
-                ),
-                dropdownColor: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                items: _branchOptions
-                    .map(
-                      (item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setDialogState(() {
-                      selectedBranch = value;
-                    });
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Branch is required';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFF29B6F6),
-              foregroundColor: const Color(0xFF061A22),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              elevation: 2,
-            ),
-            onPressed: () async {
-              if (!(formKey.currentState?.validate() ?? false)) {
-                return;
-              }
-
-              final newName = nameController.text.trim();
-              final newPhone = phoneController.text.trim();
-              final newBatchYear =
-                  int.parse(batchController.text.trim());
-
-              final res = await ApiService.updateProfile(
-                name: newName,
-                phoneNo: newPhone,
-                program: selectedProgram,
-                branch: selectedBranch,
-                batchYear: newBatchYear,
-              );
-
-              if (res['success'] == true) {
-                setState(() {
-                  _name = newName;
-                  phone = newPhone;
-                  batch = '$newBatchYear-${newBatchYear + 4}';
-                  program = selectedProgram;
-                  branch = selectedBranch;
-                });
-                if (dialogContext.mounted) {
-                  Navigator.pop(dialogContext);
-                }
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile updated'),
-                    ),
-                  );
-                }
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        res['message'] ?? 'Update failed',
-                      ),
-                    ),
-                  );
-                }
-              }
-            },
-            child: const Text(
-              'Save Changes',
-              style: TextStyle(
-                color: Color(0xFF061A22),
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-  }
-
-  Future<void> _handleLogout() async {
-showDialog(
-  context: context,
-  builder: (BuildContext context) => AlertDialog(
-    backgroundColor: const Color(0xFFF5F5F5),
-    surfaceTintColor: Colors.transparent,
-    elevation: 12,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(24),
-    ),
-    titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-    contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
-    actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-
-    title: const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(
-              Icons.logout_rounded,
-              color: Color(0xFF147DAD),
-              size: 27,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Confirm Logout',
+              Text(
+                AppLocalizations.of(context)!.editprofile,
                 style: TextStyle(
-                  fontSize: 23,
+                  fontSize: 25,
                   fontWeight: FontWeight.w900,
                   color: Color(0xFF061A22),
                   letterSpacing: -0.5,
                 ),
               ),
+              SizedBox(height: 6),
+              Text(
+                AppLocalizations.of(context)!.updateyourpersonalinformation,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 14),
+              Divider(
+                color: Color(0xFF29B6F6),
+                thickness: 3,
+                height: 3,
+                endIndent: 180,
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.username,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person_outline_rounded,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.redAccent),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Colors.redAccent,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Username is required';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'Username must be at least 3 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    maxLength: 10,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.phone,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.phone_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      counterStyle: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 11,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      if (text.isEmpty) {
+                        return 'Phone number is required';
+                      }
+                      if (!RegExp(r'^\d{10}$').hasMatch(text)) {
+                        return 'Phone number must be 10 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: batchController,
+                    keyboardType: TextInputType.number,
+                    maxLength: 4,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(4),
+                    ],
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.batchstartyear,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.calendar_month_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      counterStyle: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 11,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      final year = int.tryParse(text);
+                      if (text.isEmpty) {
+                        return 'Batch year is required';
+                      }
+                      if (year == null || year < 2000 || year > 2100) {
+                        return 'Batch year must be between 2000 and 2100';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedProgram,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.program,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.school_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    dropdownColor: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    items: _programOptions
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() {
+                          selectedProgram = value;
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Program is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedBranch,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.branch,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF52616B),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.account_tree_outlined,
+                        color: Color(0xFF147DAD),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 17,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(
+                          color: Color(0xFF29B6F6),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    dropdownColor: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    items: _branchOptions
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() {
+                          selectedBranch = value;
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Branch is required';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xFF29B6F6),
+                  foregroundColor: Color(0xFF061A22),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 2,
+                ),
+                onPressed: () async {
+                  if (!(formKey.currentState?.validate() ?? false)) {
+                    return;
+                  }
+
+                  final newName = nameController.text.trim();
+                  final newPhone = phoneController.text.trim();
+                  final newBatchYear = int.parse(batchController.text.trim());
+
+                  final res = await ApiService.updateProfile(
+                    name: newName,
+                    phoneNo: newPhone,
+                    program: selectedProgram,
+                    branch: selectedBranch,
+                    batchYear: newBatchYear,
+                  );
+
+                  if (res['success'] == true) {
+                    setState(() {
+                      _name = newName;
+                      phone = newPhone;
+                      batch = '$newBatchYear-${newBatchYear + 4}';
+                      program = selectedProgram;
+                      branch = selectedBranch;
+                    });
+                    if (dialogContext.mounted) {
+                      Navigator.pop(dialogContext);
+                    }
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context)!.profileupdated,
+                          ),
+                        ),
+                      );
+                    }
+                  } else {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(res['message'] ?? 'Update failed'),
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.savechanges,
+                  style: TextStyle(
+                    color: Color(0xFF061A22),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-        SizedBox(height: 14),
-        Divider(
-          color: Color(0xFF29B6F6),
-          thickness: 3,
-          height: 3,
-          endIndent: 180,
-        ),
-      ],
-    ),
-
-    content: const Text(
-      'Are you sure you want to logout?',
-      style: TextStyle(
-        fontSize: 15,
-        height: 1.5,
-        color: Color(0xFF52616B),
-        fontWeight: FontWeight.w500,
       ),
-    ),
+    );
+  }
 
-    actions: [
-      Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF061A22),
-                side: const BorderSide(
-                  color: Color(0xFFD5DEE3),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFF29B6F6),
-                foregroundColor: const Color(0xFF061A22),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
+  Future<void> _handleLogout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Color(0xFFF5F5F5),
+        surfaceTintColor: Colors.transparent,
+        elevation: 12,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 8),
+        contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 20),
+        actionsPadding: EdgeInsets.fromLTRB(24, 0, 24, 20),
 
-                // Clear all stored data
-                await ApiService.clearAllData();
-
-                // Navigate to auth check (which will route to login)
-                if (context.mounted) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AuthCheck(),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.logout_rounded, color: Color(0xFF147DAD), size: 27),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.confirmlogout,
+                    style: TextStyle(
+                      fontSize: 23,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF061A22),
+                      letterSpacing: -0.5,
                     ),
-                    (route) => false,
-                  );
-                }
-              },
-              child: const Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 14),
+            Divider(
+              color: Color(0xFF29B6F6),
+              thickness: 3,
+              height: 3,
+              endIndent: 180,
+            ),
+          ],
+        ),
+
+        content: Text(
+          AppLocalizations.of(context)!.areyousureyouwanttologout,
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.5,
+            color: Color(0xFF52616B),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Color(0xFF061A22),
+                    side: BorderSide(color: Color(0xFFD5DEE3)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
-            ),
+              SizedBox(width: 12),
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Color(0xFF29B6F6),
+                    foregroundColor: Color(0xFF061A22),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+
+                    // Clear all stored data
+                    await ApiService.clearAllData();
+
+                    // Navigate to auth check (which will route to login)
+                    if (context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => AuthCheck()),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.logout,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
-    ],
-  ),
-);
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final user = _user;
-    print("snapshot data in profile page ${user}");
+    print("snapshot data in profile page $user");
 
     final name = (user != null && user['name'] != null)
         ? user['name'] as String
@@ -698,14 +670,14 @@ showDialog(
         : branch;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+      backgroundColor: Color.fromARGB(255, 221, 221, 221),
 
       appBar: AppBar(
         elevation: 2,
-        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+        backgroundColor: Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          'Profile',
+          AppLocalizations.of(context)!.profile,
           style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: true,
@@ -713,7 +685,7 @@ showDialog(
         // edit button
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
+            icon: Icon(Icons.edit),
             onPressed: () => _editProfile(
               currentName: name,
               currentPhone: phoneLocal,
@@ -729,14 +701,14 @@ showDialog(
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 20),
-      
+              SizedBox(height: 20),
+
               // avatar
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  const CircleAvatar(backgroundColor: Colors.black, radius: 63),
-                  const CircleAvatar(
+                  CircleAvatar(backgroundColor: Colors.black, radius: 63),
+                  CircleAvatar(
                     backgroundImage: AssetImage(
                       'assets/images/unnatiLogoColourFix.png',
                     ),
@@ -744,9 +716,9 @@ showDialog(
                   ),
                 ],
               ),
-      
-              const SizedBox(height: 10),
-      
+
+              SizedBox(height: 10),
+
               // name
               Text(
                 name,
@@ -755,9 +727,9 @@ showDialog(
                   fontWeight: FontWeight.w700,
                 ),
               ),
-      
-              const SizedBox(height: 10),
-      
+
+              SizedBox(height: 10),
+
               // VIEW ATTENDANCE
               GestureDetector(
                 onTap: () {
@@ -768,23 +740,23 @@ showDialog(
                         userId: user != null && user['id'] != null
                             ? user['id'].toString()
                             : '',
-                      )
+                      ),
                     ),
                   );
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Container(
-                    //padding: const EdgeInsets.all(8),
-                    width:double.infinity,
+                    //padding: EdgeInsets.all(8),
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
-                        ),
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(16.0),
                       child: Row(
                         children: [
                           Container(
@@ -800,50 +772,51 @@ showDialog(
                               size: 22,
                             ),
                           ),
-                         const SizedBox(width: 14),
-                                        
+                          SizedBox(width: 14),
+
                           Expanded(
                             child: Text(
-                              'View  Your Attendance',
-                              style: const TextStyle(
+                              AppLocalizations.of(context)!.viewyourattendance2,
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                                        
+
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
                             color: Colors.grey,
                           ),
-                      ],),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-      
+
               // CONTACT INFORMATION CONTAINER
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                     ),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Text(
-                            'Contact Information',
+                            AppLocalizations.of(context)!.contactinformation,
                             style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -851,17 +824,17 @@ showDialog(
                             ),
                           ),
                         ),
-      
+
                         VolunteerProfileListtile(
                           title: email,
-                          subtitle: 'email',
+                          subtitle: 'Email',
                           icon: Icons.email,
                           iconColor: Colors.green,
                         ),
-      
+
                         VolunteerProfileListtile(
                           title: phoneLocal,
-                          subtitle: 'phone',
+                          subtitle: 'Phone',
                           icon: Icons.phone,
                           iconColor: Colors.green,
                         ),
@@ -870,27 +843,27 @@ showDialog(
                   ),
                 ),
               ),
-      
+
               // MORE DETAILS CONTAINER
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                     ),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Text(
-                            'More Details',
+                            AppLocalizations.of(context)!.moredetails,
                             style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -898,31 +871,30 @@ showDialog(
                             ),
                           ),
                         ),
-      
+
                         VolunteerProfileListtile(
                           title: roleLocal,
-                          subtitle: 'role',
+                          subtitle: 'Role',
                           icon: Icons.assignment_ind,
                           iconColor: Colors.white,
                         ),
-      
+
                         VolunteerProfileListtile(
                           title: programLocal,
-                          subtitle: 'program',
+                          subtitle: 'Program',
                           icon: Icons.flag,
                           iconColor: Colors.white,
                         ),
-      
+
                         // VolunteerProfileListtile(
                         //   title: branch,
                         //   subtitle: 'branch',
                         //   icon: Icons.school,
                         //   iconColor: Colors.white,
                         // ),
-      
                         VolunteerProfileListtile(
                           title: batchLocal,
-                          subtitle: 'batch',
+                          subtitle: 'Batch',
                           icon: Icons.calendar_today,
                           iconColor: Colors.white,
                         ),
@@ -931,20 +903,20 @@ showDialog(
                   ),
                 ),
               ),
-      
+
               // LOGOUT BUTTON
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _handleLogout,
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Logout'),
+                    icon: Icon(Icons.logout),
+                    label: Text(AppLocalizations.of(context)!.logout),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),

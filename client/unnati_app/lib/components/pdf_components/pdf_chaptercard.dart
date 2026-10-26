@@ -42,9 +42,7 @@ class PdfChapterCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              border: Border.all(
-                color: Colors.black.withOpacity(0.05),
-              ),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +51,7 @@ class PdfChapterCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2B3D54).withOpacity(0.12),
+                    color: const Color(0xFF2B3D54).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Icon(
@@ -87,7 +85,7 @@ class PdfChapterCard extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2B3D54).withOpacity(0.15),
+                      color: const Color(0xFF2B3D54).withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

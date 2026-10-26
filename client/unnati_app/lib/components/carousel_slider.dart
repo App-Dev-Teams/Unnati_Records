@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:unnati_app/components/youtube_data.dart';
 import 'package:unnati_app/components/youtube_helper.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class MyCarouselSlider extends StatelessWidget {
   const MyCarouselSlider({super.key});
 
@@ -17,7 +19,9 @@ class MyCarouselSlider extends StatelessWidget {
         final videoId = extractYoutubeVideoId(url); //fetching videoId
         if (videoId == null) {
           //if videoId broken
-          return const Center(child: Text("Oopes something went wrong"));
+          return Center(
+            child: Text(AppLocalizations.of(context)!.oopessomethingwentwrong),
+          );
         }
         //thumbnail
         final thumbnailUrl =
@@ -38,21 +42,21 @@ class MyCarouselSlider extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadiusGeometry.circular(16),
                   child: AspectRatio(
-                    aspectRatio: 16/9.r,
+                    aspectRatio: 16 / 9.r,
                     child: Image.network(
                       thumbnailUrl,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                    
+
                       //late loading thumbnail
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
                           return child;
                         }
-                    
+
                         return Container(
                           color: Colors.black12,
-                          child: const Center(
+                          child: Center(
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               color: Colors.white,
@@ -67,7 +71,7 @@ class MyCarouselSlider extends StatelessWidget {
                           color: Colors.black26,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.wifi_off,
                                 color: Color.fromARGB(137, 255, 0, 0),
@@ -75,7 +79,7 @@ class MyCarouselSlider extends StatelessWidget {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "No Internet",
+                                AppLocalizations.of(context)!.nointernet,
                                 style: TextStyle(
                                   color: Color.fromARGB(137, 255, 0, 0),
                                   fontSize: 12,
@@ -91,9 +95,9 @@ class MyCarouselSlider extends StatelessWidget {
               ),
               //play button
               Container(
-                padding: const EdgeInsets.all(14),
+                padding: EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withValues(alpha: 0.6),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.play_arrow, color: Colors.white, size: 40.r),
@@ -102,12 +106,13 @@ class MyCarouselSlider extends StatelessWidget {
           ),
         );
       },
-      options: CarouselOptions( //carousel Settings
+      options: CarouselOptions(
+        //carousel Settings
         height: 220.h,
         enlargeCenterPage: true,
         viewportFraction: 0.75,
         autoPlay: true,
-        autoPlayInterval: const Duration(seconds: 2),
+        autoPlayInterval: Duration(seconds: 2),
       ),
     );
   }

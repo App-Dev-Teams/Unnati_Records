@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/Providers/language_provider.dart';
+import 'package:unnati_app/components/toogleLanguage.dart';
 
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+class MyAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String name;
   final String imageName;
 
@@ -19,7 +23,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Color.fromARGB(255, 9, 12, 19),
@@ -81,6 +85,19 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      actions: [
+            SizedBox(
+              // height: 40.h,
+              // width: 40,
+              child: LanguageToggle(
+                currentLocale: Localizations.localeOf(context),
+                onLanguageChanged: (locale) {
+                  ref.watch(languageProvider.notifier).toggleLanguage();
+                },
+              ),
+            ),
+            SizedBox(width: 10.w),
+          ],
     );
   }
 

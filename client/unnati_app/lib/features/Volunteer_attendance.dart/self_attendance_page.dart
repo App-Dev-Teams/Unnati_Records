@@ -1,4 +1,3 @@
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,11 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_api_provider.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class SelfAttendancePage extends ConsumerWidget {
-  const SelfAttendancePage({
-    super.key,
-    required this.userId,
-  });
+  const SelfAttendancePage({super.key, required this.userId});
 
   final String userId;
 
@@ -20,32 +18,21 @@ class SelfAttendancePage extends ConsumerWidget {
     final selectedYear = ref.watch(selectedYearProvider);
 
     final overallAsync = ref.watch(
-      userAttendanceProvider(
-        (
-          userId: userId,
-          month: null,
-          year: null,
-        ),
-      ),
+      userAttendanceProvider((userId: userId, month: null, year: null)),
     );
 
     final yearlyAsync = ref.watch(
-      yearlyAttendanceProvider(
-        (
-          userId: userId,
-          year: selectedYear,
-        ),
-      ),
+      yearlyAttendanceProvider((userId: userId, year: selectedYear)),
     );
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+      backgroundColor: Color.fromARGB(255, 221, 221, 221),
 
       appBar: AppBar(
         elevation: 2,
         foregroundColor: Colors.white,
         title: Text(
-          'My Attendance',
+          AppLocalizations.of(context)!.myattendance,
           style: GoogleFonts.oswald(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -54,24 +41,23 @@ class SelfAttendancePage extends ConsumerWidget {
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   height: 22.h,
                   width: 5.h,
-                  color: const Color.fromARGB(255, 11, 2, 57),
+                  color: Color.fromARGB(255, 11, 2, 57),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
-                    "Attendance Summary",
+                    AppLocalizations.of(context)!.attendancesummary,
                     style: GoogleFonts.oswald(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -84,54 +70,51 @@ class SelfAttendancePage extends ConsumerWidget {
             SizedBox(height: 20.h),
             overallAsync.when(
               data: (data) {
-                return 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: VolunteerCardUtil(
-                            title: "Total Workshops Taken",
-                            subtitle:
-                                "${data["presentCount"] ?? 0}",
-                            curvedColor: Colors.lightBlueAccent,
-                          ),
-                        ),
+                return Row(
+                  children: [
+                    Expanded(
+                      child: VolunteerCardUtil(
+                        title: AppLocalizations.of(
+                          context,
+                        )!.totalworkshopstaken,
+                        subtitle: "${data["presentCount"] ?? 0}",
+                        curvedColor: Colors.lightBlueAccent,
+                      ),
+                    ),
 
-                        const SizedBox(width: 12),
+                    SizedBox(width: 12),
 
-                        Expanded(
-                          child: VolunteerCardUtil(
-                            title: "Total Workshops Missed",
-                            subtitle:
-                                "${data["absentCount"] ?? 0}",
-                            curvedColor: Colors.black,
-                          ),
-                        ),
-                      ],
-                    );
-                  
+                    Expanded(
+                      child: VolunteerCardUtil(
+                        title: AppLocalizations.of(
+                          context,
+                        )!.totalworkshopsmissed,
+                        subtitle: "${data["absentCount"] ?? 0}",
+                        curvedColor: Colors.black,
+                      ),
+                    ),
+                  ],
+                );
               },
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              loading: () => Center(child: CircularProgressIndicator()),
               error: (e, s) => Text(e.toString()),
             ),
 
-             SizedBox(height: 38.h),
+            SizedBox(height: 38.h),
 
             /// ================= YEAR DROPDOWN =================
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   height: 22.h,
                   width: 5.h,
-                  color: const Color.fromARGB(255, 11, 2, 57),
+                  color: Color.fromARGB(255, 11, 2, 57),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
-                    "Monthwise Stats",
+                    AppLocalizations.of(context)!.monthwisestats,
                     style: GoogleFonts.oswald(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -142,37 +125,28 @@ class SelfAttendancePage extends ConsumerWidget {
 
                 DropdownButton<int>(
                   value: selectedYear,
-                  items: List.generate(
-                    5,
-                    (index) {
-                      final year =
-                          DateTime.now().year - index;
+                  items: List.generate(5, (index) {
+                    final year = DateTime.now().year - index;
 
-                      return DropdownMenuItem(
-                        value: year,
-                        child: Text(year.toString()),
-                      );
-                    },
-                  ),
+                    return DropdownMenuItem(
+                      value: year,
+                      child: Text(year.toString()),
+                    );
+                  }),
                   onChanged: (value) {
-                    ref
-                        .read(
-                          selectedYearProvider.notifier,
-                        )
-                        .state = value!;
+                    ref.read(selectedYearProvider.notifier).state = value!;
                   },
                 ),
               ],
             ),
 
-             SizedBox(height: 20.h),
+            SizedBox(height: 20.h),
 
             /// ================= BAR CHART =================
-
             yearlyAsync.when(
               data: (data) {
                 return Container(
-                  padding: const EdgeInsets.only( right: 17, top: 20, bottom: 15),
+                  padding: EdgeInsets.only(right: 17, top: 20, bottom: 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -180,7 +154,7 @@ class SelfAttendancePage extends ConsumerWidget {
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        offset: Offset(0, 4),
                       ),
                     ],
                   ),
@@ -188,45 +162,40 @@ class SelfAttendancePage extends ConsumerWidget {
                     height: 300.h,
                     child: BarChart(
                       BarChartData(
-                        borderData:
-                            FlBorderData(
-                              show: true,
-                              border:  Border(
-                                left: BorderSide(
-                                  color: Colors.grey.withOpacity(.5),
-                                  width: 1,
-                                ),
-                                bottom: BorderSide(
-                                  color: Colors.grey.withOpacity(.5),
-                                  width: 1,
-                                ),
-                              ),
+                        borderData: FlBorderData(
+                          show: true,
+                          border: Border(
+                            left: BorderSide(
+                              color: Colors.grey.withValues(alpha: .5),
+                              width: 1,
                             ),
-                    
-                        gridData:
-                            FlGridData(
-                              show: false,
-                              drawVerticalLine: false,
+                            bottom: BorderSide(
+                              color: Colors.grey.withValues(alpha: .5),
+                              width: 1,
                             ),
-                    
+                          ),
+                        ),
+
+                        gridData: FlGridData(
+                          show: false,
+                          drawVerticalLine: false,
+                        ),
+
                         titlesData: FlTitlesData(
                           topTitles: AxisTitles(
-                            sideTitles:
-                                SideTitles(showTitles: false),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
                           rightTitles: AxisTitles(
-                            sideTitles:
-                                SideTitles(showTitles: false),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
-                    
+
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
                               reservedSize: 30,
-                    
-                              getTitlesWidget:
-                                  (value, meta) {
-                                const months = [
+
+                              getTitlesWidget: (value, meta) {
+                                final months = [
                                   "J",
                                   "F",
                                   "M",
@@ -240,59 +209,43 @@ class SelfAttendancePage extends ConsumerWidget {
                                   "N",
                                   "D",
                                 ];
-                    
-                                if (value < 1 ||
-                                    value > 12) {
-                                  return const SizedBox();
+
+                                if (value < 1 || value > 12) {
+                                  return SizedBox();
                                 }
-                    
+
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.only(
-                                    top: 8,
-                                  ),
-                                  child: Text(
-                                    months[
-                                        value.toInt() - 1],
-                                  ),
+                                  padding: EdgeInsets.only(top: 8),
+                                  child: Text(months[value.toInt() - 1]),
                                 );
                               },
                             ),
                           ),
                         ),
-                    
-                        barGroups:
-                            data.map<BarChartGroupData>(
-                          (monthData) {
-                            return BarChartGroupData(
-                              x: monthData["month"],
-                    
-                              barRods: [
-                                BarChartRodData(
-                                  toY:
-                                      (monthData["present"]
-                                              as num)
-                                          .toDouble(),
-                                  width: 18,
-                                  color: Colors.lightBlueAccent,
-                                  borderRadius:
-                                      const BorderRadius.only(
-                                    topLeft: Radius.circular(4),
-                                    topRight: Radius.circular(4),
-                                  ),
+
+                        barGroups: data.map<BarChartGroupData>((monthData) {
+                          return BarChartGroupData(
+                            x: monthData["month"],
+
+                            barRods: [
+                              BarChartRodData(
+                                toY: (monthData["present"] as num).toDouble(),
+                                width: 18,
+                                color: Colors.lightBlueAccent,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
                                 ),
-                              ],
-                            );
-                          },
-                        ).toList(),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),
                 );
               },
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              loading: () => Center(child: CircularProgressIndicator()),
               error: (e, s) => Text(e.toString()),
             ),
           ],
@@ -305,7 +258,7 @@ class SelfAttendancePage extends ConsumerWidget {
 // /// ================= STAT CARD =================
 
 // class _StatCard extends StatelessWidget {
-//   const _StatCard({
+//   _StatCard({
 //     required this.title,
 //     required this.value,
 //     required this.color,
@@ -323,7 +276,7 @@ class SelfAttendancePage extends ConsumerWidget {
 //       elevation: 2,
 //       child: Padding(
 //         padding:
-//             const EdgeInsets.symmetric(
+//             EdgeInsets.symmetric(
 //           horizontal: 16,
 //           vertical: 18,
 //         ),
@@ -336,17 +289,17 @@ class SelfAttendancePage extends ConsumerWidget {
 //               size: 28,
 //             ),
 
-//             const SizedBox(height: 10),
+//             SizedBox(height: 10),
 
 //             Text(
 //               value,
-//               style: const TextStyle(
+//               style: TextStyle(
 //                 fontSize: 22,
 //                 fontWeight: FontWeight.bold,
 //               ),
 //             ),
 
-//             const SizedBox(height: 5),
+//             SizedBox(height: 5),
 
 //             Text(title),
 //           ],

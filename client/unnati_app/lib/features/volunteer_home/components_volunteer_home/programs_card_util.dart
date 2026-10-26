@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:unnati_app/features/our_programs/digixplore.dart';
 
 class ProgramsCardUtil extends StatelessWidget {
   final String title;
@@ -9,12 +8,12 @@ class ProgramsCardUtil extends StatelessWidget {
   final String logo;
   final Widget path;
   const ProgramsCardUtil({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.logo,
     required this.path,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,13 @@ class ProgramsCardUtil extends StatelessWidget {
       child: Card(
         elevation: 4,
         color: Colors.white,
-        shadowColor: Colors.black.withOpacity(0.15),
+        shadowColor: Colors.black.withValues(alpha: 0.15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: InkWell(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_)=>path));
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => path));
           },
           child: Padding(
             padding: EdgeInsets.all(14.r),
@@ -50,9 +49,9 @@ class ProgramsCardUtil extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                 ),
-              
+
                 SizedBox(width: 12.w),
-              
+
                 //text content
                 Expanded(
                   child: Column(
@@ -69,9 +68,9 @@ class ProgramsCardUtil extends StatelessWidget {
                           color: Colors.black,
                         ),
                       ),
-              
+
                       SizedBox(height: 4.h),
-              
+
                       //subtitle
                       Text(
                         subtitle,

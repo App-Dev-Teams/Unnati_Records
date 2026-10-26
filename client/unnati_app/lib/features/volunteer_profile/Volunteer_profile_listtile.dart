@@ -11,7 +11,7 @@ class VolunteerProfileListtile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.iconColor
+    required this.iconColor,
   });
 
   @override
@@ -19,7 +19,7 @@ class VolunteerProfileListtile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(12),
-      
+
       child: Row(
         children: [
           // Icon container
@@ -30,11 +30,7 @@ class VolunteerProfileListtile extends StatelessWidget {
               color: iconColor.withAlpha(25),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 22,
-            ),
+            child: Icon(icon, color: iconColor, size: 22),
           ),
           const SizedBox(width: 14),
 

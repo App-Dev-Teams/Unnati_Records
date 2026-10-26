@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/developer/developer_cards.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class DevelopersPage extends StatelessWidget {
   const DevelopersPage({super.key});
 
@@ -18,17 +20,17 @@ class DevelopersPage extends StatelessWidget {
             pinned: false,
             floating: true,
             title: Text(
-                " MEET OUR DEVELOPERS",
-                style: GoogleFonts.oswald(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              AppLocalizations.of(context)!.mEEToURdEVELOPERS,
+              style: GoogleFonts.oswald(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
+            ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -38,7 +40,7 @@ class DevelopersPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: 10),
                         child: Container(
                           height: 22.h,
                           width: 5.h,
@@ -47,7 +49,7 @@ class DevelopersPage extends StatelessWidget {
                       ),
                       SizedBox(width: 5.w),
                       Text(
-                        "Mentor",
+                        AppLocalizations.of(context)!.mentor,
                         style: GoogleFonts.oswald(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -66,14 +68,14 @@ class DevelopersPage extends StatelessWidget {
                     linkedInurl: "https://www.linkedin.com/in/divyaanshu/",
                   ),
                   SizedBox(height: 30),
-            
+
                   //backend
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: 10),
                         child: Container(
                           height: 22.h,
                           width: 5.h,
@@ -82,7 +84,7 @@ class DevelopersPage extends StatelessWidget {
                       ),
                       SizedBox(width: 5.w),
                       Text(
-                        "Backend Developers",
+                        AppLocalizations.of(context)!.backenddevelopers,
                         style: GoogleFonts.oswald(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -110,14 +112,14 @@ class DevelopersPage extends StatelessWidget {
                         "https://www.linkedin.com/in/shreyas-prajapati-116231325/",
                   ),
                   SizedBox(height: 30),
-            
+
                   //frontend
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: 10),
                         child: Container(
                           height: 22.h,
                           width: 5.h,
@@ -126,7 +128,7 @@ class DevelopersPage extends StatelessWidget {
                       ),
                       SizedBox(width: 5.w),
                       Text(
-                        "Frontend Developers",
+                        AppLocalizations.of(context)!.frontenddevelopers,
                         style: GoogleFonts.oswald(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -149,15 +151,16 @@ class DevelopersPage extends StatelessWidget {
                     devRole: "Frontend Developer",
                     desc:
                         "Full-stack and Flutter developer passionate about building scalable applications, solving complex problems, and creating impactful digital solutions through technology and innovation.",
-                    linkedInurl: "https://www.linkedin.com/in/utkarsh-rastogi-8b1bb0317/",
+                    linkedInurl:
+                        "https://www.linkedin.com/in/utkarsh-rastogi-8b1bb0317/",
                     color: Colors.deepOrangeAccent,
                   ),
                 ],
               ),
             ),
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 }

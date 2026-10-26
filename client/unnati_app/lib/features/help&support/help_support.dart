@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/help&support/doubt_list_screen.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class HelpSupport extends StatefulWidget {
   const HelpSupport({super.key});
 
@@ -54,37 +56,45 @@ class _HelpSupportState extends State<HelpSupport> {
         canManageDoubts || _permissions.contains('VIEW_DOUBTS');
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Help & Support')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.helpsupport)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         children: [
           Text(
-            'Doubt Support',
+            AppLocalizations.of(context)!.doubtsupport,
             style: GoogleFonts.oswald(
               fontSize: 28,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 6),
-          const Text('Ask, track, and resolve learning doubts from one place.'),
-          const SizedBox(height: 18),
+          SizedBox(height: 6),
+          Text(
+            AppLocalizations.of(
+              context,
+            )!.asktrackandresolvelearningdoubtsfromoneplace,
+          ),
+          SizedBox(height: 18),
           if (_isStudent)
             _SupportCard(
-              title: 'My Doubts',
-              subtitle: 'Create and track your doubt threads.',
+              title: AppLocalizations.of(context)!.mydoubts,
+              subtitle: AppLocalizations.of(
+                context,
+              )!.createandtrackyourdoubtthreads,
               icon: Icons.question_answer_outlined,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const DoubtListScreen(title: 'My Doubts'),
+                    builder: (_) => DoubtListScreen(
+                      title: AppLocalizations.of(context)!.mydoubts,
+                    ),
                   ),
                 );
               },
             ),
           if (canViewDoubts)
             _SupportCard(
-              title: 'Open Doubts',
+              title: AppLocalizations.of(context)!.opendoubts,
               subtitle: canManageDoubts
                   ? 'Respond to student doubts and resolve them.'
                   : 'View student doubts.',
@@ -95,7 +105,7 @@ class _HelpSupportState extends State<HelpSupport> {
                   MaterialPageRoute(
                     builder: (_) => DoubtListScreen(
                       showOpenDoubts: true,
-                      title: 'Open Doubts',
+                      title: AppLocalizations.of(context)!.opendoubts,
                       readOnly: !canManageDoubts,
                     ),
                   ),
@@ -104,8 +114,8 @@ class _HelpSupportState extends State<HelpSupport> {
             ),
           if (canViewDoubts)
             _SupportCard(
-              title: 'Closed Doubts',
-              subtitle: 'View resolved doubt threads.',
+              title: AppLocalizations.of(context)!.closeddoubts,
+              subtitle: AppLocalizations.of(context)!.viewresolveddoubtthreads,
               icon: Icons.archive,
               onTap: () {
                 Navigator.push(
@@ -113,7 +123,7 @@ class _HelpSupportState extends State<HelpSupport> {
                   MaterialPageRoute(
                     builder: (_) => DoubtListScreen(
                       showClosedDoubts: true,
-                      title: 'Closed Doubts',
+                      title: AppLocalizations.of(context)!.closeddoubts,
                       readOnly: !canManageDoubts,
                     ),
                   ),
@@ -142,7 +152,7 @@ class _SupportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       elevation: 2,
       child: ListTile(
         onTap: onTap,
@@ -152,7 +162,7 @@ class _SupportCard extends StatelessWidget {
           style: GoogleFonts.oswald(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios),
+        trailing: Icon(Icons.arrow_forward_ios),
       ),
     );
   }

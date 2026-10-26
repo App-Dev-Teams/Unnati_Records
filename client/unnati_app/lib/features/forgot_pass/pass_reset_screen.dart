@@ -6,11 +6,17 @@ import 'package:unnati_app/features/auth/view/login_page_student.dart';
 import 'package:unnati_app/features/auth/view/login_page_volunteer.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class PasswordResetScreen extends StatefulWidget {
   final String email;
   final String accountType;
 
-  const PasswordResetScreen({super.key, required this.email, required this.accountType});
+  const PasswordResetScreen({
+    super.key,
+    required this.email,
+    required this.accountType,
+  });
 
   @override
   State<PasswordResetScreen> createState() => _PasswordResetScreenState();
@@ -46,7 +52,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             children: [
               Center(
                 //lottie
-                child: Container(
+                child: SizedBox(
                   height: 200.h,
                   width: 200.w,
                   child: Lottie.asset('assets/lottie/reset_pass_lottie.json'),
@@ -61,17 +67,20 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   controller: newPasswordController,
                   obscureText: _obsecureText,
                   decoration: InputDecoration(
-                    suffixIcon: IconButton(onPressed: (){
-                      setState(() {
-                        _obsecureText = !_obsecureText;
-                      });
-                    }, icon: Icon(
-                      
-                      (_obsecureText) ?
-                      Icons.visibility_off : Icons.visibility,
-                      color: Colors.grey,
-                      )),
-                    label: Text('Enter new password'),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obsecureText = !_obsecureText;
+                        });
+                      },
+                      icon: Icon(
+                        (_obsecureText)
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    label: Text(AppLocalizations.of(context)!.enternewpassword),
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(7),
@@ -91,17 +100,22 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   controller: checkNewPasswordController,
                   obscureText: _ConfirmObsecureText,
                   decoration: InputDecoration(
-                    suffixIcon: IconButton(onPressed: (){
-                      setState(() {
-                        _ConfirmObsecureText = !_ConfirmObsecureText;
-                      });
-                    }, icon: Icon(
-                      
-                      (_ConfirmObsecureText) ?
-                      Icons.visibility_off : Icons.visibility,
-                      color: Colors.grey,
-                      )),
-                    label: Text('Re-enter new password'),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _ConfirmObsecureText = !_ConfirmObsecureText;
+                        });
+                      },
+                      icon: Icon(
+                        (_ConfirmObsecureText)
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    label: Text(
+                      AppLocalizations.of(context)!.reenternewpassword,
+                    ),
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(7),
@@ -126,7 +140,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7),
                     ),
-                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                    backgroundColor: Color.fromARGB(255, 9, 75, 128),
                   ),
                   onPressed: _isUpdating
                       ? null
@@ -138,9 +152,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
                           if (newPassword.isEmpty || confirmPassword.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Text(
-                                  'Please fill both password fields',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.pleasefillbothpasswordfields,
                                 ),
                               ),
                             );
@@ -149,8 +165,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
                           if (newPassword != confirmPassword) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Passwords do not match'),
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.passwordsdonotmatch,
+                                ),
                               ),
                             );
                             return;
@@ -181,8 +201,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => widget.accountType == 'student'
-                                  ? const LoginPageStudent()
-                                  : const LoginPageVolunteer(),
+                                    ? LoginPageStudent()
+                                    : LoginPageVolunteer(),
                               ),
                               (route) => false,
                             );
@@ -190,7 +210,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                         },
                   child: Center(
                     child: Text(
-                      'Change Password',
+                      AppLocalizations.of(context)!.changepassword,
                       style: GoogleFonts.cormorantSc(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,

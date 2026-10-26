@@ -10,6 +10,8 @@ import 'package:unnati_app/features/Volunteer_attendance.dart/self_attendance_pa
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class VolunteerAttendancePage extends ConsumerStatefulWidget {
   const VolunteerAttendancePage({super.key});
 
@@ -39,9 +41,7 @@ class _VolunteerAttendancePageState
   }
 
   Future<void> checkPermission() async {
-    final allowed = await ApiService.hasPermission(
-      "MARK_ATTENDANCE",
-    );
+    final allowed = await ApiService.hasPermission("MARK_ATTENDANCE");
     print("Allowed = $allowed");
 
     setState(() {
@@ -51,26 +51,22 @@ class _VolunteerAttendancePageState
   }
 
   // show dialog for marked attendance
-  void _showAttendanceDialog(
-    Map<String, dynamic> data,
-  ) {
+  void _showAttendanceDialog(Map<String, dynamic> data) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text(
-          'Attendance Summary',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+        title: Text(
+          AppLocalizations.of(context)!.attendancesummary,
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // PRESENT
-              const Text(
-                'Present',
+              Text(
+                AppLocalizations.of(context)!.present,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.green,
@@ -78,17 +74,14 @@ class _VolunteerAttendancePageState
               ),
 
               ...(data["present"] as List).map(
-                (v) => ListTile(
-                  title: Text(v["name"]),
-                  
-                ),
+                (v) => ListTile(title: Text(v["name"])),
               ),
 
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
 
               // ABSENT
-              const Text(
-                'Absent',
+              Text(
+                AppLocalizations.of(context)!.absent,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.red,
@@ -96,17 +89,14 @@ class _VolunteerAttendancePageState
               ),
 
               ...(data["absent"] as List).map(
-                (v) => ListTile(
-                  title: Text(v["name"]),
-                  
-                ),
+                (v) => ListTile(title: Text(v["name"])),
               ),
 
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
 
               // CANCELLED
-              const Text(
-                'Cancelled',
+              Text(
+                AppLocalizations.of(context)!.cancelled,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.orange,
@@ -114,35 +104,27 @@ class _VolunteerAttendancePageState
               ),
 
               ...(data["cancelled"] as List).map(
-                (v) => ListTile(
-                  title: Text(v["name"]),
-                  
-                ),
+                (v) => ListTile(title: Text(v["name"])),
               ),
             ],
           ),
         ),
         actions: [
           TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text(
-              "Close",
-              style: TextStyle(
-                color: Colors.white,
-              ),
+            child: Text(
+              AppLocalizations.of(context)!.close,
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ],
       ),
     );
   }
-  
-  
+
   @override
   void dispose() {
     namecontroller.dispose();
@@ -154,214 +136,201 @@ class _VolunteerAttendancePageState
     //final attendanceData = ref.watch(attendanceProvider);
 
     if (isLoadingPermission) {
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
-      
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+        backgroundColor: Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          'Attendance',
+          AppLocalizations.of(context)!.attendance,
           style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: true,
       ),
 
-      body:!hasAttendancePermission
-      ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.lock,
-              size: 70,
-              color: Colors.grey,
-            ),
+      body: !hasAttendancePermission
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lock, size: 70, color: Colors.grey),
 
-             SizedBox(height: 10.h),
+                  SizedBox(height: 10.h),
 
-            const Text(
-              "You don't have access to mark attendance",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-             SizedBox(height: 10.h),
-
-            TextButton(
-              onPressed: () async {
-                final userData = await ApiService.getUserData();
-                print("User Data: $userData");
-                final userId = userData?["id"];
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    
-                    builder: (_) =>
-                        SelfAttendancePage(userId: userId??' ',)
+                  Text(
+                    "You don't have access to mark attendance",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
-              child: const Text(
-                "View Your Attendance",
+
+                  SizedBox(height: 10.h),
+
+                  TextButton(
+                    onPressed: () async {
+                      final userData = await ApiService.getUserData();
+                      print("User Data: $userData");
+                      final userId = userData?["id"];
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SelfAttendancePage(userId: userId ?? ' '),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.viewyourattendance,
+                    ),
+                  ),
+                ],
               ),
             )
-          ],
-        ),
-      )
-      :GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        behavior: HitTestBehavior.opaque,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF111212), Color(0xFF2B3D54)],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TableCalendar(
-                      focusedDay: _focusedDay,
-                      firstDay: DateTime.utc(2025),
-                      lastDay: DateTime(2030),
+          : GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              behavior: HitTestBehavior.opaque,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: TableCalendar(
+                            focusedDay: _focusedDay,
+                            firstDay: DateTime.utc(2025),
+                            lastDay: DateTime(2030),
 
-                      enabledDayPredicate: (day){
-                        final today = DateTime.now();
-                        final normalizedToday = DateTime(today.year,today.month,today.day+1);
+                            enabledDayPredicate: (day) {
+                              final today = DateTime.now();
+                              final normalizedToday = DateTime(
+                                today.year,
+                                today.month,
+                                today.day + 1,
+                              );
 
-                        return !day.isAfter(normalizedToday);
-                      },
+                              return !day.isAfter(normalizedToday);
+                            },
 
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
+                            selectedDayPredicate: (day) {
+                              return isSameDay(_selectedDay, day);
+                            },
 
-                      onDaySelected: (selectedDay, focusedDay) async {
-                        final normalized = _normalize(selectedDay);
-                        setState(() {
-                          _selectedDay = normalized;
-                          _focusedDay = focusedDay;
-                        });
-                         try {
-                          final service =
-                              ref.read(
-                            attendanceServiceProvider,
-                          );
-                          final data =
-                              await service
-                                  .getAttendanceByDate(
-                            normalized,
-                          );
+                            onDaySelected: (selectedDay, focusedDay) async {
+                              final normalized = _normalize(selectedDay);
+                              setState(() {
+                                _selectedDay = normalized;
+                                _focusedDay = focusedDay;
+                              });
+                              try {
+                                final service = ref.read(
+                                  attendanceServiceProvider,
+                                );
+                                final data = await service.getAttendanceByDate(
+                                  normalized,
+                                );
 
-                          final notifier = ref.read(attendanceProvider.notifier);
+                                final notifier = ref.read(
+                                  attendanceProvider.notifier,
+                                );
 
-                          notifier.setAttendanceFromBackend(
-                            normalized,
-                            (data["present"] as List)
-                                .map((e) => Volunteer.fromJson(e))
-                                .toList(),
-                            (data["absent"] as List)
-                                .map((e) => Volunteer.fromJson(e))
-                                .toList(),
-                            (data["cancelled"] as List)
-                                .map((e) => Volunteer.fromJson(e))
-                                .toList(),
-                          );
-                          
-                          final hasAttendance =
-                          (data["present"]as List).isNotEmpty 
-                          ||(data["absent"]as List).isNotEmpty 
-                          ||(data["cancelled"]as List).isNotEmpty;
-                          if (hasAttendance) {
-                            _showAttendanceDialog(
-                              data,
-                            );
-                          }
-                        }catch (e) {
-                          print(e);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text(
-                                "Failed to load attendance ${e.toString()}",
+                                notifier.setAttendanceFromBackend(
+                                  normalized,
+                                  (data["present"] as List)
+                                      .map((e) => Volunteer.fromJson(e))
+                                      .toList(),
+                                  (data["absent"] as List)
+                                      .map((e) => Volunteer.fromJson(e))
+                                      .toList(),
+                                  (data["cancelled"] as List)
+                                      .map((e) => Volunteer.fromJson(e))
+                                      .toList(),
+                                );
+
+                                final hasAttendance =
+                                    (data["present"] as List).isNotEmpty ||
+                                    (data["absent"] as List).isNotEmpty ||
+                                    (data["cancelled"] as List).isNotEmpty;
+                                if (hasAttendance) {
+                                  _showAttendanceDialog(data);
+                                }
+                              } catch (e) {
+                                print(e);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Failed to load attendance ${e.toString()}",
+                                    ),
+                                  ),
+                                );
+                              }
+                              // final dayData = attendanceData[normalized];
+                              // if (dayData != null) {
+                              //   _showAttendanceDialog(normalized, dayData);
+                              // }
+                            },
+
+                            //calender styling
+                            calendarStyle: CalendarStyle(
+                              todayDecoration: BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              selectedDecoration: BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                              defaultTextStyle: TextStyle(color: Colors.white),
+                              weekendTextStyle: TextStyle(color: Colors.yellow),
+                              outsideTextStyle: TextStyle(
+                                color: Color.fromARGB(255, 160, 160, 160),
                               ),
                             ),
-                          );
-                        }
-                        // final dayData = attendanceData[normalized];
-                        // if (dayData != null) {
-                        //   _showAttendanceDialog(normalized, dayData);
-                        // }
-                      },
 
-                      //calender styling
-                      calendarStyle: CalendarStyle(
-                        todayDecoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        selectedDecoration: const BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                        ),
-                        defaultTextStyle: const TextStyle(color: Colors.white),
-                        weekendTextStyle: const TextStyle(color: Colors.yellow),
-                        outsideTextStyle: const TextStyle(
-                          color: Color.fromARGB(255, 160, 160, 160),
-                        ),
-                      ),
+                            headerStyle: HeaderStyle(
+                              titleTextStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              leftChevronIcon: Icon(
+                                Icons.chevron_left,
+                                color: Colors.white,
+                              ),
+                              rightChevronIcon: Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
+                              ),
+                              formatButtonVisible: false,
+                            ),
 
-                      headerStyle: const HeaderStyle(
-                        titleTextStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                            daysOfWeekStyle: DaysOfWeekStyle(
+                              weekdayStyle: TextStyle(color: Colors.white),
+                              weekendStyle: TextStyle(color: Colors.yellow),
+                            ),
+                          ),
                         ),
-                        leftChevronIcon: Icon(
-                          Icons.chevron_left,
-                          color: Colors.white,
-                        ),
-                        rightChevronIcon: Icon(
-                          Icons.chevron_right,
-                          color: Colors.white,
-                        ),
-                        formatButtonVisible: false,
-                      ),
-
-                      daysOfWeekStyle: const DaysOfWeekStyle(
-                        weekdayStyle: TextStyle(color: Colors.white),
-                        weekendStyle: TextStyle(color: Colors.yellow),
                       ),
                     ),
-                  ),
+
+                    SizedBox(height: 30),
+
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SearchVolunteer(selectedDate: _selectedDay),
+                    ),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 30),
-
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SearchVolunteer(selectedDate: _selectedDay),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

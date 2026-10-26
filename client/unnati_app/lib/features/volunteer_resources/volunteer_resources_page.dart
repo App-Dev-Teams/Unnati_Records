@@ -4,21 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/volunteer_resources/file_upload.dart';
 import 'package:unnati_app/features/volunteer_resources/subject_provider_volunteer.dart';
-import 'package:unnati_app/features/volunteer_resources/volunteer_resource_model.dart';
 import 'package:unnati_app/services/api_service.dart';
+
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerResourcesPage extends ConsumerStatefulWidget {
   const VolunteerResourcesPage({super.key});
 
   @override
-  ConsumerState<VolunteerResourcesPage> createState() => _VolunteerResourcesPageState();
+  ConsumerState<VolunteerResourcesPage> createState() =>
+      _VolunteerResourcesPageState();
 }
 
-class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage> {
+class _VolunteerResourcesPageState
+    extends ConsumerState<VolunteerResourcesPage> {
   bool hasResourcePermission = false;
   bool isLoadingPermission = true;
   bool isLoadingSubjects = true;
-  
+
   @override
   void initState() {
     super.initState();
@@ -38,25 +41,24 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
   }
 
   Future<void> checkPermission() async {
-  try {
-  final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
+    try {
+      final allowed = await ApiService.hasPermission("UPLOAD_RESOURCE");
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      hasResourcePermission = allowed;
-      isLoadingPermission = false;
-    });
-  } catch (e) {
-    if (!mounted) return;
+      setState(() {
+        hasResourcePermission = allowed;
+        isLoadingPermission = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
 
-    setState(() {
-      hasResourcePermission = false;
-      isLoadingPermission = false;
-    });
+      setState(() {
+        hasResourcePermission = false;
+        isLoadingPermission = false;
+      });
+    }
   }
-}
-  
 
   void _showAddSubjectSheet(BuildContext context, WidgetRef ref) {
     final subjectController = TextEditingController();
@@ -65,7 +67,7 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (modalContext) {
@@ -82,7 +84,7 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Add Subject',
+                    AppLocalizations.of(context)!.addsubject,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.oswald(
                       fontSize: 18.sp,
@@ -94,31 +96,52 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                   //subject name
                   TextField(
                     controller: subjectController,
-                    decoration: const InputDecoration(
-                      labelText: 'Subject Name',
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.subjectname,
                       border: OutlineInputBorder(),
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
                   DropdownButtonFormField<String>(
                     initialValue: selectedClass,
-                    decoration: const InputDecoration(
-                      labelText: 'Class',
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.classLabel,
                       border: OutlineInputBorder(),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: '6', child: Text('Class 6')),
-                      DropdownMenuItem(value: '7', child: Text('Class 7')),
-                      DropdownMenuItem(value: '8', child: Text('Class 8')),
-                      DropdownMenuItem(value: '9', child: Text('Class 9')),
-                      DropdownMenuItem(value: '10', child: Text('Class 10')),
-                      DropdownMenuItem(value: '11', child: Text('Class 11')),
-                      DropdownMenuItem(value: '12', child: Text('Class 12')),
+                    items: [
+                      DropdownMenuItem(
+                        value: '6',
+                        child: Text(AppLocalizations.of(context)!.classLabel6),
+                      ),
+                      DropdownMenuItem(
+                        value: '7',
+                        child: Text(AppLocalizations.of(context)!.classLabel7),
+                      ),
+                      DropdownMenuItem(
+                        value: '8',
+                        child: Text(AppLocalizations.of(context)!.classLabel8),
+                      ),
+                      DropdownMenuItem(
+                        value: '9',
+                        child: Text(AppLocalizations.of(context)!.classLabel9),
+                      ),
+                      DropdownMenuItem(
+                        value: '10',
+                        child: Text(AppLocalizations.of(context)!.classLabel10),
+                      ),
+                      DropdownMenuItem(
+                        value: '11',
+                        child: Text(AppLocalizations.of(context)!.classLabel11),
+                      ),
+                      DropdownMenuItem(
+                        value: '12',
+                        child: Text(AppLocalizations.of(context)!.classLabel12),
+                      ),
                       DropdownMenuItem(
                         value: 'all',
-                        child: Text('All Classes'),
+                        child: Text(AppLocalizations.of(context)!.allclasses),
                       ),
                     ],
                     onChanged: (value) {
@@ -126,7 +149,7 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                     },
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -152,10 +175,12 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               behavior: SnackBarBehavior.floating,
                               content: Text(
-                                'Subject with same class already exists',
+                                AppLocalizations.of(
+                                  context,
+                                )!.subjectwithsameclassalreadyexists,
                               ),
                             ),
                           );
@@ -179,11 +204,8 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                         //     );
 
                         await ref
-                          .read(subjectProvider.notifier)
-                          .createSubject(
-                              name: subject,
-                              className: cls,
-                          );
+                            .read(subjectProvider.notifier)
+                            .createSubject(name: subject, className: cls);
 
                         Navigator.pop(modalContext);
                       } catch (e) {
@@ -192,16 +214,14 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                           ..showSnackBar(
                             SnackBar(
                               behavior: SnackBarBehavior.floating,
-                              content: Text(
-                                'Failed to create subject: $e',
-                              ),
+                              content: Text("Failed to create subject: $e"),
                             ),
                           );
                       }
                     },
 
-                    child: const Text(
-                      'Add',
+                    child: Text(
+                      AppLocalizations.of(context)!.add,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -218,21 +238,17 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
   Widget build(BuildContext context) {
     final subjects = ref.watch(subjectProvider); //watch changes
     if (isLoadingPermission) {
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+      backgroundColor: Color.fromARGB(255, 221, 221, 221),
 
       appBar: AppBar(
         elevation: 2,
         foregroundColor: Colors.white,
         title: Text(
-          'Resources',
+          AppLocalizations.of(context)!.resources,
           style: GoogleFonts.oswald(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -240,25 +256,22 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
         ),
         backgroundColor: Color.fromARGB(255, 9, 12, 19),
       ),
-      
-      floatingActionButton:
-      !hasResourcePermission
-      ? null    
-      : FloatingActionButton(
-        elevation: 2,
-        onPressed: () => _showAddSubjectSheet(context, ref),
-        backgroundColor: Color.fromARGB(255, 9, 12, 19),
-        child: Icon(Icons.add, color: Colors.white),
-      ),
 
-      body:isLoadingSubjects
-          ? const Center(
-        child: CircularProgressIndicator(),
-      ) 
-      :subjects.isEmpty
+      floatingActionButton: !hasResourcePermission
+          ? null
+          : FloatingActionButton(
+              elevation: 2,
+              onPressed: () => _showAddSubjectSheet(context, ref),
+              backgroundColor: Color.fromARGB(255, 9, 12, 19),
+              child: Icon(Icons.add, color: Colors.white),
+            ),
+
+      body: isLoadingSubjects
+          ? Center(child: CircularProgressIndicator())
+          : subjects.isEmpty
           ? Center(
               child: Text(
-                'No subjects added yet',
+                AppLocalizations.of(context)!.nosubjectsaddedyet,
                 style: GoogleFonts.roboto(color: Colors.grey),
               ),
             )
@@ -291,7 +304,7 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                     //cards
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.r),
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
@@ -338,216 +351,274 @@ class _VolunteerResourcesPageState extends ConsumerState<VolunteerResourcesPage>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 //edit
-                                if(hasResourcePermission)
-                                 IconButton(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Colors.white70,
-                                          size: 18.sp,
-                                        ),
-                                  onPressed:() {
-                                    final subjectController =
-                                        TextEditingController(
-                                          text: subject.name,
-                                        );
-                                    String selectedClass = subject.className;
+                                if (hasResourcePermission)
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Colors.white70,
+                                      size: 18.sp,
+                                    ),
+                                    onPressed: () {
+                                      final subjectController =
+                                          TextEditingController(
+                                            text: subject.name,
+                                          );
+                                      String selectedClass = subject.className;
 
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        title: const Text('Edit Subject'),
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            TextField(
-                                              controller: subjectController,
-                                              decoration: const InputDecoration(
-                                                labelText: 'Subject Name',
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.editsubject,
+                                          ),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              TextField(
+                                                controller: subjectController,
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.subjectname,
+                                                ),
+                                              ),
+                                              SizedBox(height: 12),
+                                              DropdownButtonFormField<String>(
+                                                initialValue: selectedClass,
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel,
+                                                ),
+                                                items: [
+                                                  DropdownMenuItem(
+                                                    value: '6',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel6,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '7',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel7,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '8',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel8,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '9',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel9,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '10',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel10,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '11',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel11,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: '12',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.classLabel12,
+                                                    ),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: 'all',
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.allclasses2,
+                                                    ),
+                                                  ),
+                                                ],
+                                                onChanged: (value) {
+                                                  if (value != null) {
+                                                    selectedClass = value;
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.cancel,
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
                                               ),
                                             ),
-                                            const SizedBox(height: 12),
-                                            DropdownButtonFormField<String>(
-                                              initialValue: selectedClass,
-                                              decoration: const InputDecoration(
-                                                labelText: 'Class',
-                                              ),
-                                              items: const [
-                                                DropdownMenuItem(
-                                                  value: '6',
-                                                  child: Text('Class 6'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '7',
-                                                  child: Text('Class 7'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '8',
-                                                  child: Text('Class 8'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '9',
-                                                  child: Text('Class 9'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '10',
-                                                  child: Text('Class 10'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '11',
-                                                  child: Text('Class 11'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: '12',
-                                                  child: Text('Class 12'),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: 'all',
-                                                  child: Text('All classes'),
-                                                ),
-                                              ],
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  selectedClass = value;
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                final newName =
+                                                    subjectController.text
+                                                        .trim();
+                                                final newClass = selectedClass;
+
+                                                if (newName.isEmpty ||
+                                                    newClass.isEmpty) {
+                                                  return;
                                                 }
+
+                                                final subjects = ref.read(
+                                                  subjectProvider,
+                                                );
+
+                                                final alreadyExists = subjects.any(
+                                                  (s) =>
+                                                      s.name.toLowerCase() ==
+                                                          newName
+                                                              .toLowerCase() &&
+                                                      s.className == newClass &&
+                                                      !(s.name ==
+                                                              subject.name &&
+                                                          s.className ==
+                                                              subject
+                                                                  .className), // exclude self
+                                                );
+
+                                                if (alreadyExists) {
+                                                  ScaffoldMessenger.of(
+                                                      Navigator.of(
+                                                        context,
+                                                      ).context, // root context
+                                                    )
+                                                    ..hideCurrentSnackBar()
+                                                    ..showSnackBar(
+                                                      SnackBar(
+                                                        behavior:
+                                                            SnackBarBehavior
+                                                                .floating,
+                                                        content: Text(
+                                                          AppLocalizations.of(
+                                                            context,
+                                                          )!.subjectwithsameclassalreadyexists,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  Navigator.pop(context);
+                                                  return; // ❌ TERMINATE EDIT
+                                                }
+
+                                                await ref
+                                                    .read(
+                                                      subjectProvider.notifier,
+                                                    )
+                                                    .updateSubject(
+                                                      id: subject.id!,
+                                                      newName: newName,
+                                                      newClass: newClass,
+                                                    );
+
+                                                Navigator.pop(
+                                                  context,
+                                                ); // ✅ close dialog only on success
                                               },
+
+                                              child: Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.save,
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: const Text(
-                                              'Cancel',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: ()async {
-                                              final newName = subjectController
-                                                  .text
-                                                  .trim();
-                                              final newClass = selectedClass;
-
-                                              if (newName.isEmpty ||
-                                                  newClass.isEmpty) {
-                                                return;
-                                              }
-
-                                              final subjects = ref.read(
-                                                subjectProvider,
-                                              );
-
-                                              final alreadyExists = subjects.any(
-                                                (s) =>
-                                                    s.name.toLowerCase() ==
-                                                        newName.toLowerCase() &&
-                                                    s.className == newClass &&
-                                                    !(s.name == subject.name &&
-                                                        s.className ==
-                                                            subject
-                                                                .className), // exclude self
-                                              );
-
-                                              if (alreadyExists) {
-                                                ScaffoldMessenger.of(
-                                                    Navigator.of(
-                                                      context,
-                                                    ).context, // root context
-                                                  )
-                                                  ..hideCurrentSnackBar()
-                                                  ..showSnackBar(
-                                                    const SnackBar(
-                                                      behavior: SnackBarBehavior
-                                                          .floating,
-                                                      content: Text(
-                                                        'Subject with same class already exists',
-                                                      ),
-                                                    ),
-                                                  );
-                                                Navigator.pop(context);
-                                                return; // ❌ TERMINATE EDIT
-                                              }
-
-                                              await ref
-                                                  .read(
-                                                    subjectProvider.notifier,
-                                                  )
-                                                  .updateSubject(
-                                                    id: subject.id!,
-                                                    newName: newName,
-                                                    newClass: newClass,
-                                                  );
-
-                                              Navigator.pop(
-                                                context,
-                                              ); // ✅ close dialog only on success
-                                            },
-
-                                            child: const Text(
-                                              'Save',
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                                      );
+                                    },
+                                  ),
 
                                 //DELETE
-                              if(hasResourcePermission)
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.redAccent,
-                                    size: 18.sp,
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        title: const Text('Delete Subject'),
-                                        content: Text(
-                                          'Are you sure you want to delete "${subject.name}"?',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: const Text('Cancel'),
+                                if (hasResourcePermission)
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.redAccent,
+                                      size: 18.sp,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.deletesubject,
                                           ),
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                            ),
-                                            onPressed: () async {
-                                              await ref
-                                                  .read(
-                                                    subjectProvider.notifier,
-                                                  )
-                                                  .deleteSubject(
-                                                    subject.id!,
-                                                    
-                                                  );
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text(
-                                              'Delete',
-                                              style: TextStyle(
-                                                color: Colors.white,
+                                          content: Text(
+                                            'Are you sure you want to delete "${subject.name}"?',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.cancel,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                              ),
+                                              onPressed: () async {
+                                                await ref
+                                                    .read(
+                                                      subjectProvider.notifier,
+                                                    )
+                                                    .deleteSubject(subject.id!);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.delete,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
                               ],
                             ),
                           ),

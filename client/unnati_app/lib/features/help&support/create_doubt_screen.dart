@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class CreateDoubtScreen extends StatefulWidget {
   const CreateDoubtScreen({super.key});
 
@@ -42,15 +44,17 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
             showDialog<void>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Not allowed'),
-                content: const Text('Only students can create doubts.'),
+                title: Text(AppLocalizations.of(context)!.notallowed),
+                content: Text(
+                  AppLocalizations.of(context)!.onlystudentscancreatedoubts,
+                ),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(ctx).pop();
                       Navigator.of(context).maybePop();
                     },
-                    child: const Text('OK'),
+                    child: Text(AppLocalizations.of(context)!.oK),
                   ),
                 ],
               ),
@@ -71,15 +75,17 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
         showDialog<void>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Not allowed'),
-            content: const Text('Only students can create doubts.'),
+            title: Text(AppLocalizations.of(context)!.notallowed),
+            content: Text(
+              AppLocalizations.of(context)!.onlystudentscancreatedoubts,
+            ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   Navigator.of(context).maybePop();
                 },
-                child: const Text('OK'),
+                child: Text(AppLocalizations.of(context)!.oK),
               ),
             ],
           ),
@@ -109,7 +115,9 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
 
     if (result['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doubt created successfully.')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.doubtcreatedsuccessfully),
+        ),
       );
       Navigator.pop(context, true);
       return;
@@ -127,17 +135,17 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Doubt')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.createdoubt)),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           children: [
             TextFormField(
               controller: _titleController,
               maxLength: 100,
-              decoration: const InputDecoration(
-                labelText: 'Title',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.title,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -146,12 +154,12 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             TextFormField(
               controller: _subjectController,
               maxLength: 80,
-              decoration: const InputDecoration(
-                labelText: 'Subject',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.subject,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -160,14 +168,14 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             TextFormField(
               controller: _descriptionController,
               minLines: 6,
               maxLines: 8,
               maxLength: 300,
-              decoration: const InputDecoration(
-                labelText: 'Description',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.description,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -178,16 +186,16 @@ class _CreateDoubtScreenState extends State<CreateDoubtScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: _isSubmitting ? null : _submit,
               child: _isSubmitting
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 18,
                       width: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Submit Doubt'),
+                  : Text(AppLocalizations.of(context)!.submitdoubt),
             ),
           ],
         ),

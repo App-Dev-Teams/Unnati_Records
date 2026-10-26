@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/components/pdf_components/pdf_appbar.dart';
 import 'package:unnati_app/theme/colors.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class CommentsPage extends StatefulWidget {
   const CommentsPage({super.key});
 
@@ -33,11 +35,13 @@ class _CommentsPageState extends State<CommentsPage> {
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FB),
 
-      appBar: PdfAppBar(imageName: 'unnatiLogoColourFix.png', name: "Student Comments"),
+      appBar: PdfAppBar(
+        imageName: 'unnatiLogoColourFix.png',
+        name: "Student Comments",
+      ),
 
       body: Column(
         children: [
-
           // 💬 Comments List
           Expanded(
             child: ListView.builder(
@@ -100,12 +104,7 @@ class _CommentsPageState extends State<CommentsPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 12,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 12)],
               ),
               child: Row(
                 children: [
@@ -115,10 +114,10 @@ class _CommentsPageState extends State<CommentsPage> {
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => addComment(),
                       decoration: InputDecoration(
-                        hintText: "Ask your doubt here...",
-                        hintStyle: GoogleFonts.poppins(
-                          color: Colors.grey,
-                        ),
+                        hintText: AppLocalizations.of(
+                          context,
+                        )!.askyourdoubthere,
+                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
                         border: InputBorder.none,
                       ),
                     ),
@@ -130,10 +129,7 @@ class _CommentsPageState extends State<CommentsPage> {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 72, 107, 250),
-                            C.blue,
-                          ],
+                          colors: [Color.fromARGB(255, 72, 107, 250), C.blue],
                         ),
                       ),
                       child: const Icon(

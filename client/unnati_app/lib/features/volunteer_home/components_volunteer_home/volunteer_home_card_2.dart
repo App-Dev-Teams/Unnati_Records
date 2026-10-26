@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class VolunteerHomeCard2 extends StatefulWidget {
   const VolunteerHomeCard2({super.key});
 
@@ -14,8 +16,6 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
   int isYesSelected = 0; //variable to store yes/no
   @override
   Widget build(BuildContext context) {
-    
-
     return SizedBox(
       width: 350.w,
       child: Card(
@@ -27,7 +27,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               colors: [Color(0xFF111212), Color(0xFF2B3D54)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -56,7 +56,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
 
                     //title
                     Text(
-                      'Are you a proud member ?',
+                      AppLocalizations.of(context)!.areyouaproudmember,
                       style: GoogleFonts.oswald(
                         color: Colors.white,
                         fontSize: 20,
@@ -84,7 +84,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
                             ),
                             child: Center(
                               child: Text(
-                                'YES',
+                                AppLocalizations.of(context)!.yES,
                                 style: GoogleFonts.roboto(
                                   color: Colors.black,
                                   fontSize: 10,
@@ -96,7 +96,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
                         SizedBox(width: 10),
                         InkWell(
                           onTap: () {
-                           setState(() {
+                            setState(() {
                               isYesSelected = 2;
                             });
                           },
@@ -109,7 +109,7 @@ class _VolunteerHomeCard2State extends State<VolunteerHomeCard2> {
                             ),
                             child: Center(
                               child: Text(
-                                'NO',
+                                AppLocalizations.of(context)!.nO,
                                 style: GoogleFonts.roboto(
                                   color: Colors.black,
                                   fontSize: 10,

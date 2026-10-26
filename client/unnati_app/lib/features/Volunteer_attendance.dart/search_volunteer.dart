@@ -4,13 +4,12 @@ import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_provide
 import 'package:unnati_app/features/Volunteer_attendance.dart/attendance_api_provider.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_model.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class SearchVolunteer extends ConsumerStatefulWidget {
   final DateTime selectedDate;
 
-  const SearchVolunteer({
-    super.key,
-    required this.selectedDate,
-  });
+  const SearchVolunteer({super.key, required this.selectedDate});
 
   @override
   ConsumerState<SearchVolunteer> createState() => _SearchVolunteerState();
@@ -24,50 +23,41 @@ class _SearchVolunteerState extends ConsumerState<SearchVolunteer> {
   final List<String> programs = ['DigiXplore', 'Netritva', 'Akshar', 'All'];
 
   // static volunteers list
-  List<Volunteer>
-  allVolunteers=[];
-  
+  List<Volunteer> allVolunteers = [];
 
-bool loading = false;
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
     fetchUsers(null);
   }
-  
-Future<void> fetchUsers(String? program,) async {
-  try {
-    setState(() {
-      loading = true;
-    });
 
-    final service = ref.read(
-      attendanceServiceProvider,
-    );
+  Future<void> fetchUsers(String? program) async {
+    try {
+      setState(() {
+        loading = true;
+      });
 
-    final users = await service.fetchVolunteers(
-      program,
-    );
+      final service = ref.read(attendanceServiceProvider);
 
-    print("Fetched users: ${users.length}");
+      final users = await service.fetchVolunteers(program);
 
-    setState(() {
-      allVolunteers = users;
-    });
+      print("Fetched users: ${users.length}");
 
-    print(
-      "allVolunteers after setState: ${allVolunteers.length}"
-    );
-  } catch (e) {
-    print(e);
-  } finally {
-    setState(() {
-      loading = false;
-    });
+      setState(() {
+        allVolunteers = users;
+      });
+
+      print("allVolunteers after setState: ${allVolunteers.length}");
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
   }
-}
-
 
   // get attendance status of a volunteer for selected date
   AttendanceStatus? _getStatus(
@@ -103,57 +93,63 @@ Future<void> fetchUsers(String? program,) async {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: const Icon(Icons.check_circle, color: Colors.green),
-            title: const Text('Present'),
+            leading: Icon(Icons.check_circle, color: Colors.green),
+            title: Text(AppLocalizations.of(context)!.present),
             onTap: () {
-               ref.read(attendanceServiceProvider).markAttendance(
-                    date:widget.selectedDate,
-                    present:[volunteer.id],
+              ref
+                  .read(attendanceServiceProvider)
+                  .markAttendance(
+                    date: widget.selectedDate,
+                    present: [volunteer.id],
                   );
-              ref.read(
-                attendanceProvider.notifier,
-              ).markAttendance(
-                widget.selectedDate,
-                volunteer,
-                AttendanceStatus.present,
-              );
+              ref
+                  .read(attendanceProvider.notifier)
+                  .markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.present,
+                  );
 
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.cancel, color: Colors.red),
-            title: const Text('Absent'),
+            leading: Icon(Icons.cancel, color: Colors.red),
+            title: Text(AppLocalizations.of(context)!.absent),
             onTap: () {
-              ref.read(attendanceServiceProvider).markAttendance(
-                    date:widget.selectedDate,
-                    absent:[volunteer.id],
+              ref
+                  .read(attendanceServiceProvider)
+                  .markAttendance(
+                    date: widget.selectedDate,
+                    absent: [volunteer.id],
                   );
-              ref.read(
-                attendanceProvider.notifier,
-              ).markAttendance(
-                widget.selectedDate,
-                volunteer,
-                AttendanceStatus.absent,
-              );
+              ref
+                  .read(attendanceProvider.notifier)
+                  .markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.absent,
+                  );
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.access_time, color: Colors.orange),
-            title: const Text('Cancelled'),
+            leading: Icon(Icons.access_time, color: Colors.orange),
+            title: Text(AppLocalizations.of(context)!.cancelled),
             onTap: () {
-              ref.read(attendanceServiceProvider).markAttendance(
-                    date:widget.selectedDate,
-                    cancelled:[volunteer.id],
+              ref
+                  .read(attendanceServiceProvider)
+                  .markAttendance(
+                    date: widget.selectedDate,
+                    cancelled: [volunteer.id],
                   );
-              ref.read(
-                attendanceProvider.notifier,
-              ).markAttendance(
-                widget.selectedDate,
-                volunteer,
-                AttendanceStatus.deferred,
-              );
+              ref
+                  .read(attendanceProvider.notifier)
+                  .markAttendance(
+                    widget.selectedDate,
+                    volunteer,
+                    AttendanceStatus.deferred,
+                  );
               Navigator.pop(context);
             },
           ),
@@ -168,17 +164,14 @@ Future<void> fetchUsers(String? program,) async {
 
     // filter volunteers by program and name
     final filteredVolunteers =
-    selectedProgram == null ||
-    selectedProgram == 'All'
+        selectedProgram == null || selectedProgram == 'All'
         ? allVolunteers
         : allVolunteers.where((v) {
-            final programMatch =
-                v.program == selectedProgram;
+            final programMatch = v.program == selectedProgram;
 
-            final nameMatch =
-                v.name.toLowerCase().contains(
-                  searchText.toLowerCase(),
-                );
+            final nameMatch = v.name.toLowerCase().contains(
+              searchText.toLowerCase(),
+            );
 
             return programMatch && nameMatch;
           }).toList();
@@ -189,21 +182,14 @@ Future<void> fetchUsers(String? program,) async {
         DropdownButtonFormField<String>(
           initialValue: selectedProgram,
           dropdownColor: Colors.grey,
-          hint: const Text('Select Program'),
+          hint: Text(AppLocalizations.of(context)!.selectprogram),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color.fromARGB(255, 208, 208, 208),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+            fillColor: Color.fromARGB(255, 208, 208, 208),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
           items: programs
-              .map(
-                (p) => DropdownMenuItem<String>(
-                  value: p,
-                  child: Text(p),
-                ),
-              )
+              .map((p) => DropdownMenuItem<String>(value: p, child: Text(p)))
               .toList(),
           onChanged: (value) async {
             setState(() {
@@ -215,19 +201,17 @@ Future<void> fetchUsers(String? program,) async {
           },
         ),
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
         // search field
         TextField(
           enabled: selectedProgram != null,
           decoration: InputDecoration(
-            hintText: 'Search volunteer name',
-            prefixIcon: const Icon(Icons.search),
+            hintText: AppLocalizations.of(context)!.searchvolunteername,
+            prefixIcon: Icon(Icons.search),
             filled: true,
-            fillColor: const Color.fromARGB(255, 208, 208, 208),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+            fillColor: Color.fromARGB(255, 208, 208, 208),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
           onChanged: (value) {
             setState(() {
@@ -236,12 +220,12 @@ Future<void> fetchUsers(String? program,) async {
           },
         ),
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
 
         // volunteers list
         ListView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           itemCount: filteredVolunteers.length,
           itemBuilder: (context, index) {
             final volunteer = filteredVolunteers[index];

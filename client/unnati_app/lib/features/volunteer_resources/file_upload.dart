@@ -1,3 +1,4 @@
+import 'package:unnati_app/l10n/app_localizations.dart';
 // ignore_for_file: avoid_print
 
 import 'package:file_picker/file_picker.dart';
@@ -13,7 +14,7 @@ import 'package:unnati_app/features/volunteer_resources/subject_provider_volunte
 import 'package:unnati_app/services/api_service.dart';
 
 class FileUploadPage extends ConsumerStatefulWidget {
-  static const List<String> _allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+  static final List<String> _allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
 
   final String subject;
   final String className;
@@ -81,7 +82,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
       //bottom sheet
       context: scaffoldContext,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (modalContext) {
@@ -90,7 +91,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
             return SizedBox(
               height: MediaQuery.of(scaffoldContext).size.height * 0.6,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: ListView(
                   padding: EdgeInsets.only(
                     bottom: MediaQuery.of(modalContext).viewInsets.bottom,
@@ -98,7 +99,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                   ),
                   children: [
                     Text(
-                      'Upload File',
+                      AppLocalizations.of(context)!.uploadfile,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.oswald(
                         fontSize: 18.sp,
@@ -110,8 +111,8 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                     TextField(
                       //file name
                       controller: fileNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'File Name',
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.filename,
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -132,7 +133,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                           });
                         }
                       },
-                      icon: const Icon(Icons.attach_file),
+                      icon: Icon(Icons.attach_file),
                       label: Text(
                         pickedFile == null
                             ? 'Pick File'
@@ -145,7 +146,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                     ElevatedButton(
                       //add button
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+                        backgroundColor: Color.fromARGB(255, 9, 12, 19),
                       ),
                       onPressed: pickedFile == null
                           ? null
@@ -170,8 +171,12 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                 ScaffoldMessenger.of(
                                   scaffoldContext,
                                 ).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Upload successful"),
+                                  SnackBar(
+                                    content: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.uploadsuccessful,
+                                    ),
                                   ),
                                 );
                               } catch (e) {
@@ -186,7 +191,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                             },
 
                       child: Text(
-                        'Add File',
+                        AppLocalizations.of(context)!.addfile,
                         style: GoogleFonts.oswald(color: Colors.white),
                       ),
                     ),
@@ -205,19 +210,11 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
   // cards icon
   Widget _fileIcon(FileItem file) {
     if (file.extension == 'pdf') {
-      return const Icon(
-        Icons.picture_as_pdf,
-        size: 44,
-        color: Colors.redAccent,
-      );
+      return Icon(Icons.picture_as_pdf, size: 44, color: Colors.redAccent);
     } else if (['jpg', 'jpeg', 'png'].contains(file.extension)) {
-      return const Icon(Icons.image, size: 44, color: Colors.green);
+      return Icon(Icons.image, size: 44, color: Colors.green);
     } else {
-      return const Icon(
-        Icons.insert_drive_file,
-        size: 44,
-        color: Colors.blueAccent,
-      );
+      return Icon(Icons.insert_drive_file, size: 44, color: Colors.blueAccent);
     }
   }
 
@@ -230,18 +227,18 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
 
     final files = currentSubject.files;
     if (isLoadingPermission) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+      backgroundColor: Color.fromARGB(255, 221, 221, 221),
 
       appBar: AppBar(
         //app bar
-        backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+        backgroundColor: Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          '${widget.subject} - Class ${widget.className}',
+          "${widget.subject} - Class ${widget.className}",
           style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
         ),
       ),
@@ -250,8 +247,8 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
           ? null
           : FloatingActionButton(
               // + button
-              backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-              child: const Icon(Icons.add, color: Colors.white),
+              backgroundColor: Color.fromARGB(255, 9, 12, 19),
+              child: Icon(Icons.add, color: Colors.white),
               onPressed: () => _showAddFileSheet(context, ref),
             ),
 
@@ -259,17 +256,17 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
           ? Center(
               child: Text(
                 hasResourcePermission
-              ? 'No files uploaded yet\nTap + to upload'
-              : 'No files uploaded yet',
+                    ? 'No files uploaded yet\nTap + to upload'
+                    : 'No files uploaded yet',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey, fontSize: 16.sp),
               ),
             )
           : GridView.builder(
               //file cards
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               itemCount: files.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
@@ -323,7 +320,11 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Could not open file')),
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context)!.couldnotopenfile,
+                          ),
+                        ),
                       );
                     }
                   },
@@ -331,18 +332,18 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.25),
+                          color: Colors.black.withValues(alpha: 0.25),
                           blurRadius: 8,
-                          offset: const Offset(0, 4),
+                          offset: Offset(0, 4),
                         ),
                       ],
                       borderRadius: BorderRadius.circular(16),
 
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                       ),
                     ),
-                    padding: const EdgeInsets.all(2), //border thickness
+                    padding: EdgeInsets.all(2), //border thickness
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
@@ -373,7 +374,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                               //EDIT
                               if (hasResourcePermission)
                                 IconButton(
-                                  icon: const Icon(Icons.edit, size: 18),
+                                  icon: Icon(Icons.edit, size: 18),
                                   onPressed: () async {
                                     final controller = TextEditingController(
                                       text: file.name,
@@ -382,19 +383,27 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title: const Text('Edit File'),
+                                        title: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.editfile,
+                                        ),
                                         content: TextField(
                                           controller: controller,
-                                          decoration: const InputDecoration(
-                                            labelText: 'File Name',
+                                          decoration: InputDecoration(
+                                            labelText: AppLocalizations.of(
+                                              context,
+                                            )!.filename,
                                           ),
                                         ),
                                         actions: [
                                           TextButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child: const Text(
-                                              'Cancel',
+                                            child: Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.cancel,
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -425,9 +434,11 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
-                                                  const SnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                      'File renamed successfully.',
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.filerenamedsuccessfully,
                                                     ),
                                                   ),
                                                 );
@@ -437,15 +448,19 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                                 ).showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                      'Failed to rename file.',
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.failedtorenamefile,
                                                     ),
                                                   ),
                                                 );
                                               }
                                               Navigator.pop(context);
                                             },
-                                            child: const Text(
-                                              'Save',
+                                            child: Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.save,
                                               style: TextStyle(
                                                 color: Colors.green,
                                               ),
@@ -460,7 +475,7 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                               //DELETE
                               if (hasResourcePermission)
                                 IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.delete,
                                     size: 18,
                                     color: Colors.red,
@@ -469,7 +484,11 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title: const Text('Delete File'),
+                                        title: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.deletefile,
+                                        ),
                                         content: Text(
                                           'Are you sure you want to delete "${file.name}"?',
                                         ),
@@ -478,7 +497,9 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                             onPressed: () =>
                                                 Navigator.pop(context),
                                             child: Text(
-                                              'Cancel',
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.cancel,
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -500,8 +521,10 @@ class _FileUploadPageState extends ConsumerState<FileUploadPage> {
                                                   );
                                               Navigator.pop(context);
                                             },
-                                            child: const Text(
-                                              'Delete',
+                                            child: Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.delete,
                                               style: TextStyle(
                                                 color: Colors.white,
                                               ),
