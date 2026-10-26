@@ -38,15 +38,15 @@ class ProgramsCardUtil extends StatelessWidget {
               children: [
                 //logo
                 Container(
-                  height: 48.h,
-                  width: 48.h,
+                  height: 64.h,
+                  width: 64.h,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(12.r),
                     color: Colors.grey.shade100,
                   ),
-                  padding: EdgeInsets.all(6.r),
+                  padding: EdgeInsets.all(4.r),
                   child: Image.asset(
-                    'assets/images/$logo', //respective program logo (send logo name with image type)
+                    'assets/images/$logo',
                     fit: BoxFit.contain,
                   ),
                 ),

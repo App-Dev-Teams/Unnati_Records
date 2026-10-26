@@ -92,20 +92,20 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     title: "DigiXplore",
                     subtitle:
                         "Interactive live classes bridging the digital gap",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "digilogo.png",
                     path: DigixplorePage(),
                   ),
                   ProgramsCardUtil(
                     title: "Netritva",
                     subtitle:
                         "Holistic mentorship & doubt sessions for holistic growth",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "netrilogo.png",
                     path: NetritvaPage(),
                   ),
                   ProgramsCardUtil(
                     title: "Akshar",
                     subtitle: "Nukkad classes",
-                    logo: "unnatiLogoColourFix.png",
+                    logo: "aklogo.png",
                     path: AksharPage(),
                   ),
                   SizedBox(height: 20.h),
@@ -174,61 +174,61 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   ),
                   SizedBox(height: 10.h),
 
-                  Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(16.r),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.r),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => DevelopersPage()),
-                          );
-                        },
-                        child: ListTile(
-                          leading: Container(
-                            padding: EdgeInsets.all(8.r),
-                            decoration: BoxDecoration(
-                              color: Colors.lightBlueAccent.withOpacity(0.10),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Icon(
-                              Icons.computer,
-                              color: Colors.lightBlueAccent,
-                              size: 15,
-                            ),
-                          ),
-                          title: Text(
-                            "Developers",
-                            style: GoogleFonts.oswald(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Meet our developers",
-                            style: GoogleFonts.oswald(color: Colors.grey),
-                          ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Card(
+                  //   elevation: 8,
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(16.r),
+                  //   ),
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(16.r),
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(16.r),
+                  //       gradient: const LinearGradient(
+                  //         colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                  //         begin: Alignment.topLeft,
+                  //         end: Alignment.bottomRight,
+                  //       ),
+                  //     ),
+                  //     child: InkWell(
+                  //       onTap: () {
+                  //         Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(builder: (_) => DevelopersPage()),
+                  //         );
+                  //       },
+                  //       child: ListTile(
+                  //         leading: Container(
+                  //           padding: EdgeInsets.all(8.r),
+                  //           decoration: BoxDecoration(
+                  //             color: Colors.lightBlueAccent.withOpacity(0.10),
+                  //             borderRadius: BorderRadius.circular(8.r),
+                  //           ),
+                  //           child: Icon(
+                  //             Icons.computer,
+                  //             color: Colors.lightBlueAccent,
+                  //             size: 15,
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           "Developers",
+                  //           style: GoogleFonts.oswald(
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.w600,
+                  //             color: Colors.white,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           "Meet our developers",
+                  //           style: GoogleFonts.oswald(color: Colors.grey),
+                  //         ),
+                  //         trailing: Icon(
+                  //           Icons.arrow_forward_ios,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(height: 21),
                 ],
               ),
