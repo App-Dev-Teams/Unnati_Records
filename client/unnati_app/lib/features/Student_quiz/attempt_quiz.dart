@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class AttemptQuizScreen extends StatefulWidget {
   final String quizId;
@@ -80,6 +81,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   }
 
   void _showQuestionGridSheet() {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final sheetMaxHeight = mediaQuery.size.height * 0.65;
     final isTablet = mediaQuery.size.width >= 600;
@@ -118,7 +120,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Question Overview",
+                      l10n.questionOverview,
                       style: GoogleFonts.oswald(
                         fontSize: isTablet ? 22.sp : 19.sp,
                         fontWeight: FontWeight.bold,
@@ -132,7 +134,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
-                        "${_selectedAnswers.length}/${_questions.length} Answered",
+                        "${_selectedAnswers.length}/${_questions.length} ${l10n.answered}",
                         style: GoogleFonts.roboto(
                           fontSize: isTablet ? 14.sp : 12.sp,
                           fontWeight: FontWeight.w600,
@@ -211,6 +213,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   }
 
   Future<void> _handleQuizSubmit() async {
+    final l10n = AppLocalizations.of(context)!;
     final unansweredCount = _questions.length - _selectedAnswers.length;
 
     if (unansweredCount > 0) {
@@ -221,7 +224,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
             borderRadius: BorderRadius.circular(16.r),
           ),
           title: Text(
-            "Incomplete Quiz",
+            l10n.unanswered,
             style: GoogleFonts.oswald(
               fontWeight: FontWeight.bold,
               color: Colors.red.shade700,
@@ -229,14 +232,14 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
             ),
           ),
           content: Text(
-            "You have $unansweredCount unanswered question(s). All questions must be answered before submitting.",
+            "$unansweredCount ${l10n.unanswered.toLowerCase()}",
             style: GoogleFonts.roboto(fontSize: 14.sp),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(
-                "Continue Quiz",
+                l10n.reviewAnswers,
                 style: GoogleFonts.oswald(
                   fontWeight: FontWeight.bold,
                   fontSize: 15.sp,
@@ -257,21 +260,21 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
           borderRadius: BorderRadius.circular(16.r),
         ),
         title: Text(
-          "Submit Quiz?",
+          l10n.submitQuiz,
           style: GoogleFonts.oswald(
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
           ),
         ),
         content: Text(
-          "Are you ready to submit your answers? You cannot change them after submission.",
+          l10n.submitConfirmation,
           style: GoogleFonts.roboto(fontSize: 14.sp),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              "Review",
+              l10n.reviewAnswers,
               style: GoogleFonts.oswald(
                 fontWeight: FontWeight.bold,
                 fontSize: 15.sp,
@@ -288,7 +291,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              "Submit Now",
+              l10n.submitQuiz,
               style: GoogleFonts.oswald(
                 fontWeight: FontWeight.bold,
                 fontSize: 15.sp,
@@ -360,6 +363,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   }
 
   void _showResultDialog(int score, int total) {
+    final l10n = AppLocalizations.of(context)!;
     final double percentage = total > 0 ? (score / total) * 100 : 0;
     final bool isPassed = percentage >= 50;
     final mediaQuery = MediaQuery.of(context);
@@ -401,7 +405,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    "You scored $score out of $total (${percentage.toStringAsFixed(0)}%)",
+                    "${l10n.yourScore}: $score / $total (${percentage.toStringAsFixed(0)}%)",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.roboto(
                       fontSize: 15.sp,
@@ -446,9 +450,9 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                         Navigator.pop(context, true);
                       },
                       child: Text(
-                        "Back to Quizzes",
+                        l10n.backToQuizzes,
                         style: GoogleFonts.oswald(
-                          fontSize: 15.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -466,14 +470,13 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
 
   Widget _buildStatItem(String label, String value, {Color? color}) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           value,
           style: GoogleFonts.oswald(
-            fontSize: 19.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
-            color: color ?? Colors.black87,
+            color: color ?? const Color(0xFF111212),
           ),
         ),
         Text(
@@ -578,6 +581,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final isTablet = mediaQuery.size.width >= 600;
     final horizontalPadding = isTablet ? 24.w : 16.w;
@@ -613,7 +617,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                   color: Colors.white,
                   size: isTablet ? 24.r : 20.r,
                 ),
-                tooltip: "Question Overview",
+                tooltip: l10n.questionOverview,
                 onPressed: _showQuestionGridSheet,
               ),
           ],
@@ -650,7 +654,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                             ),
                             onPressed: _fetchQuizDetails,
                             child: Text(
-                              "Retry",
+                              l10n.retry,
                               style: GoogleFonts.oswald(color: Colors.white),
                             ),
                           ),
@@ -661,7 +665,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                 : _questions.isEmpty
                     ? Center(
                         child: Text(
-                          "No questions found for this quiz.",
+                          l10n.noQuestionsFound,
                           style: GoogleFonts.oswald(fontSize: 18.sp),
                         ),
                       )
@@ -683,7 +687,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "Question ${_currentIndex + 1} of ${_questions.length}",
+                                          "${l10n.questionsCount} ${_currentIndex + 1} of ${_questions.length}",
                                           style: GoogleFonts.oswald(
                                             fontSize: isTablet ? 18.sp : 15.sp,
                                             fontWeight: FontWeight.bold,
@@ -702,7 +706,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                                                 BorderRadius.circular(6.r),
                                           ),
                                           child: Text(
-                                            "${_selectedAnswers.length}/${_questions.length} Answered",
+                                            "${_selectedAnswers.length}/${_questions.length} ${l10n.answered}",
                                             style: GoogleFonts.roboto(
                                               fontSize: isTablet ? 13.sp : 11.sp,
                                               fontWeight: FontWeight.w600,
@@ -821,7 +825,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                                       SizedBox(height: 16.h),
 
                                       Text(
-                                        "Select your answer:",
+                                        "${l10n.selectAnOption}:",
                                         style: GoogleFonts.roboto(
                                           fontSize: 13.sp,
                                           fontWeight: FontWeight.w600,
@@ -841,14 +845,14 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                               ),
 
                               // Bottom action buttons bar
-                              _buildBottomNavBar(isTablet),
+                              _buildBottomNavBar(isTablet, l10n),
                             ],
                           ),
 
                           // Loading overlay during submission
                           if (_isSubmitting)
                             Container(
-                              color: Colors.black54,
+                              color: Colors.black45,
                               child: Center(
                                 child: Container(
                                   padding: EdgeInsets.all(24.r),
@@ -987,7 +991,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     });
   }
 
-  Widget _buildBottomNavBar(bool isTablet) {
+  Widget _buildBottomNavBar(bool isTablet, AppLocalizations l10n) {
     final isFirst = _currentIndex == 0;
     final isLast = _currentIndex == _questions.length - 1;
 
@@ -1028,7 +1032,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               onPressed: isFirst ? null : _goToPrevious,
               icon: const Icon(Icons.arrow_back_ios_rounded, size: 14),
               label: Text(
-                "Previous",
+                l10n.previous,
                 style: GoogleFonts.oswald(
                   fontSize: isTablet ? 15.sp : 13.sp,
                   fontWeight: FontWeight.bold,
@@ -1053,7 +1057,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                 ),
                 onPressed: _goToNext,
                 label: Text(
-                  "Next",
+                  l10n.next,
                   style: GoogleFonts.oswald(
                     fontSize: isTablet ? 15.sp : 13.sp,
                     fontWeight: FontWeight.bold,
@@ -1078,7 +1082,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                 onPressed: _handleQuizSubmit,
                 icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
                 label: Text(
-                  "Submit Quiz",
+                  l10n.submitQuiz,
                   style: GoogleFonts.oswald(
                     fontSize: isTablet ? 16.sp : 14.sp,
                     fontWeight: FontWeight.bold,

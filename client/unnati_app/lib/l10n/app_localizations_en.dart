@@ -1009,4 +1009,250 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aksharIntroduceLifeSkillsAndHygieneEducation => 'Introduce life-skills and hygiene education';
+
+  @override
+  String get connect => 'Connect';
+
+  @override
+  String get videoConference => 'Video Conference';
+
+  @override
+  String get doubts => 'Doubts';
+
+  @override
+  String get openDoubts => 'Open Doubts';
+
+  @override
+  String get closedDoubts => 'Closed Doubts';
+
+  @override
+  String get myDoubts => 'My Doubts';
+
+  @override
+  String get quizzesAndTests => 'Quizzes & Tests';
+
+  @override
+  String get refreshQuizzes => 'Refresh Quizzes';
+
+  @override
+  String get testYourKnowledge => 'TEST YOUR KNOWLEDGE';
+
+  @override
+  String get quizBannerSubtitle => 'Participate in curated quizzes to evaluate and strengthen your subject concepts.';
+
+  @override
+  String get availableQuizzes => 'AVAILABLE QUIZZES';
+
+  @override
+  String get totalQuizzesCount => 'Total';
+
+  @override
+  String get myQuizStats => 'MY QUIZ STATS';
+
+  @override
+  String get completedCount => 'Completed';
+
+  @override
+  String get quizzesGiven => 'Quizzes Given';
+
+  @override
+  String get avgScore => 'Avg Score';
+
+  @override
+  String get bestScore => 'Best Score';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get noQuizzesAvailableTitle => 'No Quizzes Available';
+
+  @override
+  String get noQuizzesAvailableSubtitle => 'New quizzes uploaded for your class will appear right here.';
+
+  @override
+  String get questionsCount => 'Questions';
+
+  @override
+  String get notAttemptedYet => 'Not attempted yet';
+
+  @override
+  String get quizManagement => 'Quiz Management';
+
+  @override
+  String get uploadQuiz => 'Upload Quiz';
+
+  @override
+  String get createQuizNow => 'Create Quiz Now';
+
+  @override
+  String get noQuizzesFound => 'No Quizzes Found';
+
+  @override
+  String get noQuizzesCreatedYet => 'No quizzes have been created yet. Tap \'+ Upload Quiz\' to create your first quiz.';
+
+  @override
+  String get noQuizzesFoundForClass => 'No quizzes found for this class.';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get submissions => 'Submissions';
+
+  @override
+  String get quizSubmissions => 'Quiz Submissions';
+
+  @override
+  String get noSubmissionsYet => 'No Submissions Yet';
+
+  @override
+  String get noSubmissionsSubtitle => 'Students who complete this quiz will appear here with their scores.';
+
+  @override
+  String get viewStats => 'View Stats';
+
+  @override
+  String get studentPerformanceProfile => 'Student Performance Profile';
+
+  @override
+  String get quizPerformanceAndStats => 'QUIZ PERFORMANCE & STATS';
+
+  @override
+  String get quizzesTaken => 'Quizzes Taken';
+
+  @override
+  String get averageScore => 'Average Score';
+
+  @override
+  String get highestScore => 'Highest Score';
+
+  @override
+  String get assessmentHistory => 'Assessment History';
+
+  @override
+  String get noQuizzesAttemptedByStudent => 'No quizzes attempted yet by this student.';
+
+  @override
+  String get studentAndSchoolDetails => 'STUDENT & SCHOOL DETAILS';
+
+  @override
+  String get enrolledOn => 'Enrolled On';
+
+  @override
+  String get quizTitle => 'Quiz Title';
+
+  @override
+  String get enterQuizTitle => 'Enter quiz title';
+
+  @override
+  String get targetClass => 'Target Class';
+
+  @override
+  String get quizStatus => 'Quiz Status';
+
+  @override
+  String get published => 'Published';
+
+  @override
+  String get draft => 'Draft';
+
+  @override
+  String get addQuestion => 'Add Question';
+
+  @override
+  String get questionText => 'Question Text';
+
+  @override
+  String get enterQuestion => 'Enter question text';
+
+  @override
+  String get correctAnswer => 'Correct Answer';
+
+  @override
+  String get selectCorrectOption => 'Select correct option';
+
+  @override
+  String get deleteQuestion => 'Delete Question';
+
+  @override
+  String get uploadingQuiz => 'Uploading Quiz...';
+
+  @override
+  String get quizUploadedSuccess => 'Quiz uploaded successfully!';
+
+  @override
+  String get pleaseFillAllFields => 'Please fill in all required fields';
+
+  @override
+  String get atLeastTwoOptions => 'Each question must have at least 2 options';
+
+  @override
+  String get selectCorrectAnswerForQuestion => 'Please select the correct option for each question';
+
+  @override
+  String get submitQuiz => 'Submit Quiz';
+
+  @override
+  String get submitConfirmation => 'Are you sure you want to submit your answers?';
+
+  @override
+  String get quizSubmittedSuccess => 'Quiz submitted successfully!';
+
+  @override
+  String get yourScore => 'Your Score';
+
+  @override
+  String get questionOverview => 'Question Overview';
+
+  @override
+  String get answered => 'Answered';
+
+  @override
+  String get unanswered => 'Unanswered';
+
+  @override
+  String get reviewAnswers => 'Review Answers';
+
+  @override
+  String get backToQuizzes => 'Back to Quizzes';
+
+  @override
+  String get timeTaken => 'Time Taken';
+
+  @override
+  String get accuracy => 'Accuracy';
+
+  @override
+  String get selectAnOption => 'Please select an option';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get tapToPreviewQuestions => 'Tap to preview questions';
+
+  @override
+  String get noQuestionsFound => 'No questions found';
+
+  // @override
+  // String get retry => 'Retry';
+
+  // @override
+  // String get email => 'Email';
+
+  @override
+  String get quizzes => 'Quizzes';
+
+  @override
+  String get viewAndUploadStudentAssessments => 'View and upload student assessments';
+
+  @override
+  String get openAndResolveStudentDoubts => 'Open and resolve student doubts';
+
+  @override
+  String get helpAndSupport => 'Help & Support';
 }

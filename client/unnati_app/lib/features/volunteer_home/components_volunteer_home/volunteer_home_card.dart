@@ -148,11 +148,17 @@ class VolunteerHomeCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5.r),
                             ),
                             child: Center(
-                              child: Text(
-                                'Quizzes',
-                                style: GoogleFonts.oswald(
-                                  color: Colors.black,
-                                  fontSize: 15,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.quizzes,
+                                    style: GoogleFonts.oswald(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

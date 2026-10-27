@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/features/Student_quiz/attempt_quiz.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class StudentQuizScreen extends StatefulWidget {
   const StudentQuizScreen({super.key});
@@ -123,6 +123,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
@@ -137,7 +138,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
         elevation: 2,
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         title: Text(
-          'Quizzes & Tests',
+          l10n.quizzesAndTests,
           style: GoogleFonts.oswald(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -151,7 +152,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               color: Colors.white,
               size: isTablet ? 26.r : 22.r,
             ),
-            tooltip: "Refresh Quizzes",
+            tooltip: l10n.refreshQuizzes,
             onPressed: _loadAllData,
           ),
         ],
@@ -222,7 +223,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                                   ),
                                 ),
                               Text(
-                                "TEST YOUR KNOWLEDGE",
+                                l10n.testYourKnowledge,
                                 style: GoogleFonts.oswald(
                                   fontSize: isTablet ? 24.sp : 19.sp,
                                   fontWeight: FontWeight.bold,
@@ -232,7 +233,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                               ),
                               SizedBox(height: 6.h),
                               Text(
-                                "Participate in curated quizzes to evaluate and strengthen your subject concepts.",
+                                l10n.quizBannerSubtitle,
                                 style: GoogleFonts.roboto(
                                   fontSize: isTablet ? 13.sp : 11.sp,
                                   color: Colors.grey.shade300,
@@ -269,7 +270,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               ),
 
               // QUIZ STATS SECTION
-              _buildQuizStatsSection(horizontalPadding, isTablet),
+              _buildQuizStatsSection(horizontalPadding, isTablet, l10n),
 
               // Title Section
               Padding(
@@ -281,7 +282,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "AVAILABLE QUIZZES",
+                      l10n.availableQuizzes,
                       style: GoogleFonts.oswald(
                         fontSize: isTablet ? 20.sp : 17.sp,
                         fontWeight: FontWeight.bold,
@@ -299,7 +300,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Text(
-                          "${_quizzes.length} Total",
+                          "${_quizzes.length} ${l10n.totalQuizzesCount}",
                           style: GoogleFonts.roboto(
                             fontSize: isTablet ? 13.sp : 11.sp,
                             fontWeight: FontWeight.w600,
@@ -312,7 +313,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               ),
 
               // Content Area
-              _buildContent(horizontalPadding, screenHeight),
+              _buildContent(horizontalPadding, screenHeight, l10n),
 
               SizedBox(height: 30.h),
             ],
@@ -322,7 +323,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
     );
   }
 
-  Widget _buildQuizStatsSection(double horizontalPadding, bool isTablet) {
+  Widget _buildQuizStatsSection(double horizontalPadding, bool isTablet, AppLocalizations l10n) {
     if (_isLoading) return const SizedBox.shrink();
 
     final totalAttempts = _myQuizStats?['totalAttempts'] ?? _attemptMap.length;
@@ -364,7 +365,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                     ),
                     SizedBox(width: 6.w),
                     Text(
-                      "MY QUIZ STATS",
+                      l10n.myQuizStats,
                       style: GoogleFonts.oswald(
                         fontSize: isTablet ? 16.sp : 15.sp,
                         fontWeight: FontWeight.bold,
@@ -381,7 +382,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Text(
-                    "$totalAttempts Completed",
+                    "$totalAttempts ${l10n.completedCount}",
                     style: GoogleFonts.roboto(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.bold,
@@ -396,7 +397,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               children: [
                 Expanded(
                   child: _buildMetricTile(
-                    label: "Quizzes Given",
+                    label: l10n.quizzesGiven,
                     value: "$totalAttempts",
                     icon: Icons.checklist_rounded,
                     color: Colors.blue.shade700,
@@ -406,7 +407,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: _buildMetricTile(
-                    label: "Avg Score",
+                    label: l10n.avgScore,
                     value: "$averagePercentage%",
                     icon: Icons.trending_up_rounded,
                     color: Colors.orange.shade800,
@@ -416,7 +417,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: _buildMetricTile(
-                    label: "Best Score",
+                    label: l10n.bestScore,
                     value: highestTotal > 0
                         ? "$highestScore/$highestTotal"
                         : "$highestScore",
@@ -475,7 +476,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
     );
   }
 
-  Widget _buildContent(double horizontalPadding, double screenHeight) {
+  Widget _buildContent(double horizontalPadding, double screenHeight, AppLocalizations l10n) {
     if (_isLoading) {
       return Center(
         child: Padding(
@@ -507,7 +508,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                 ),
                 onPressed: _loadAllData,
                 child: Text(
-                  "Try Again",
+                  l10n.tryAgain,
                   style: GoogleFonts.oswald(color: Colors.white, fontSize: 14.sp),
                 ),
               ),
@@ -542,7 +543,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               ),
               SizedBox(height: 12.h),
               Text(
-                'No Quizzes Available',
+                l10n.noQuizzesAvailableTitle,
                 style: GoogleFonts.oswald(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -551,7 +552,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
               ),
               SizedBox(height: 6.h),
               Text(
-                'New quizzes uploaded for your class will appear right here.',
+                l10n.noQuizzesAvailableSubtitle,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
                   fontSize: 13.sp,
@@ -650,7 +651,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                                   ),
                                   SizedBox(width: 4.w),
                                   Text(
-                                    "$questionCount Questions",
+                                    "$questionCount ${l10n.questionsCount}",
                                     style: GoogleFonts.roboto(
                                       fontSize: 11.sp,
                                       color: Colors.grey.shade700,
@@ -683,7 +684,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                               ),
                               SizedBox(width: 4.w),
                               Text(
-                                "Completed: ${attempt['score']}/${attempt['total']}",
+                                "${l10n.completedCount}: ${attempt['score']}/${attempt['total']}",
                                 style: GoogleFonts.roboto(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
@@ -694,7 +695,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                           )
                         else
                           Text(
-                            "Not attempted yet",
+                            l10n.notAttemptedYet,
                             style: GoogleFonts.roboto(
                               fontSize: 12.sp,
                               color: Colors.grey.shade600,

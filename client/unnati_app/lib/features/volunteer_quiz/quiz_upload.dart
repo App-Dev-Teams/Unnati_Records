@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class QuestionFormModel {
   String questionId;
@@ -112,7 +113,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
           questionId: qId,
           textController: TextEditingController(),
           options: options,
-          correctOptionId: options[0].optionId,
+          correctOptionId: options.first.optionId,
         ),
       );
     });
@@ -120,15 +121,8 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
   void _removeQuestion(int index) {
     if (_questions.length <= 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("A quiz must have at least one question"),
-          backgroundColor: Colors.orange,
-        ),
-      );
       return;
     }
-
     setState(() {
       final removed = _questions.removeAt(index);
       removed.dispose();
@@ -137,21 +131,14 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
   void _addOption(QuestionFormModel question) {
     if (question.options.length >= 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Maximum 6 options allowed per question"),
-        ),
-      );
       return;
     }
-
     final optNum = question.options.length + 1;
-    final newOptId = 'opt_${question.questionId}_$optNum';
-
+    final optId = 'opt_${question.questionId}_$optNum';
     setState(() {
       question.options.add(
         OptionFormModel(
-          optionId: newOptId,
+          optionId: optId,
           textController: TextEditingController(),
         ),
       );
@@ -160,15 +147,8 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
   void _removeOption(QuestionFormModel question, int optIndex) {
     if (question.options.length <= 2) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Each question must have at least two options"),
-          backgroundColor: Colors.orange,
-        ),
-      );
       return;
     }
-
     setState(() {
       final removed = question.options.removeAt(optIndex);
       if (question.correctOptionId == removed.optionId) {
@@ -179,21 +159,23 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
   }
 
   Future<void> _handleUpload() async {
+    final l10n = AppLocalizations.of(context)!;
     final title = _titleController.text.trim();
+
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a quiz title"),
+        SnackBar(
+          content: Text(l10n.pleaseFillAllFields),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
 
-    if (_selectedClass == null || _selectedClass!.isEmpty) {
+    if (_selectedClass == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select a target class"),
+        SnackBar(
+          content: Text(l10n.pleaseFillAllFields),
           backgroundColor: Colors.red,
         ),
       );
@@ -202,8 +184,8 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
     if (_questions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please add at least one question"),
+        SnackBar(
+          content: Text(l10n.pleaseFillAllFields),
           backgroundColor: Colors.red,
         ),
       );
@@ -217,7 +199,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
       if (qText.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Question ${i + 1} text cannot be empty"),
+            content: Text(l10n.pleaseFillAllFields),
             backgroundColor: Colors.red,
           ),
         );
@@ -227,7 +209,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
       if (q.options.length < 2) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Question ${i + 1} must have at least 2 options"),
+            content: Text(l10n.atLeastTwoOptions),
             backgroundColor: Colors.red,
           ),
         );
@@ -239,9 +221,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
         if (optText.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                "Option ${j + 1} for Question ${i + 1} cannot be empty",
-              ),
+              content: Text(l10n.pleaseFillAllFields),
               backgroundColor: Colors.red,
             ),
           );
@@ -253,9 +233,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
           !q.options.any((o) => o.optionId == q.correctOptionId)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              "Please select a correct answer for Question ${i + 1}",
-            ),
+            content: Text(l10n.selectCorrectAnswerForQuestion),
             backgroundColor: Colors.red,
           ),
         );
@@ -297,8 +275,8 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
       if (result['success'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Quiz uploaded successfully!"),
+          SnackBar(
+            content: Text(l10n.quizUploadedSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -312,10 +290,10 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
         );
       }
     } catch (e) {
-      if (!mounted) return;
       setState(() {
         _isUploading = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Upload error: $e"),
@@ -327,6 +305,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final isTablet = screenWidth >= 600;
@@ -339,7 +318,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          'Upload Quiz',
+          l10n.uploadQuiz,
           style: GoogleFonts.oswald(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -373,7 +352,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "QUIZ INFORMATION",
+                            l10n.quizTitle.toUpperCase(),
                             style: GoogleFonts.oswald(
                               fontSize: isTablet ? 18.sp : 16.sp,
                               fontWeight: FontWeight.bold,
@@ -387,8 +366,8 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                             controller: _titleController,
                             style: GoogleFonts.roboto(fontSize: 14.sp),
                             decoration: InputDecoration(
-                              labelText: "Quiz Title",
-                              hintText: "e.g., Mathematics Algebra Assessment",
+                              labelText: l10n.quizTitle,
+                              hintText: l10n.enterQuizTitle,
                               prefixIcon: const Icon(Icons.edit_note_rounded),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.r),
@@ -411,7 +390,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                                   value: _selectedClass,
                                   isExpanded: true,
                                   decoration: InputDecoration(
-                                    labelText: "Target Class",
+                                    labelText: l10n.targetClass,
                                     prefixIcon: const Icon(Icons.school_outlined),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.r),
@@ -448,7 +427,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                                   value: _quizStatus,
                                   isExpanded: true,
                                   decoration: InputDecoration(
-                                    labelText: "Status",
+                                    labelText: l10n.quizStatus,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
@@ -457,14 +436,14 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                                       vertical: 12.h,
                                     ),
                                   ),
-                                  items: const [
+                                  items: [
                                     DropdownMenuItem(
                                       value: "published",
-                                      child: Text("Publish"),
+                                      child: Text(l10n.published),
                                     ),
                                     DropdownMenuItem(
                                       value: "draft",
-                                      child: Text("Draft"),
+                                      child: Text(l10n.draft),
                                     ),
                                   ],
                                   onChanged: (val) {
@@ -490,7 +469,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "QUESTIONS (${_questions.length})",
+                        "${l10n.questionsCount.toUpperCase()} (${_questions.length})",
                         style: GoogleFonts.oswald(
                           fontSize: isTablet ? 20.sp : 17.sp,
                           fontWeight: FontWeight.bold,
@@ -501,7 +480,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                         onPressed: _addQuestion,
                         icon: const Icon(Icons.add_circle_outline_rounded),
                         label: Text(
-                          "Add Question",
+                          l10n.addQuestion,
                           style: GoogleFonts.oswald(
                             fontSize: isTablet ? 15.sp : 13.sp,
                             fontWeight: FontWeight.bold,
@@ -515,7 +494,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
 
                   // List of Question Cards
                   ...List.generate(_questions.length, (qIndex) {
-                    return _buildQuestionCard(qIndex, isTablet);
+                    return _buildQuestionCard(qIndex, isTablet, l10n);
                   }),
 
                   SizedBox(height: 12.h),
@@ -536,7 +515,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                     onPressed: _addQuestion,
                     icon: const Icon(Icons.add_rounded),
                     label: Text(
-                      "Add Another Question",
+                      l10n.addQuestion,
                       style: GoogleFonts.oswald(
                         fontSize: isTablet ? 16.sp : 14.sp,
                         fontWeight: FontWeight.bold,
@@ -565,7 +544,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                           color: Colors.white,
                         ),
                         label: Text(
-                          "Publish Quiz",
+                          l10n.uploadQuiz,
                           style: GoogleFonts.oswald(
                             fontSize: isTablet ? 17.sp : 15.sp,
                             fontWeight: FontWeight.bold,
@@ -599,7 +578,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                       const CircularProgressIndicator(color: Color(0xFF111212)),
                       SizedBox(height: 16.h),
                       Text(
-                        "Uploading Quiz...",
+                        l10n.uploadingQuiz,
                         style: GoogleFonts.oswald(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
@@ -615,7 +594,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
     );
   }
 
-  Widget _buildQuestionCard(int qIndex, bool isTablet) {
+  Widget _buildQuestionCard(int qIndex, bool isTablet, AppLocalizations l10n) {
     final question = _questions[qIndex];
     final optionLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -656,7 +635,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      "Question ${qIndex + 1}",
+                      "${l10n.questionsCount} ${qIndex + 1}",
                       style: GoogleFonts.oswald(
                         fontSize: isTablet ? 17.sp : 15.sp,
                         fontWeight: FontWeight.bold,
@@ -672,7 +651,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
                       color: Colors.red.shade400,
                       size: isTablet ? 24.r : 20.r,
                     ),
-                    tooltip: "Delete Question",
+                    tooltip: l10n.deleteQuestion,
                     onPressed: () => _removeQuestion(qIndex),
                   ),
               ],
@@ -685,7 +664,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
               maxLines: 2,
               style: GoogleFonts.roboto(fontSize: 14.sp),
               decoration: InputDecoration(
-                hintText: "Enter question statement here...",
+                hintText: l10n.enterQuestion,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
                 ),
@@ -700,7 +679,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
               children: [
                 Expanded(
                   child: Text(
-                    "Options (tap radio for correct answer):",
+                    "Options (${l10n.selectCorrectOption}):",
                     style: GoogleFonts.roboto(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,

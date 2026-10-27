@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/features/volunteer_quiz/quiz_upload.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class QuizViewPage extends StatefulWidget {
   const QuizViewPage({super.key});
@@ -132,6 +133,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final isTablet = screenWidth >= 600;
@@ -144,7 +146,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         foregroundColor: Colors.white,
         title: Text(
-          'Quiz Management',
+          l10n.quizManagement,
           style: GoogleFonts.oswald(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -158,7 +160,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
               color: Colors.white,
               size: isTablet ? 26.r : 22.r,
             ),
-            tooltip: "Refresh Quizzes",
+            tooltip: l10n.refreshQuizzes,
             onPressed: _checkPermissionAndLoadQuizzes,
           ),
         ],
@@ -171,7 +173,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
               onPressed: _openUploadPage,
               icon: const Icon(Icons.add_rounded),
               label: Text(
-                "Upload Quiz",
+                l10n.uploadQuiz,
                 style: GoogleFonts.oswald(
                   fontWeight: FontWeight.bold,
                   fontSize: isTablet ? 15.sp : 14.sp,
@@ -241,7 +243,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
 
             // Main List Area
             Expanded(
-              child: _buildBody(horizontalPadding, mediaQuery.size.height),
+              child: _buildBody(horizontalPadding, mediaQuery.size.height, l10n),
             ),
           ],
         ),
@@ -249,7 +251,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
     );
   }
 
-  Widget _buildBody(double horizontalPadding, double screenHeight) {
+  Widget _buildBody(double horizontalPadding, double screenHeight, AppLocalizations l10n) {
     if (_isLoading) {
       return Center(
         child: Padding(
@@ -281,7 +283,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
                 ),
                 onPressed: _checkPermissionAndLoadQuizzes,
                 child: Text(
-                  "Retry",
+                  l10n.retry,
                   style: GoogleFonts.oswald(color: Colors.white, fontSize: 14.sp),
                 ),
               ),
@@ -318,7 +320,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
               ),
               SizedBox(height: 12.h),
               Text(
-                "No Quizzes Found",
+                l10n.noQuizzesFound,
                 style: GoogleFonts.oswald(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -328,8 +330,8 @@ class _QuizViewPageState extends State<QuizViewPage> {
               SizedBox(height: 6.h),
               Text(
                 _selectedFilter == 'All'
-                    ? "No quizzes have been created yet. Tap '+ Upload Quiz' to create your first quiz."
-                    : "No quizzes found for $_selectedFilter.",
+                    ? l10n.noQuizzesCreatedYet
+                    : l10n.noQuizzesFoundForClass,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
                   fontSize: 13.sp,
@@ -346,7 +348,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
                   onPressed: _openUploadPage,
                   icon: const Icon(Icons.add_rounded, color: Colors.white),
                   label: Text(
-                    "Create Quiz Now",
+                    l10n.createQuizNow,
                     style: GoogleFonts.oswald(color: Colors.white, fontSize: 14.sp),
                   ),
                 ),
@@ -432,7 +434,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
                               ),
                               SizedBox(width: 4.w),
                               Text(
-                                "$questionCount Questions",
+                                "$questionCount ${l10n.questionsCount}",
                                 style: GoogleFonts.roboto(
                                   fontSize: 11.sp,
                                   color: Colors.grey.shade700,
@@ -496,7 +498,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
                         ),
                         icon: Icon(Icons.visibility_outlined, size: 16.r),
                         label: Text(
-                          "Preview",
+                          l10n.preview,
                           style: GoogleFonts.roboto(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
@@ -520,7 +522,7 @@ class _QuizViewPageState extends State<QuizViewPage> {
                         ),
                         icon: Icon(Icons.people_alt_outlined, size: 16.r),
                         label: Text(
-                          "Submissions",
+                          l10n.submissions,
                           style: GoogleFonts.roboto(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
@@ -551,6 +553,7 @@ class _QuizPreviewSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final sheetHeight = (mediaQuery.size.height * 0.78).clamp(320.0, 750.0);
     final isTablet = mediaQuery.size.width >= 600;
@@ -634,7 +637,7 @@ class _QuizPreviewSheet extends StatelessWidget {
                   if (questions.isEmpty) {
                     return Center(
                       child: Text(
-                        "No questions found",
+                        l10n.noQuestionsFound,
                         style: GoogleFonts.oswald(fontSize: 16.sp),
                       ),
                     );
@@ -784,6 +787,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final sheetHeight = (mediaQuery.size.height * 0.85).clamp(380.0, 800.0);
     final isTablet = mediaQuery.size.width >= 600;
@@ -820,7 +824,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Quiz Submissions",
+                          l10n.quizSubmissions,
                           style: GoogleFonts.oswald(
                             fontSize: isTablet ? 22.sp : 19.sp,
                             fontWeight: FontWeight.bold,
@@ -891,7 +895,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
                             ),
                             SizedBox(height: 12.h),
                             Text(
-                              "No Submissions Yet",
+                              l10n.noSubmissionsYet,
                               style: GoogleFonts.oswald(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
@@ -900,7 +904,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
                             ),
                             SizedBox(height: 6.h),
                             Text(
-                              "Students who complete this quiz will appear here with their scores.",
+                              l10n.noSubmissionsSubtitle,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.roboto(
                                 fontSize: 13.sp,
@@ -921,7 +925,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
                       final student = item['student'] as Map<String, dynamic>?;
                       final studentId = student?['id']?.toString() ?? '';
                       final studentName =
-                          student?['name']?.toString() ?? 'Unknown Student';
+                          student?['name']?.toString() ?? 'Student';
                       final studentClass =
                           student?['studentClass']?.toString() ?? '';
                       final school = student?['school']?.toString() ?? '';
@@ -1051,7 +1055,7 @@ class _QuizSubmissionsSheetState extends State<_QuizSubmissionsSheet> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          "View Stats",
+                                          l10n.viewStats,
                                           style: GoogleFonts.roboto(
                                             fontSize: 10.sp,
                                             color: const Color(0xFF2B3D54),
@@ -1092,6 +1096,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     final sheetHeight = (mediaQuery.size.height * 0.90).clamp(420.0, 850.0);
     final isTablet = mediaQuery.size.width >= 600;
@@ -1125,7 +1130,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Student Performance Profile",
+                    l10n.studentPerformanceProfile,
                     style: GoogleFonts.oswald(
                       fontSize: isTablet ? 22.sp : 19.sp,
                       fontWeight: FontWeight.bold,
@@ -1306,7 +1311,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              "QUIZ PERFORMANCE & STATS",
+                              l10n.quizPerformanceAndStats,
                               style: GoogleFonts.oswald(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
@@ -1342,7 +1347,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                               // Quizzes Taken
                               Expanded(
                                 child: _buildStatItem(
-                                  label: "Quizzes Taken",
+                                  label: l10n.quizzesTaken,
                                   value: "$totalAttempts",
                                   icon: Icons.quiz_outlined,
                                   accentColor: Colors.lightBlueAccent,
@@ -1356,7 +1361,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                               // Average Score
                               Expanded(
                                 child: _buildStatItem(
-                                  label: "Average Score",
+                                  label: l10n.averageScore,
                                   value: "$averagePercentage%",
                                   icon: Icons.trending_up_rounded,
                                   accentColor: Colors.amberAccent,
@@ -1370,7 +1375,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                               // Best Score
                               Expanded(
                                 child: _buildStatItem(
-                                  label: "Highest Score",
+                                  label: l10n.highestScore,
                                   value: highestTotal > 0
                                       ? "$highestScore/$highestTotal"
                                       : "$highestScore",
@@ -1386,7 +1391,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
 
                         // List of Quizzes Attempted
                         Text(
-                          "Assessment History ($totalAttempts)",
+                          "${l10n.assessmentHistory} ($totalAttempts)",
                           style: GoogleFonts.oswald(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
@@ -1405,7 +1410,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                "No quizzes attempted yet by this student.",
+                                l10n.noQuizzesAttemptedByStudent,
                                 style: GoogleFonts.roboto(
                                   fontSize: 13.sp,
                                   color: Colors.grey.shade600,
@@ -1532,7 +1537,7 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              "STUDENT & SCHOOL DETAILS",
+                              l10n.studentAndSchoolDetails,
                               style: GoogleFonts.oswald(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
@@ -1562,13 +1567,13 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                             children: [
                               _buildInfoRow(
                                 icon: Icons.location_city_rounded,
-                                label: "School",
+                                label: l10n.school,
                                 value: school,
                               ),
                               const Divider(height: 16),
                               _buildInfoRow(
                                 icon: Icons.school_rounded,
-                                label: "Class",
+                                label: l10n.classLabel,
                                 value: studentClass.toLowerCase().startsWith('class')
                                     ? studentClass
                                     : 'Class $studentClass',
@@ -1576,20 +1581,20 @@ class _StudentProfileWithStatsSheet extends StatelessWidget {
                               const Divider(height: 16),
                               _buildInfoRow(
                                 icon: Icons.email_outlined,
-                                label: "Email",
+                                label: l10n.email,
                                 value: email,
                               ),
                               const Divider(height: 16),
                               _buildInfoRow(
                                 icon: Icons.phone_outlined,
-                                label: "Phone",
+                                label: l10n.phone,
                                 value: phone,
                               ),
                               if (joinedFormatted.isNotEmpty) ...[
                                 const Divider(height: 16),
                                 _buildInfoRow(
                                   icon: Icons.calendar_today_outlined,
-                                  label: "Enrolled On",
+                                  label: l10n.enrolledOn,
                                   value: joinedFormatted,
                                 ),
                               ],

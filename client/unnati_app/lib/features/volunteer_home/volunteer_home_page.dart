@@ -158,7 +158,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                             ),
                           ),
                           title: Text(
-                            "Help & Support",
+                            l10n.helpAndSupport,
                             style: GoogleFonts.oswald(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -166,7 +166,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            "Open and resolve student doubts",
+                            l10n.openAndResolveStudentDoubts,
                             style: GoogleFonts.oswald(color: Colors.grey),
                           ),
                           trailing: const Icon(
@@ -218,7 +218,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                             ),
                           ),
                           title: Text(
-                            "Quiz Management",
+                            l10n.quizManagement,
                             style: GoogleFonts.oswald(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -226,7 +226,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            "View and upload student assessments",
+                            l10n.viewAndUploadStudentAssessments,
                             style: GoogleFonts.oswald(color: Colors.grey),
                           ),
                           trailing: const Icon(

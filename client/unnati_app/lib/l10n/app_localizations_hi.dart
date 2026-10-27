@@ -1009,4 +1009,250 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get aksharIntroduceLifeSkillsAndHygieneEducation => 'जीवन कौशल और स्वच्छता शिक्षा शुरू करना';
+
+  @override
+  String get connect => 'कनेक्ट';
+
+  @override
+  String get videoConference => 'वीडियो कॉन्फ्रेंस';
+
+  @override
+  String get doubts => 'संदेह';
+
+  @override
+  String get openDoubts => 'खुले संदेह';
+
+  @override
+  String get closedDoubts => 'हल किए गए संदेह';
+
+  @override
+  String get myDoubts => 'मेरे संदेह';
+
+  @override
+  String get quizzesAndTests => 'प्रश्नोत्तरी और परीक्षण';
+
+  @override
+  String get refreshQuizzes => 'प्रश्नोत्तरी रीफ्रेश करें';
+
+  @override
+  String get testYourKnowledge => 'अपने ज्ञान का परीक्षण करें';
+
+  @override
+  String get quizBannerSubtitle => 'अपनी विषय अवधारणाओं का मूल्यांकन करने और उन्हें मजबूत करने के लिए तैयार की गई प्रश्नोत्तरी में भाग लें।';
+
+  @override
+  String get availableQuizzes => 'उपलब्ध प्रश्नोत्तरी';
+
+  @override
+  String get totalQuizzesCount => 'कुल';
+
+  @override
+  String get myQuizStats => 'मेरी प्रश्नोत्तरी स्थिति';
+
+  @override
+  String get completedCount => 'पूर्ण';
+
+  @override
+  String get quizzesGiven => 'दी गई प्रश्नोत्तरी';
+
+  @override
+  String get avgScore => 'औसत स्कोर';
+
+  @override
+  String get bestScore => 'सर्वश्रेष्ठ स्कोर';
+
+  @override
+  String get tryAgain => 'पुनः प्रयास करें';
+
+  @override
+  String get noQuizzesAvailableTitle => 'कोई प्रश्नोत्तरी उपलब्ध नहीं है';
+
+  @override
+  String get noQuizzesAvailableSubtitle => 'आपकी कक्षा के लिए अपलोड की गई नई प्रश्नोत्तरी यहाँ दिखाई देगी।';
+
+  @override
+  String get questionsCount => 'प्रश्न';
+
+  @override
+  String get notAttemptedYet => 'अभी तक प्रयास नहीं किया गया';
+
+  @override
+  String get quizManagement => 'प्रश्नोत्तरी प्रबंधन';
+
+  @override
+  String get uploadQuiz => 'प्रश्नोत्तरी अपलोड करें';
+
+  @override
+  String get createQuizNow => 'अभी प्रश्नोत्तरी बनाएं';
+
+  @override
+  String get noQuizzesFound => 'कोई प्रश्नोत्तरी नहीं मिली';
+
+  @override
+  String get noQuizzesCreatedYet => 'अभी तक कोई प्रश्नोत्तरी नहीं बनाई गई है। अपनी पहली प्रश्नोत्तरी बनाने के लिए \'+ प्रश्नोत्तरी अपलोड करें\' पर टैप करें।';
+
+  @override
+  String get noQuizzesFoundForClass => 'इस कक्षा के लिए कोई प्रश्नोत्तरी नहीं मिली।';
+
+  @override
+  String get preview => 'पूर्वावलोकन';
+
+  @override
+  String get submissions => 'प्रस्तुतियाँ';
+
+  @override
+  String get quizSubmissions => 'प्रश्नोत्तरी प्रस्तुतियाँ';
+
+  @override
+  String get noSubmissionsYet => 'अभी तक कोई प्रस्तुति नहीं';
+
+  @override
+  String get noSubmissionsSubtitle => 'इस प्रश्नोत्तरी को पूरा करने वाले छात्र अपने स्कोर के साथ यहाँ दिखाई देंगे।';
+
+  @override
+  String get viewStats => 'स्थिति देखें';
+
+  @override
+  String get studentPerformanceProfile => 'छात्र प्रदर्शन प्रोफ़ाइल';
+
+  @override
+  String get quizPerformanceAndStats => 'प्रश्नोत्तरी प्रदर्शन और स्थिति';
+
+  @override
+  String get quizzesTaken => 'दी गई प्रश्नोत्तरी';
+
+  @override
+  String get averageScore => 'औसत स्कोर';
+
+  @override
+  String get highestScore => 'उच्चतम स्कोर';
+
+  @override
+  String get assessmentHistory => 'मूल्यांकन इतिहास';
+
+  @override
+  String get noQuizzesAttemptedByStudent => 'इस छात्र द्वारा अभी तक कोई प्रश्नोत्तरी नहीं दी गई है।';
+
+  @override
+  String get studentAndSchoolDetails => 'छात्र और स्कूल विवरण';
+
+  @override
+  String get enrolledOn => 'नामांकित तिथि';
+
+  @override
+  String get quizTitle => 'प्रश्नोत्तरी शीर्षक';
+
+  @override
+  String get enterQuizTitle => 'प्रश्नोत्तरी शीर्षक दर्ज करें';
+
+  @override
+  String get targetClass => 'लक्षित कक्षा';
+
+  @override
+  String get quizStatus => 'प्रश्नोत्तरी स्थिति';
+
+  @override
+  String get published => 'प्रकाशित';
+
+  @override
+  String get draft => 'ड्राफ्ट';
+
+  @override
+  String get addQuestion => 'प्रश्न जोड़ें';
+
+  @override
+  String get questionText => 'प्रश्न विवरण';
+
+  @override
+  String get enterQuestion => 'प्रश्न विवरण दर्ज करें';
+
+  @override
+  String get correctAnswer => 'सही उत्तर';
+
+  @override
+  String get selectCorrectOption => 'सही विकल्प चुनें';
+
+  @override
+  String get deleteQuestion => 'प्रश्न हटाएं';
+
+  @override
+  String get uploadingQuiz => 'प्रश्नोत्तरी अपलोड हो रही है...';
+
+  @override
+  String get quizUploadedSuccess => 'प्रश्नोत्तरी सफलतापूर्वक अपलोड हो गई!';
+
+  @override
+  String get pleaseFillAllFields => 'कृपया सभी आवश्यक फ़ील्ड भरें';
+
+  @override
+  String get atLeastTwoOptions => 'प्रत्येक प्रश्न में कम से कम 2 विकल्प होने चाहिए';
+
+  @override
+  String get selectCorrectAnswerForQuestion => 'कृपया प्रत्येक प्रश्न के लिए सही विकल्प चुनें';
+
+  @override
+  String get submitQuiz => 'प्रश्नोत्तरी जमा करें';
+
+  @override
+  String get submitConfirmation => 'क्या आप वाकई अपने उत्तर जमा करना चाहते हैं?';
+
+  @override
+  String get quizSubmittedSuccess => 'प्रश्नोत्तरी सफलतापूर्वक जमा हो गई!';
+
+  @override
+  String get yourScore => 'आपका स्कोर';
+
+  @override
+  String get questionOverview => 'प्रश्न अवलोकन';
+
+  @override
+  String get answered => 'उत्तर दिया';
+
+  @override
+  String get unanswered => 'अनुत्तरित';
+
+  @override
+  String get reviewAnswers => 'उत्तरों की समीक्षा करें';
+
+  @override
+  String get backToQuizzes => 'प्रश्नोत्तरी पर वापस जाएं';
+
+  @override
+  String get timeTaken => 'लिया गया समय';
+
+  @override
+  String get accuracy => 'सटीकता';
+
+  @override
+  String get selectAnOption => 'कृपया एक विकल्प चुनें';
+
+  @override
+  String get previous => 'पिछला';
+
+  @override
+  String get next => 'अगला';
+
+  @override
+  String get tapToPreviewQuestions => 'प्रश्न देखने के लिए टैप करें';
+
+  @override
+  String get noQuestionsFound => 'कोई प्रश्न नहीं मिला';
+
+  // @override
+  // String get retry => 'पुनः प्रयास करें';
+
+  // @override
+  // String get email => 'ईमेल';
+
+  @override
+  String get quizzes => 'प्रश्नोत्तरी';
+
+  @override
+  String get viewAndUploadStudentAssessments => 'विद्यार्थी मूल्यांकन देखें और अपलोड करें';
+
+  @override
+  String get openAndResolveStudentDoubts => 'विद्यार्थी के संशय देखें और हल करें';
+
+  @override
+  String get helpAndSupport => 'सहायता और समर्थन';
 }
