@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/volunteer_attendance_page.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
+import 'package:unnati_app/features/volunteer_quiz/quiz_view.dart';
 
 import 'package:unnati_app/l10n/app_localizations.dart';
 
@@ -123,6 +124,41 @@ class VolunteerHomeCard extends StatelessWidget {
                                 style: GoogleFonts.oswald(
                                   color: Colors.black,
                                   fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        InkWell(
+                          //quizzes
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const QuizViewPage(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF74ee15),
+                              borderRadius: BorderRadius.circular(5.r),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.quizzes,
+                                    style: GoogleFonts.oswald(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

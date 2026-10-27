@@ -5,7 +5,10 @@ const {
   uploadQuiz,
   getQuizzes,
   getQuiz,
-  submitQuiz
+  submitQuiz,
+  getMyAttempts,
+  getQuizAttempts,
+  getStudentQuizStats
 } = require("../controllers/quiz.controller");
 
 const quizRouter = express.Router();
@@ -18,6 +21,9 @@ quizRouter.post(
 );
 
 quizRouter.get("/get_quizzes", requireLogin, getQuizzes);
+quizRouter.get("/my_attempts", requireLogin, getMyAttempts);
+quizRouter.get("/quiz_attempts/:id", requireLogin, getQuizAttempts);
+quizRouter.get("/student_stats/:studentId", requireLogin, getStudentQuizStats);
 quizRouter.get("/get_quiz/:id", requireLogin, getQuiz);
 quizRouter.post("/take_quiz/:id/submit", requireLogin, submitQuiz);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unnati_app/features/help&support/doubt_list_screen.dart';
 import 'package:unnati_app/services/api_service.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerDoubtsView extends StatefulWidget {
   final bool isLeadView;
@@ -48,6 +49,8 @@ class _VolunteerDoubtsViewState extends State<VolunteerDoubtsView>
       return const Center(child: CircularProgressIndicator());
     }
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         Container(
@@ -67,14 +70,14 @@ class _VolunteerDoubtsViewState extends State<VolunteerDoubtsView>
             labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             indicatorSize: TabBarIndicatorSize.tab,
             dividerColor: Colors.transparent,
-            tabs: const [
+            tabs: [
               Tab(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.mark_chat_unread_outlined, size: 18),
-                    SizedBox(width: 6),
-                    Text('Open Doubts'),
+                    const Icon(Icons.mark_chat_unread_outlined, size: 18),
+                    const SizedBox(width: 6),
+                    Text(l10n.openDoubts),
                   ],
                 ),
               ),
@@ -82,9 +85,9 @@ class _VolunteerDoubtsViewState extends State<VolunteerDoubtsView>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.task_alt, size: 18),
-                    SizedBox(width: 6),
-                    Text('Closed Doubts'),
+                    const Icon(Icons.task_alt, size: 18),
+                    const SizedBox(width: 6),
+                    Text(l10n.closedDoubts),
                   ],
                 ),
               ),
@@ -99,13 +102,13 @@ class _VolunteerDoubtsViewState extends State<VolunteerDoubtsView>
                 showOpenDoubts: true,
                 hideAppBar: true,
                 readOnly: !_canManageDoubts,
-                title: 'Open Doubts',
+                title: l10n.openDoubts,
               ),
               DoubtListScreen(
                 showClosedDoubts: true,
                 hideAppBar: true,
                 readOnly: !_canManageDoubts,
-                title: 'Closed Doubts',
+                title: l10n.closedDoubts,
               ),
             ],
           ),

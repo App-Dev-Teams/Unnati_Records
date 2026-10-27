@@ -9,13 +9,14 @@ class ApiService {
       'https://unnati-records-qhgb.onrender.com/api/auth';
   static const String coreBaseUrl =
       'https://unnati-records-qhgb.onrender.com/api';
-  // Live Video Doubt & Conference (Connect) runs locally until deployed to Render
-  static const bool useLocalLiveDoubtBackend = true;
-  static const String localServerHost = 'localhost:3000';
-  static const String liveDoubtBaseUrl = useLocalLiveDoubtBackend
-      ? 'http://unnati-records-qhgb.onrender.com/api/live-doubts'
-      : 'https://unnati-records-qhgb.onrender.com/api/live-doubts';
+
+//   static const String baseUrl = 'http://192.168.1.24:3000/api/auth';
+// static const String coreBaseUrl = 'http://192.168.1.24:3000/api';
+
+
   static const Duration _timeout = Duration(seconds: 30);
+  static const String liveDoubtBaseUrl =
+      'https://unnati-records-qhgb.onrender.com/api/live-doubts';
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
@@ -1156,12 +1157,12 @@ class ApiService {
 
     return {
       'success': false,
-      'message': data['message'] ??
+      'message':
+          data['message'] ??
           data['error'] ??
           'Failed to update profile picture',
     };
   }
-
 
   /// Fetch all files for a folder
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(
@@ -1258,12 +1259,237 @@ class ApiService {
     }
   }
 
+  // ================= QUIZ SERVICES =================
+  static Future<List<Map<String, dynamic>>> getQuizzes() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(Uri.parse('$coreBaseUrl/quizzes/get_quizzes'), headers: headers)
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return List<Map<String, dynamic>>.from(data['data'] ?? []);
+      } else {
+        throw Exception(data['message'] ?? 'Failed to load quizzes');
+      }
+    } catch (e) {
+      print('getQuizzes error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getQuizById(String id) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(Uri.parse('$coreBaseUrl/quizzes/get_quiz/$id'), headers: headers)
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return Map<String, dynamic>.from(data['data'] ?? {});
+      } else {
+        throw Exception(data['message'] ?? 'Failed to load quiz');
+      }
+    } catch (e) {
+      print('getQuizById error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> submitQuiz({
+    required String quizId,
+    required List<Map<String, String>> answers,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/quizzes/take_quiz/$quizId/submit'),
+            headers: headers,
+            body: jsonEncode({'answers': answers}),
+          )
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 201 && data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Quiz submitted successfully',
+          'data': data['data'],
+        };
+      } else if (response.statusCode == 409) {
+        return {
+          'success': false,
+          'alreadySubmitted': true,
+          'message': data['message'] ?? 'You have already submitted this quiz',
+        };
+      } else {
+        return {
+          'success': false,
+          'alreadySubmitted': false,
+          'message': data['message'] ?? 'Failed to submit quiz',
+        };
+      }
+    } catch (e) {
+      print('submitQuiz error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> uploadQuiz({
+    required String title,
+    required String targetClass,
+    required List<Map<String, dynamic>> questions,
+    String status = 'published',
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$coreBaseUrl/quizzes/upload_quiz'),
+            headers: headers,
+            body: jsonEncode({
+              'title': title,
+              'targetClass': targetClass,
+              'questions': questions,
+              'status': status,
+            }),
+          )
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 201 && data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Quiz uploaded successfully',
+          'data': data['data'],
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Failed to upload quiz',
+        };
+      }
+    } catch (e) {
+      print('uploadQuiz error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> saveLocalQuizAttempt(
+    String quizId,
+    int score,
+    int total,
+  ) async {
+    try {
+      final prefs = await _preferences;
+      await prefs.setString(
+        'quiz_attempt_$quizId',
+        jsonEncode({
+          'score': score,
+          'total': total,
+          'submittedAt': DateTime.now().toIso8601String(),
+        }),
+      );
+    } catch (e) {
+      print('saveLocalQuizAttempt error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getLocalQuizAttempt(
+    String quizId,
+  ) async {
+    try {
+      final prefs = await _preferences;
+      final raw = prefs.getString('quiz_attempt_$quizId');
+      if (raw != null) {
+        return jsonDecode(raw) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      print('getLocalQuizAttempt error: $e');
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMyQuizAttempts() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(Uri.parse('$coreBaseUrl/quizzes/my_attempts'), headers: headers)
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return Map<String, dynamic>.from(data['data'] ?? {});
+      } else {
+        throw Exception(data['message'] ?? 'Failed to load quiz attempts');
+      }
+    } catch (e) {
+      print('getMyQuizAttempts error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getQuizSubmissions(String quizId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$coreBaseUrl/quizzes/quiz_attempts/$quizId'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return {
+          'quiz': data['quiz'] ?? {},
+          'count': data['count'] ?? 0,
+          'submissions': List<Map<String, dynamic>>.from(data['data'] ?? []),
+        };
+      } else {
+        throw Exception(data['message'] ?? 'Failed to load quiz submissions');
+      }
+    } catch (e) {
+      print('getQuizSubmissions error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getStudentQuizStats(
+    String studentId,
+  ) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$coreBaseUrl/quizzes/student_stats/$studentId'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return Map<String, dynamic>.from(data['data'] ?? {});
+      } else {
+        throw Exception(data['message'] ?? 'Failed to load student quiz stats');
+      }
+    } catch (e) {
+      print('getStudentQuizStats error: $e');
+      rethrow;
+    }
+  }
+
   // ================== LIVE VIDEO DOUBTS & CONFERENCES ==================
 
   static Map<String, dynamic> _safeDecode(http.Response response) {
     try {
       final body = response.body.trim();
-      if (body.isEmpty) return {'success': false, 'error': 'Empty response from server'};
+      if (body.isEmpty)
+        return {'success': false, 'error': 'Empty response from server'};
       if (body.startsWith('{') || body.startsWith('[')) {
         return json.decode(body) as Map<String, dynamic>;
       }
@@ -1283,10 +1509,7 @@ class ApiService {
           .post(
             Uri.parse('$liveDoubtBaseUrl/request'),
             headers: headers,
-            body: json.encode({
-              'subject': subject,
-              'topic': topic,
-            }),
+            body: json.encode({'subject': subject, 'topic': topic}),
           )
           .timeout(_timeout);
 
@@ -1300,10 +1523,7 @@ class ApiService {
     try {
       final headers = await _authHeaders();
       final response = await http
-          .get(
-            Uri.parse('$liveDoubtBaseUrl/queue'),
-            headers: headers,
-          )
+          .get(Uri.parse('$liveDoubtBaseUrl/queue'), headers: headers)
           .timeout(_timeout);
 
       return _safeDecode(response);
@@ -1332,10 +1552,7 @@ class ApiService {
     try {
       final headers = await _authHeaders();
       final response = await http
-          .get(
-            Uri.parse('$liveDoubtBaseUrl/my-status'),
-            headers: headers,
-          )
+          .get(Uri.parse('$liveDoubtBaseUrl/my-status'), headers: headers)
           .timeout(_timeout);
 
       return _safeDecode(response);
@@ -1348,10 +1565,7 @@ class ApiService {
     try {
       final headers = await _authHeaders();
       final response = await http
-          .post(
-            Uri.parse('$liveDoubtBaseUrl/cancel'),
-            headers: headers,
-          )
+          .post(Uri.parse('$liveDoubtBaseUrl/cancel'), headers: headers)
           .timeout(_timeout);
 
       return _safeDecode(response);
@@ -1363,10 +1577,9 @@ class ApiService {
   static Future<void> endLiveCall(String sessionId) async {
     try {
       final headers = await _authHeaders();
-      await http.post(
-        Uri.parse('$liveDoubtBaseUrl/$sessionId/end'),
-        headers: headers,
-      ).timeout(_timeout);
+      await http
+          .post(Uri.parse('$liveDoubtBaseUrl/$sessionId/end'), headers: headers)
+          .timeout(_timeout);
     } catch (_) {}
   }
 
@@ -1409,5 +1622,4 @@ class ApiService {
       return {'success': false, 'error': 'Failed to join/start call: $e'};
     }
   }
-
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/features/live_doubt/lead_live_queue_tab.dart';
 import 'package:unnati_app/features/connect/volunteer_doubts_view.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerConnectTab extends StatefulWidget {
   const VolunteerConnectTab({super.key});
@@ -57,14 +58,16 @@ class _VolunteerConnectTabState extends State<VolunteerConnectTab>
       );
     }
 
+    final l10n = AppLocalizations.of(context)!;
+
     // 1. REGULAR VOLUNTEER VIEW:
     // Video Conference is removed completely; only Doubt Section is shown same as before.
     if (!_isLeadOrAdmin) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Connect',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            l10n.connect,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         body: const VolunteerDoubtsView(isLeadView: false),
@@ -75,9 +78,9 @@ class _VolunteerConnectTabState extends State<VolunteerConnectTab>
     // Connect has 2 sections: Video Conference (Live Queue) and Doubt Section.
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Connect',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.connect,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         bottom: TabBar(
           controller: _tabController,
@@ -86,14 +89,14 @@ class _VolunteerConnectTabState extends State<VolunteerConnectTab>
           indicatorColor: const Color.fromARGB(255, 114, 155, 208),
           indicatorWeight: 3,
           labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          tabs: const [
+          tabs: [
             Tab(
-              icon: Icon(Icons.video_camera_front_outlined),
-              text: 'Video Conference',
+              icon: const Icon(Icons.video_camera_front_outlined),
+              text: l10n.videoConference,
             ),
             Tab(
-              icon: Icon(Icons.forum_outlined),
-              text: 'Doubts',
+              icon: const Icon(Icons.forum_outlined),
+              text: l10n.doubts,
             ),
           ],
         ),
