@@ -24,6 +24,7 @@ class VolunteerHomePage extends StatefulWidget {
 class _VolunteerHomePageState extends State<VolunteerHomePage> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return FutureBuilder(
       future: ApiService.getUserData(),
       builder: (context, asyncSnapshot) {
@@ -90,22 +91,22 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                     ],
                   ),
                   ProgramsCardUtil(
-                    title: "DigiXplore",
+                    title: l10n.digixploreDigiXplore,
                     subtitle:
-                        "Interactive live classes bridging the digital gap",
+                        l10n.interactiveliveclassesbridgingthedigitalgap,
                     logo: "digilogo.png",
                     path: DigixplorePage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Netritva",
+                    title: l10n.netritva,
                     subtitle:
-                        "Holistic mentorship & doubt sessions for holistic growth",
+                        l10n.holisticmentorshipdoubtsessionsforholisticgrowth,
                     logo: "netrilogo.png",
                     path: NetritvaPage(),
                   ),
                   ProgramsCardUtil(
-                    title: "Akshar",
-                    subtitle: "Nukkad classes",
+                    title: l10n.akshar,
+                    subtitle: l10n.nukkadclasses,
                     logo: "aklogo.png",
                     path: AksharPage(),
                   ),

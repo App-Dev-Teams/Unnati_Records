@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class DigixplorePage extends StatelessWidget {
   const DigixplorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 221, 221, 221),
       body: CustomScrollView(
@@ -67,7 +69,7 @@ class DigixplorePage extends StatelessWidget {
                       ),
                       SizedBox(height: 14.h),
                       Text(
-                        'DigiXplore',
+                        l10n.digixploreDigiXplore,
                         style: GoogleFonts.oswald(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -79,7 +81,7 @@ class DigixplorePage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.w),
                         child: Text(
-                          'Empowering young minds with the skills of tomorrow',
+                          l10n.digixploreEmpoweringYoungMindsWithTheSkillsOfTomorrow,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(
                             color: Colors.grey,
@@ -100,85 +102,102 @@ class DigixplorePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About DigiXplore'),
+                  _buildSectionTitle(l10n.digixploreAboutDigiXplore),
                   SizedBox(height: 12.h),
                   _buildDescriptionCard(
-                    'DigiXplore is UNNATI Society\'s digital education initiative focused on introducing underprivileged school students to technology and bridging the digital divide through weekly interactive sessions.',
+                    l10n.digixploreDigiXploreIsUNNATISocietySDigitalEducationInitiativeFocusedOnIntroducingUnderprivilegedSchoolStudentsToTechnologyAndBridgingTheDigitalDivideThroughWeeklyInteractiveSessions,
                     Icons.devices_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Purpose'),
+                  _buildSectionTitle(l10n.digixploreOurPurpose),
                   SizedBox(height: 12.h),
                   _buildFeaturesList([
-                    'Teach computer fundamentals and practical operation',
-                    'Improve digital literacy and internet awareness',
-                    'Encourage safe and responsible technology use',
-                    'Familiarize students with modern digital tools',
-                    'Prepare learners for academic & professional environments',
+                    l10n.digixploreTeachComputerFundamentalsAndPracticalOperation,
+                    l10n.digixploreImproveDigitalLiteracyAndInternetAwareness,
+                    l10n.digixploreEncourageSafeAndResponsibleTechnologyUse,
+                    l10n.digixploreFamiliarizeStudentsWithModernDigitalTools,
+                    l10n.digixplorePrepareLearnersForAcademicProfessionalEnvironments,
                   ]),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Who We Serve'),
+                  _buildSectionTitle(l10n.digixploreWhoWeServe),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
-                      _buildBeneficiaryCard('Underprivileged\nStudents', Icons.school_rounded),
+                      _buildBeneficiaryCard(
+                        l10n.digixploreUnderprivilegedStudents,
+                        Icons.school_rounded,
+                      ),
                       SizedBox(width: 10.w),
-                      _buildBeneficiaryCard('Government\nSchools', Icons.domain_rounded),
+                      _buildBeneficiaryCard(
+                        l10n.digixploreGovernmentSchools,
+                        Icons.domain_rounded,
+                      ),
                       SizedBox(width: 10.w),
-                      _buildBeneficiaryCard('Rural\nLearners', Icons.location_on_rounded),
+                      _buildBeneficiaryCard(
+                        l10n.digixploreRuralLearners,
+                        Icons.location_on_rounded,
+                      ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('What Students Learn'),
+                  _buildSectionTitle(l10n.digixploreWhatStudentsLearn),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'Computer Fundamentals',
-                    'Learn basics of computers, hardware, operating systems, and typing.',
+                    l10n.digixploreComputerFundamentals,
+                    l10n.digixploreLearnBasicsOfComputersHardwareOperatingSystemsAndTyping,
                     Icons.devices_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'Digital Skills',
-                    'Master essential productivity tools, web browsing, and digital safety.',
+                    l10n.digixploreDigitalSkills,
+                    l10n.digixploreMasterEssentialProductivityToolsWebBrowsingAndDigitalSafety,
                     Icons.security_rounded,
                   ),
                   SizedBox(height: 12.h),
                   _buildSkillCard(
-                    'Problem-Solving',
-                    'Develop critical thinking through interactive challenges and activities.',
+                    l10n.digixploreProblemSolving,
+                    l10n.digixploreDevelopCriticalThinkingThroughInteractiveChallengesAndActivities,
                     Icons.lightbulb_outline_rounded,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('How DigiXplore Works'),
+                  _buildSectionTitle(l10n.digixploreHowDigiXploreWorks),
                   SizedBox(height: 12.h),
                   _buildProcessStep(
                     '1',
-                    'Weekly Sessions',
-                    'Structured interactive learning sessions with hands-on practice.',
+                    l10n.digixploreWeeklySessions,
+                    l10n.digixploreStructuredInteractiveLearningSessionsWithHandsOnPractice,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '2',
-                    'Activity-Based',
-                    'Practical, engaging project-driven computer education.',
+                    l10n.digixploreActivityBased,
+                    l10n.digixplorePracticalEngagingProjectDrivenComputerEducation,
                   ),
                   SizedBox(height: 10.h),
                   _buildProcessStep(
                     '3',
-                    'Digital Workshops',
-                    'Special awareness and skill development guest workshops.',
+                    l10n.digixploreDigitalWorkshops,
+                    l10n.digixploreSpecialAwarenessAndSkillDevelopmentGuestWorkshops,
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Our Impact'),
+                  _buildSectionTitle(l10n.digixploreOurImpact),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Hundreds', 'Students Empowered', Colors.blue),
+                        child: _buildImpactCard(
+                          l10n.digixploreHundreds,
+                          l10n.digixploreStudentsEmpowered,
+                          Colors.blue,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
-                        child: _buildImpactCard('Digital', 'Divide Bridged', Colors.black),
+                        child: _buildImpactCard(
+                          l10n.digixploreDigital,
+                          l10n.digixploreDivideBridged,
+                          Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -186,22 +205,39 @@ class DigixplorePage extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildImpactCard('Enhanced', 'Problem Solving', Colors.black),
+                        child: _buildImpactCard(
+                          l10n.digixploreEnhanced,
+                          l10n.digixploreProblemSolving,
+                          Colors.black,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
-                        child: _buildImpactCard('Increased', 'Student Engagement', Colors.blue),
+                        child: _buildImpactCard(
+                          l10n.digixploreIncreased,
+                          l10n.digixploreStudentEngagement,
+                          Colors.blue,
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 28.h),
-                  _buildSectionTitle('Future Vision'),
+                  _buildSectionTitle(l10n.digixploreFutureVision),
                   SizedBox(height: 12.h),
-                  _buildVisionCard('Expand to more rural and government partner schools', Icons.public_rounded),
+                  _buildVisionCard(
+                    l10n.digixploreExpandToMoreRuralAndGovernmentPartnerSchools,
+                    Icons.public_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Introduce basic coding, logic building, and AI awareness modules', Icons.code_rounded),
+                  _buildVisionCard(
+                    l10n.digixploreIntroduceBasicCodingLogicBuildingAndAIAwarenessModules,
+                    Icons.code_rounded,
+                  ),
                   SizedBox(height: 10.h),
-                  _buildVisionCard('Create digitally confident and future-ready generations', Icons.star_border_rounded),
+                  _buildVisionCard(
+                    l10n.digixploreCreateDigitallyConfidentAndFutureReadyGenerations,
+                    Icons.star_border_rounded,
+                  ),
                   SizedBox(height: 30.h),
                 ],
               ),
@@ -220,11 +256,7 @@ class DigixplorePage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4),
-          child: Container(
-            height: 25.h,
-            width: 7.h,
-            color: Colors.black,
-          ),
+          child: Container(height: 25.h, width: 7.h, color: Colors.black),
         ),
         SizedBox(width: 10.w),
         Text(
@@ -243,9 +275,7 @@ class DigixplorePage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -281,9 +311,7 @@ class DigixplorePage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(16.r),
@@ -295,7 +323,11 @@ class DigixplorePage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.black87, size: 20),
+                  const Icon(
+                    Icons.check_circle,
+                    color: Colors.black87,
+                    size: 20,
+                  ),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
@@ -358,13 +390,15 @@ class DigixplorePage extends StatelessWidget {
     );
   }
 
-  static Widget _buildSkillCard(String title, String description, IconData icon) {
+  static Widget _buildSkillCard(
+    String title,
+    String description,
+    IconData icon,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -412,13 +446,15 @@ class DigixplorePage extends StatelessWidget {
     );
   }
 
-  static Widget _buildProcessStep(String number, String title, String description) {
+  static Widget _buildProcessStep(
+    String number,
+    String title,
+    String description,
+  ) {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -477,7 +513,11 @@ class DigixplorePage extends StatelessWidget {
   }
 
   // Exact matching VolunteerCardUtil from homescreen
-  static Widget _buildImpactCard(String subtitle, String title, Color curvedColor) {
+  static Widget _buildImpactCard(
+    String subtitle,
+    String title,
+    Color curvedColor,
+  ) {
     return Container(
       height: 120.h,
       decoration: BoxDecoration(
@@ -545,9 +585,7 @@ class DigixplorePage extends StatelessWidget {
     return Card(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.all(14.r),
