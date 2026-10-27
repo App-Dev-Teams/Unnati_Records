@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     type:String,
     required:true
   },
+  profilePic: {
+    type: String,
+    default: ""
+  },
   batch: {
     startYear: { type: Number, required: true, min: 2000, max: 2100 },
     endYear:   { type: Number, required: true, min: 2000, max: 2100 }

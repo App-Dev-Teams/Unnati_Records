@@ -22,7 +22,10 @@ class VolunteerHomeScreen extends ConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: pages[currentIndex],
+        body: IndexedStack(
+          index: currentIndex,
+          children: pages,
+        ),
         bottomNavigationBar: BottomNavBar(
           navIcon1: Icons.add_to_photos_outlined,
           navIcon2: Icons.home_outlined,

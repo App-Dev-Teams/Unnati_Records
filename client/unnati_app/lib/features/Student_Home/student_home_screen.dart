@@ -23,7 +23,10 @@ class StudentHomeScreen extends ConsumerWidget {
           child: Scaffold(
             backgroundColor: Colors.white,
             
-            body: pages[currentIndex],
+            body: IndexedStack(
+              index: currentIndex,
+              children: pages,
+            ),
             bottomNavigationBar: BottomNavBar(
               navIcon1: Icons.fact_check_outlined,
               navIcon2: Icons.home_outlined,

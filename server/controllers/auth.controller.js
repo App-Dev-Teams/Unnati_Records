@@ -64,7 +64,8 @@ const signup = async (req, res) => {
       password: hashedPassword,
       batch,
       phoneNo,
-      rollNo
+      rollNo,
+      profilePic:""
     });
 
     await newUser.save();
@@ -93,7 +94,8 @@ const signup = async (req, res) => {
         role: newUser.role,
         permissions:rolePermissions[newUser.role] || [],
         rollNo: newUser.rollNo,
-        batch: newUser.batch
+        batch: newUser.batch,
+        profilePic: newUser.profilePic || ""
       },
     });
 
@@ -156,7 +158,8 @@ const login = async (req, res) => {
         rollNo: saveduser.rollNo,
         batch: saveduser.batch,
         phoneNo: saveduser.phoneNo,
-        program: saveduser.program
+        program: saveduser.program,
+        profilePic: saveduser.profilePic || "",
       },
     });
 
@@ -205,7 +208,8 @@ const studentSignup = async (req, res) => {
       password: hashedPassword,
       phoneNo,
       studentClass,
-      school
+      school,
+      profilePic:"",
     });
 
     await newStudent.save();
@@ -233,7 +237,8 @@ const studentSignup = async (req, res) => {
         permissions: [],
         phoneNo: newStudent.phoneNo,
         studentClass: newStudent.studentClass,
-        school: newStudent.school
+        school: newStudent.school,
+        profilePic: newStudent.profilePic || ""
       }
     });
 
@@ -296,7 +301,8 @@ const studentLogin = async (req, res) => {
         permissions: [],
         phoneNo: student.phoneNo,
         studentClass: student.studentClass,
-        school: student.school
+        school: student.school,
+        profilePic: student.profilePic || "",
       }
     });
 
