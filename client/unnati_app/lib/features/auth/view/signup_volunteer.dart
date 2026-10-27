@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
@@ -22,6 +24,22 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
   final TextEditingController phoneController = TextEditingController();
   String? selectedProgram;
   bool isLoading = false;
+
+  File? selectedProfileImage;
+  final ImagePicker imagePicker = ImagePicker();
+
+  Future<void> chooseProfilePicture() async {
+    final XFile? pickedFile = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (pickedFile != null && mounted) {
+      setState(() {
+        selectedProfileImage = File(pickedFile.path);
+      });
+    }
+  }
 
   bool isValidVolunteerEmail(String email) {
     final regex = RegExp(r'^[a-zA-Z0-9]+\.([0-9]+)@iiitbh\.ac\.in$');
@@ -132,9 +150,9 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
       role: 'volunteer',
     );
 
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
 
     if (result['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -158,6 +176,46 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
       } catch (e) {
         // ignore
       }
+      if (selectedProfileImage != null) {
+        try {
+          final imageUrl = await ApiService.uploadProfilePicture(
+            selectedProfileImage!,
+          );
+
+          final picResult = await ApiService.updateProfilePicture(imageUrl);
+
+          if (picResult['success'] != true && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Account created, but profile picture could not be saved. '
+                  '${picResult['message'] ?? ''}',
+                ),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        } catch (e) {
+          debugPrint('Profile picture upload failed: $e');
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Account created, but photo upload failed. You can add it later.',
+                ),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
+      }
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => AuthCheck()),
@@ -171,6 +229,12 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
         if (errors.isNotEmpty) {
           errorMessage = errors[0]['msg'] ?? errorMessage;
         }
+      }
+
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -196,11 +260,46 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Lottie.asset(
-                'assets/lottie/Login_and_Signup.json',
-                height: 300.h,
-                width: 300.w,
+                  Center(
+                child: GestureDetector(
+                  onTap: chooseProfilePicture,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 63,
+                        backgroundColor: const Color(0xFFE8F1FA),
+                        backgroundImage: selectedProfileImage != null
+                            ? FileImage(selectedProfileImage!)
+                            : null,
+                        child: selectedProfileImage == null
+                            ? Icon(
+                                Icons.person,
+                                size: 70,
+                                color: const Color.fromARGB(255, 9, 75, 128),
+                              )
+                            : null,
+                      ),
+                      Positioned(
+                        bottom: 0.5,
+                        right: 2,
+                        child: Container(
+                          padding: EdgeInsets.all(8.r),
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(255, 9, 75, 128),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+              SizedBox(height: 20.h),
               SizedBox(height: 10.h, width: double.infinity),
               Text(
                 AppLocalizations.of(context)!.volunteer,

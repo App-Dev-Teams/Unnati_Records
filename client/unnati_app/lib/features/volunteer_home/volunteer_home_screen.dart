@@ -41,7 +41,10 @@ class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
 
     return SafeArea(
       child: Scaffold(
-        body: pages[safeIndex],
+        body: IndexedStack(
+          index: currentIndex,
+          children: pages,
+        ),
         bottomNavigationBar: const BottomNavBar(
           navIcon1: Icons.home_outlined,
           navIcon2: Icons.phone_in_talk_outlined,

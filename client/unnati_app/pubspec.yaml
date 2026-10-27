@@ -57,6 +57,7 @@ dependencies:
   sqflite: ^2.4.2
   path: ^1.9.1
   fl_chart: ^1.2.0
+  image_picker: ^1.2.2
   zego_express_engine: ^3.25.0
   permission_handler: ^12.0.1
   

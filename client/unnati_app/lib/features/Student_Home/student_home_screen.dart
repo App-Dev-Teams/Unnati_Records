@@ -42,7 +42,12 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: pages[safeIndex],
+        
+        body: IndexedStack(
+          index: safeIndex,
+          children: pages,
+        ),
+
         bottomNavigationBar: const BottomNavBar(
           navIcon1: Icons.home_outlined,
           navIcon2: Icons.phone_in_talk_outlined,

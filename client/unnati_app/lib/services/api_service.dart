@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -245,6 +246,8 @@ class ApiService {
             await saveRole(role);
             print('✅ ROLE SAVED: $role');
           }
+          await saveUserData(responseData);
+          print('✅ USER DATA SAVED: ${await getUserData()}');
         }
 
         print('✅ $operation SUCCESS');
@@ -1053,8 +1056,112 @@ class ApiService {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return json.decode(res.body) as Map<String, dynamic>;
     }
-    throw Exception('Failed to get ImageKit auth: ${res.body}');
+
+    throw Exception('Failed to get profile ImageKit auth: ${res.body}');
   }
+
+  static Future<Map<String, dynamic>> getProfileImageKitAuth() async {
+    final response = await http.get(
+      Uri.parse('$coreBaseUrl/imagekit/profile-auth'),
+      headers: await _authHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    }
+
+    throw Exception(
+      'Profile ImageKit authentication failed '
+      '(${response.statusCode}): ${response.body}',
+    );
+  }
+
+  /// Upload a profile picture to ImageKit using http.
+  static Future<String> uploadProfilePicture(File imageFile) async {
+    final auth = await getProfileImageKitAuth();
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://upload.imagekit.io/api/v1/files/upload'),
+    );
+
+    request.fields['fileName'] =
+        'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    request.fields['publicKey'] = auth['publicKey'].toString();
+    request.fields['token'] = auth['token'].toString();
+    request.fields['signature'] = auth['signature'].toString();
+    request.fields['expire'] = auth['expire'].toString();
+
+    if (auth['folder'] != null) {
+      request.fields['folder'] = auth['folder'].toString();
+    }
+
+    request.files.add(
+      await http.MultipartFile.fromPath('file', imageFile.path),
+    );
+
+    final streamedResponse = await request.send().timeout(_timeout);
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('ImageKit upload failed: ${response.body}');
+    }
+
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    final imageUrl = data['url'] as String?;
+
+    if (imageUrl == null || imageUrl.isEmpty) {
+      throw Exception('ImageKit did not return an image URL');
+    }
+
+    return imageUrl;
+  }
+
+  /// Save the uploaded profile picture URL in our backend.
+  static Future<Map<String, dynamic>> updateProfilePicture(
+    String imageUrl,
+  ) async {
+    final headers = await _authHeaders();
+
+    final res = await http
+        .put(
+          Uri.parse('$coreBaseUrl/profile-picture'),
+          headers: headers,
+          body: json.encode({'profilePic': imageUrl}),
+        )
+        .timeout(_timeout);
+
+    final data = json.decode(res.body) as Map<String, dynamic>;
+
+    if (res.statusCode >= 200 &&
+        res.statusCode < 300 &&
+        data['success'] == true) {
+      final updated = data['data'];
+
+      if (updated is Map<String, dynamic>) {
+        await saveUserData(updated);
+      } else {
+        final current = await getUserData();
+        if (current != null) {
+          await saveUserData({...current, 'profilePic': imageUrl});
+        }
+      }
+
+      return {
+        'success': true,
+        'message': data['message'] ?? 'Profile picture updated',
+        'data': data['data'],
+      };
+    }
+
+    return {
+      'success': false,
+      'message': data['message'] ??
+          data['error'] ??
+          'Failed to update profile picture',
+    };
+  }
+
 
   /// Fetch all files for a folder
   static Future<List<Map<String, dynamic>>> fetchFilesByFolder(

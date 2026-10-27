@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:unnati_app/features/Volunteer_attendance.dart/self_attendance_page.dart';
 import 'package:unnati_app/features/volunteer_profile/Volunteer_profile_listtile.dart';
 import 'package:unnati_app/services/api_service.dart';
@@ -22,9 +24,14 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
     'Netritva',
     'Akshar',
   ];
-  static final List<String> _branchOptions = ['CSE', 'MAE', 'ECE', 'MNC'];
+  static const List<String> _branchOptions = ['CSE', 'MAE', 'ECE', 'MNC'];
+  File? _selectedProfileImage;
+  final ImagePicker _imagePicker = ImagePicker();
+  bool _isUploadingProfilePic = false;
+  ImageProvider? _cachedProfileImage;
+  String? _cachedProfilePicUrl;
 
-  String _name = "Priyanshu Kumar";
+  String _name = "";
   String phone = "xxxxxxxxxxxx";
   String batch = "2025";
   String program = "DigiXplore";
@@ -40,6 +47,144 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
 
     return int.tryParse(value.trim()) ?? 2025;
   }
+  
+  
+Future<void> _changeProfilePicture() async {
+  if (_isUploadingProfilePic) return;
+
+  final XFile? pickedFile = await _imagePicker.pickImage(
+    source: ImageSource.gallery,
+    imageQuality: 70,
+    maxWidth: 800,
+    maxHeight: 800,
+  );
+
+  if (pickedFile == null || !mounted) return;
+
+  final imageFile = File(pickedFile.path);
+
+  // Show selected photo immediately as a local preview.
+  setState(() {
+    _selectedProfileImage = imageFile;
+    _isUploadingProfilePic = true;
+  });
+
+  try {
+    // Step 1: Upload compressed image to ImageKit.
+    final imageUrl =
+        await ApiService.uploadProfilePicture(imageFile);
+
+    if (!mounted) return;
+
+    // Step 2: Save the new image URL in the backend.
+    final res =
+        await ApiService.updateProfilePicture(imageUrl);
+
+    if (!mounted) return;
+
+    if (res['success'] == true) {
+      setState(() {
+        _user = {
+          ...?_user,
+          'profilePic': imageUrl,
+        };
+
+        // Update cached image to the new URL.
+        _cachedProfilePicUrl = imageUrl;
+        _cachedProfileImage = NetworkImage(imageUrl);
+
+        _selectedProfileImage = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Profile picture updated successfully'),
+        ),
+      );
+    } else {
+      setState(() {
+        _selectedProfileImage = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            res['message'] ?? 'Profile picture update failed',
+          ),
+        ),
+      );
+    }
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      _selectedProfileImage = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Upload failed: $e')),
+    );
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isUploadingProfilePic = false;
+      });
+    }
+  }
+}
+
+  
+void _showProfilePicture(ImageProvider imageProvider) {
+  showDialog(
+    context: context,
+    barrierColor: Colors.black,
+    builder: (dialogContext) {
+      return Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            title: const Text(
+              'Profile photo',
+              style: TextStyle(fontSize: 18),
+            ),
+            actions: [
+              IconButton(
+                tooltip: 'Edit profile photo',
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                  _changeProfilePicture();
+                },
+              ),
+            ],
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.8,
+              maxScale: 4.0,
+              child: Image(
+                image: imageProvider,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) {
+                  return const Icon(
+                    Icons.broken_image_outlined,
+                    color: Colors.white,
+                    size: 60,
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   void initState() {
@@ -643,7 +788,20 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
   @override
   Widget build(BuildContext context) {
     final user = _user;
-    print("snapshot data in profile page $user");
+    print("snapshot data in profile page ${user}");
+    
+    final profilePicUrl = user?['profilePic']?.toString() ?? '';
+
+    if (_cachedProfilePicUrl != profilePicUrl) {
+      _cachedProfilePicUrl = profilePicUrl;
+      _cachedProfileImage =
+          profilePicUrl.isNotEmpty ? NetworkImage(profilePicUrl) : null;
+    }
+
+    final ImageProvider? profileImage = _selectedProfileImage != null
+        ? FileImage(_selectedProfileImage!)
+        : _cachedProfileImage;
+
 
     final name = (user != null && user['name'] != null)
         ? user['name'] as String
@@ -701,24 +859,159 @@ class _VolunteerProfilePageState extends State<VolunteerProfilePage> {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 20),
-
-              // avatar
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircleAvatar(backgroundColor: Colors.black, radius: 63),
-                  CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'assets/images/unnatiLogoColourFix.png',
+              const SizedBox(height: 20),
+      
+              
+        GestureDetector(
+          onTap: () {
+            if (profileImage != null) {
+              _showProfilePicture(profileImage);
+            } else {
+              _changeProfilePicture();
+            }
+          },
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 126,
+                height: 126,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF172B40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 130, 130, 174).withOpacity(0.30),
+                      blurRadius: 24,
+                      spreadRadius: 3,
+                      offset: const Offset(0, 6),
                     ),
-                    radius: 60,
-                  ),
-                ],
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 12,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                
+        child: ClipOval(
+          child: profileImage != null
+              ? Image(
+                  image: profileImage,
+                  fit: BoxFit.cover,
+                  width: 126,
+                  height: 126,
+
+                  // Show loader while network image is loading
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+
+                    final expectedBytes =
+                        loadingProgress.expectedTotalBytes;
+                    final loadedBytes =
+                        loadingProgress.cumulativeBytesLoaded;
+
+                    return Container(
+                      width: 126,
+                      height: 126,
+                      color: const Color(0xFF172B40),
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          value: expectedBytes != null
+                              ? loadedBytes / expectedBytes
+                              : null,
+                          color: const Color(0xFF29B6F6),
+                          backgroundColor: Colors.white24,
+                        ),
+                      ),
+                    );
+                  },
+
+                  errorBuilder: (_, __, ___) {
+                    return const Center(
+                      child: Icon(
+                        Icons.person,
+                        size: 70,
+                        color: Colors.white70,
+                      ),
+                    );
+                  },
+                )
+              : const Icon(
+                  Icons.person,
+                  size: 70,
+                  color: Colors.white70,
+                ),
+        ),
+      ),
+
+      if (_isUploadingProfilePic)
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.45),
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: Color.fromARGB(255, 216, 220, 222),
               ),
+            ),
+          ),
+        ),
 
-              SizedBox(height: 10),
+      // Positioned(
+      //   bottom: 2,
+      //   right: 0,
+      //   child: Material(
+      //     color: const Color(0xFF29B6F6),
+      //     elevation: 5,
+      //     shape: const CircleBorder(),
+      //     child: InkWell(
+      //       customBorder: const CircleBorder(),
+      //       onTap: _isUploadingProfilePic
+      //       ? null
+      //       : _changeProfilePicture,
+      //       child: SizedBox(
+      //         width: 40,
+      //         height: 40,
+      //         child: Center(
+      //           child: _isUploadingProfilePic
+      //               ? const SizedBox(
+      //                   width: 19,
+      //                   height: 19,
+      //                   child: CircularProgressIndicator(
+      //                     strokeWidth: 2,
+      //                     color: Color(0xFF061A22),
+      //                   ),
+      //                 )
+      //               : const Icon(
+      //                   Icons.camera_alt_rounded,
+      //                   color: Color(0xFF061A22),
+      //                   size: 22,
+      //                 ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
+    ],
+  ),
+),
 
+
+      
+              const SizedBox(height: 10),
+      
               // name
               Text(
                 name,
