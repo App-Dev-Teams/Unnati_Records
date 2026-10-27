@@ -12,7 +12,7 @@ class ApiService {
   static const bool useLocalLiveDoubtBackend = true;
   static const String localServerHost = 'localhost:3000';
   static const String liveDoubtBaseUrl = useLocalLiveDoubtBackend
-      ? 'http://$localServerHost/api/live-doubts'
+      ? 'http://unnati-records-qhgb.onrender.com/api/live-doubts'
       : 'https://unnati-records-qhgb.onrender.com/api/live-doubts';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
