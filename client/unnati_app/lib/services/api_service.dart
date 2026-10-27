@@ -5,13 +5,13 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // static const String baseUrl =
-  //     'https://unnati-records-qhgb.onrender.com/api/auth';
-  // static const String coreBaseUrl =
-  //     'https://unnati-records-qhgb.onrender.com/api';
-  // For physical phone with 'adb reverse tcp:3000 tcp:3000':
-  static const String baseUrl = 'http://192.168.1.24:3000/api/auth';
-static const String coreBaseUrl = 'http://192.168.1.24:3000/api';
+  static const String baseUrl =
+      'https://unnati-records-qhgb.onrender.com/api/auth';
+  static const String coreBaseUrl =
+      'https://unnati-records-qhgb.onrender.com/api';
+
+//   static const String baseUrl = 'http://192.168.1.24:3000/api/auth';
+// static const String coreBaseUrl = 'http://192.168.1.24:3000/api';
 
 
   static const Duration _timeout = Duration(seconds: 30);
