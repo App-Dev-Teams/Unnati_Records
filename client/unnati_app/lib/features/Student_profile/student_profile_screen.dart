@@ -909,6 +909,198 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     ),
                   ),
 
+                  // QUIZ STATS & PERFORMANCE CONTAINER
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: FutureBuilder<Map<String, dynamic>>(
+                          future: ApiService.getMyQuizAttempts(),
+                          builder: (context, quizSnapshot) {
+                            final quizData = quizSnapshot.data;
+                            final totalAttempts = quizData?['totalAttempts'] ?? 0;
+                            final avgPercentage = quizData?['averagePercentage'] ?? 0;
+                            final highestScore = quizData?['highestScore'] ?? 0;
+                            final highestTotal = quizData?['highestTotal'] ?? 0;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.military_tech_rounded, color: Colors.amber, size: 20),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "Quiz Stats & Performance",
+                                            style: GoogleFonts.roboto(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (totalAttempts > 0)
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(0.25),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: Colors.greenAccent, width: 0.8),
+                                          ),
+                                          child: Text(
+                                            "$totalAttempts Quizzes",
+                                            style: GoogleFonts.roboto(
+                                              color: Colors.greenAccent,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                if (quizSnapshot.connectionState == ConnectionState.waiting)
+                                  Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70),
+                                      ),
+                                    ),
+                                  )
+                                else if (totalAttempts == 0)
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                                    child: Text(
+                                      "No quizzes attempted yet. Head over to Quizzes & Tests to take your first quiz!",
+                                      style: GoogleFonts.roboto(
+                                        color: Colors.white70,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  )
+                                else ...[
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.08),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "$totalAttempts",
+                                                style: GoogleFonts.oswald(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.lightBlueAccent,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                "Attempted",
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 11,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.08),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "$avgPercentage%",
+                                                style: GoogleFonts.oswald(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.amberAccent,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                "Avg Score",
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 11,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.08),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                highestTotal > 0
+                                                    ? "$highestScore/$highestTotal"
+                                                    : "$highestScore",
+                                                style: GoogleFonts.oswald(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.greenAccent,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                "Best Score",
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 11,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+
                   // MORE DETAILS CONTAINER
                   Padding(
                     padding: EdgeInsets.all(8.0),

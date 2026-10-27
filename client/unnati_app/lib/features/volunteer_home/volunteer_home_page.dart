@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/components/app_bar.dart';
+import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/our_programs/akshar.dart';
 import 'package:unnati_app/features/our_programs/digixplore.dart';
 import 'package:unnati_app/features/our_programs/netritva.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/programs_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_card_util.dart';
 import 'package:unnati_app/features/volunteer_home/components_volunteer_home/volunteer_home_card.dart';
+import 'package:unnati_app/features/volunteer_quiz/quiz_view.dart';
 import 'package:unnati_app/services/api_service.dart';
+
 
 import 'package:unnati_app/l10n/app_localizations.dart';
 
@@ -115,6 +118,126 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   SizedBox(height: 10.h),
 
                   
+
+                  // Quizzes card
+                  Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(16.r),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const HelpSupport(),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(8.r),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: const Icon(
+                              Icons.support_agent,
+                              color: Colors.orange,
+                              size: 15,
+                            ),
+                          ),
+                          title: Text(
+                            "Help & Support",
+                            style: GoogleFonts.oswald(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "Open and resolve student doubts",
+                            style: GoogleFonts.oswald(color: Colors.grey),
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+
+                  // Quizzes card
+                  Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(16.r),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const QuizViewPage(),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(8.r),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF74ee15).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: const Icon(
+                              Icons.fact_check_outlined,
+                              color: Color(0xFF74ee15),
+                              size: 18,
+                            ),
+                          ),
+                          title: Text(
+                            "Quiz Management",
+                            style: GoogleFonts.oswald(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "View and upload student assessments",
+                            style: GoogleFonts.oswald(color: Colors.grey),
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
 
                   // Card(
                   //   elevation: 8,

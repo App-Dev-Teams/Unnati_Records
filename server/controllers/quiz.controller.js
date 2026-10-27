@@ -422,10 +422,249 @@ const uploadQuiz = async (req, res) => {
   }
 };
 
+const getMyAttempts = async (req, res) => {
+  try {
+    if (!isAuthenticated(req)) {
+      return res.status(401).json({
+        success: false,
+        message: "You must be logged in"
+      });
+    }
+
+    const attempts = await QuizAttempt.find({ studentId: req.user._id })
+      .populate("quizId", "title targetClass")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let totalScore = 0;
+    let totalQuestions = 0;
+    let highestScore = 0;
+    let highestTotal = 0;
+
+    const formatted = attempts.map((att) => {
+      totalScore += att.score;
+      totalQuestions += att.totalQuestions;
+      if (att.score > highestScore) {
+        highestScore = att.score;
+        highestTotal = att.totalQuestions;
+      }
+
+      return {
+        id: att._id,
+        quizId: att.quizId?._id || att.quizId,
+        quizTitle: att.quizId?.title || "Quiz",
+        targetClass: att.quizId?.targetClass || "",
+        score: att.score,
+        totalQuestions: att.totalQuestions,
+        percentage:
+          att.totalQuestions > 0
+            ? Math.round((att.score / att.totalQuestions) * 100)
+            : 0,
+        submittedAt: att.createdAt
+      };
+    });
+
+    const averagePercentage =
+      totalQuestions > 0
+        ? Math.round((totalScore / totalQuestions) * 100)
+        : 0;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalAttempts: formatted.length,
+        averagePercentage,
+        totalScore,
+        totalQuestions,
+        highestScore,
+        highestTotal,
+        attempts: formatted
+      }
+    });
+  } catch (error) {
+    console.error("GET MY ATTEMPTS ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+const getQuizAttempts = async (req, res) => {
+  try {
+    if (!isAuthenticated(req)) {
+      return res.status(401).json({
+        success: false,
+        message: "You must be logged in"
+      });
+    }
+
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid quiz ID"
+      });
+    }
+
+    const quiz = await Quiz.findById(id).select("title targetClass");
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found"
+      });
+    }
+
+    const attempts = await QuizAttempt.find({ quizId: id })
+      .populate("studentId", "name email phoneNo studentClass school")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const formatted = attempts.map((att) => ({
+      id: att._id,
+      score: att.score,
+      totalQuestions: att.totalQuestions,
+      percentage:
+        att.totalQuestions > 0
+          ? Math.round((att.score / att.totalQuestions) * 100)
+          : 0,
+      submittedAt: att.createdAt,
+      student: att.studentId
+        ? {
+            id: att.studentId._id,
+            name: att.studentId.name,
+            email: att.studentId.email,
+            phoneNo: att.studentId.phoneNo,
+            studentClass: att.studentId.studentClass,
+            school: att.studentId.school
+          }
+        : null
+    }));
+
+    return res.status(200).json({
+      success: true,
+      quiz: {
+        id: quiz._id,
+        title: quiz.title,
+        targetClass: quiz.targetClass
+      },
+      count: formatted.length,
+      data: formatted
+    });
+  } catch (error) {
+    console.error("GET QUIZ ATTEMPTS ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+const getStudentQuizStats = async (req, res) => {
+  try {
+    if (!isAuthenticated(req)) {
+      return res.status(401).json({
+        success: false,
+        message: "You must be logged in"
+      });
+    }
+
+    const { studentId } = req.params;
+    if (!mongoose.isValidObjectId(studentId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid student ID"
+      });
+    }
+
+    const Student = require("../models/student.model");
+    const student = await Student.findById(studentId).select(
+      "name email phoneNo studentClass school createdAt"
+    );
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found"
+      });
+    }
+
+    const attempts = await QuizAttempt.find({ studentId })
+      .populate("quizId", "title targetClass")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let totalScore = 0;
+    let totalQuestions = 0;
+    let highestScore = 0;
+    let highestTotal = 0;
+
+    const formatted = attempts.map((att) => {
+      totalScore += att.score;
+      totalQuestions += att.totalQuestions;
+      if (att.score > highestScore) {
+        highestScore = att.score;
+        highestTotal = att.totalQuestions;
+      }
+
+      return {
+        id: att._id,
+        quizId: att.quizId?._id || att.quizId,
+        quizTitle: att.quizId?.title || "Quiz",
+        targetClass: att.quizId?.targetClass || "",
+        score: att.score,
+        totalQuestions: att.totalQuestions,
+        percentage:
+          att.totalQuestions > 0
+            ? Math.round((att.score / att.totalQuestions) * 100)
+            : 0,
+        submittedAt: att.createdAt
+      };
+    });
+
+    const averagePercentage =
+      totalQuestions > 0
+        ? Math.round((totalScore / totalQuestions) * 100)
+        : 0;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        student: {
+          id: student._id,
+          name: student.name,
+          email: student.email,
+          phoneNo: student.phoneNo,
+          studentClass: student.studentClass,
+          school: student.school,
+          joinedAt: student.createdAt
+        },
+        stats: {
+          totalAttempts: formatted.length,
+          averagePercentage,
+          totalScore,
+          totalQuestions,
+          highestScore,
+          highestTotal,
+          attempts: formatted
+        }
+      }
+    });
+  } catch (error) {
+    console.error("GET STUDENT QUIZ STATS ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
 module.exports = {
   uploadQuiz,
   validateQuestions,
   getQuizzes,
   getQuiz,
-  submitQuiz
+  submitQuiz,
+  getMyAttempts,
+  getQuizAttempts,
+  getStudentQuizStats
 };
