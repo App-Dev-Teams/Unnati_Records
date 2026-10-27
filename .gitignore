@@ -1,0 +1,35 @@
+# Build folders
+build/
+**/build/
+
+# Gradle & Android artifacts
+.gradle/
+**/.gradle/
+**/local.properties
+**/GeneratedPluginRegistrant.java
+**/.cxx/
+**/captures/
+
+# Dart & Flutter
+.dart_tool/
+**/.dart_tool/
+.pub-cache/
+**/.pub-cache/
+.pub/
+**/.pub/
+
+# Node
+node_modules/
+**/node_modules/
+
+# Crash dumps & logs
+*.log
+hs_err_pid*
+replay_pid*
+
+# OS & Editor
+.DS_Store
+.idea/
+**/.idea/
+*.iml
+**/*.iml

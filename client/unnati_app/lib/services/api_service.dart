@@ -5,8 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://unnati-records-qhgb.onrender.com/api/auth';
-  static const String coreBaseUrl = 'https://unnati-records-qhgb.onrender.com/api';
+  static const String baseUrl =
+      'https://unnati-records-qhgb.onrender.com/api/auth';
+  static const String coreBaseUrl =
+      'https://unnati-records-qhgb.onrender.com/api';
+  // Live Video Doubt & Conference (Connect) runs locally until deployed to Render
+  static const bool useLocalLiveDoubtBackend = true;
+  static const String localServerHost = 'localhost:3000';
+  static const String liveDoubtBaseUrl = useLocalLiveDoubtBackend
+      ? 'http://unnati-records-qhgb.onrender.com/api/live-doubts'
+      : 'https://unnati-records-qhgb.onrender.com/api/live-doubts';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -99,7 +107,7 @@ class ApiService {
   }) async {
     final prefs = await _preferences;
     try {
-      print("saveuserdata ${user}");
+      print("saveuserdata $user");
       Map<String, dynamic> payload = Map<String, dynamic>.from(user);
 
       if (preserveExistingFields) {
@@ -132,7 +140,7 @@ class ApiService {
     if (str == null) return null;
     try {
       final Map<String, dynamic> data = json.decode(str);
-      print("getuserdata ${data}");
+      print("getuserdata $data");
       return data;
     } catch (e) {
       print('❌ getUserData parse error: ${e.toString()}');
@@ -297,7 +305,7 @@ class ApiService {
             body: json.encode(body),
           )
           .timeout(_timeout);
-          print('📥 $operation Raw Response Status: ${response.body}');
+      print('📥 $operation Raw Response Status: ${response.body}');
 
       return await _handleResponse(response, operation);
     } on http.ClientException catch (e) {
@@ -454,14 +462,18 @@ class ApiService {
   static Future<Map<String, dynamic>> updatePassword({
     required String email,
     required String newPassword,
-    required String accountType,
+    String accountType = 'volunteer',
   }) async {
     try {
       final response = await http
           .post(
             Uri.parse('$baseUrl/update-password'),
             headers: _headers,
-            body: json.encode({'email': email, 'newPassword': newPassword,'accountType': accountType,}),
+            body: json.encode({
+              'email': email.trim().toLowerCase(),
+              'newPassword': newPassword,
+              'accountType': accountType,
+            }),
           )
           .timeout(_timeout);
 
@@ -720,7 +732,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/closed'), headers: headers)
         .timeout(_timeout);
-        print(  " CLOSED DOUBTS: ${response.body}" );
+    print(" CLOSED DOUBTS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -746,7 +758,7 @@ class ApiService {
     final response = await http
         .get(Uri.parse('$coreBaseUrl/doubts/$doubtId'), headers: headers)
         .timeout(_timeout);
-        print(" DOUBT DETAILS: ${response.body}");
+    print(" DOUBT DETAILS: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -776,7 +788,7 @@ class ApiService {
           headers: headers,
         )
         .timeout(_timeout);
-        print(" DOUBT MESSAGES: ${response.body}");
+    print(" DOUBT MESSAGES: ${response.body}");
 
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 401) {
@@ -1245,4 +1257,157 @@ class ApiService {
       throw Exception('Error fetching schools: $e');
     }
   }
+
+  // ================== LIVE VIDEO DOUBTS & CONFERENCES ==================
+
+  static Map<String, dynamic> _safeDecode(http.Response response) {
+    try {
+      final body = response.body.trim();
+      if (body.isEmpty) return {'success': false, 'error': 'Empty response from server'};
+      if (body.startsWith('{') || body.startsWith('[')) {
+        return json.decode(body) as Map<String, dynamic>;
+      }
+      return {'success': false, 'error': body};
+    } catch (e) {
+      return {'success': false, 'error': 'Invalid JSON: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> requestLiveCall({
+    required String subject,
+    required String topic,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/request'),
+            headers: headers,
+            body: json.encode({
+              'subject': subject,
+              'topic': topic,
+            }),
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to request live call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getLiveQueue() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$liveDoubtBaseUrl/queue'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to fetch queue: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> acceptLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/accept'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to accept call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> checkMyLiveStatus() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$liveDoubtBaseUrl/my-status'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'active': false, 'error': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> cancelLiveRequest() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/cancel'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  static Future<void> endLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      await http.post(
+        Uri.parse('$liveDoubtBaseUrl/$sessionId/end'),
+        headers: headers,
+      ).timeout(_timeout);
+    } catch (_) {}
+  }
+
+  static Future<Map<String, dynamic>> scheduleLiveCall(
+    String sessionId,
+    DateTime startTime, {
+    int durationMinutes = 30,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .put(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/schedule'),
+            headers: headers,
+            body: json.encode({
+              'scheduledStartTime': startTime.toIso8601String(),
+              'durationMinutes': durationMinutes,
+            }),
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to schedule call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> startLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/start'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to join/start call: $e'};
+    }
+  }
+
 }

@@ -36,6 +36,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
     });
   }
 
+  Future<void> _refreshData() async {
+    await Future.wait([
+      _loadAdminName(),
+      _loadCurrentLeads(),
+    ]);
+  }
+
   Future<void> _loadAdminName() async {
     final storedName = await AdminApiService.getAdminName();
     if (!mounted) return;
@@ -66,7 +73,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           grouped[program]!.add({
             'name': lead['name'] ?? 'Unknown',
             'role': lead['role'] ?? 'Volunteer',
-            'id': lead['_id'] ?? '',
+            'id': (lead['_id'] ?? lead['id'] ?? '').toString(),
             'program': program,
           });
         }
@@ -111,22 +118,54 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
             ),
             TextButton(
-              onPressed: () {
-                setState(() {
-                  final program = lead['program'];
-                  if (leadsByProgram.containsKey(program)) {
-                    leadsByProgram[program]!.removeWhere(
-                      (l) => l['id'] == lead['id'],
-                    );
-                  }
-                });
+              onPressed: () async {
+                final leadId = (lead['id'] ?? lead['_id'] ?? '').toString();
+                if (leadId.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Lead ID not found'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
                 Navigator.pop(context);
+
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${lead['name']} removed from leads'),
-                    backgroundColor: Colors.green,
+                  const SnackBar(
+                    content: Text('Removing lead...'),
+                    duration: Duration(seconds: 1),
                   ),
                 );
+
+                final result = await AdminApiService.deleteLead(leadId);
+
+                if (!mounted) return;
+
+                if (result['success'] == true) {
+                  setState(() {
+                    final program = lead['program'];
+                    if (leadsByProgram.containsKey(program)) {
+                      leadsByProgram[program]!.removeWhere(
+                        (l) => (l['id'] ?? l['_id']).toString() == leadId,
+                      );
+                    }
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${lead['name']} removed from leads'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: ${result['message'] ?? 'Failed to remove lead'}'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               child: Text(
                 'Delete',
@@ -142,14 +181,24 @@ class _AdminHomePageState extends State<AdminHomePage> {
   void _editLead(Map<String, dynamic> lead) {
     final roles = [
       "Finance Lead",
+      "JS-Program",
+      "JS-Public Relations",
+      "JS-Technical",
+      "DigiXplore Lead",
+      "Akshar Lead",
+      "Netritva Lead",
+      "R&D Lead",
       "Operations Lead",
-      "Volunteer",
-      "School Lead",
-      "Education Lead",
+      "Social Media Lead",
       "Design Lead",
+      "Video Editing Lead",
+      "Outreach Lead",
+      "Membership Lead",
     ];
 
-    String selectedRole = lead['role'] ?? 'Volunteer';
+    String selectedRole = lead['role'] ?? roles.first;
+    // If the stored role isn't in our list, default to first
+    if (!roles.contains(selectedRole)) selectedRole = roles.first;
 
     showDialog(
       context: context,
@@ -206,28 +255,51 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      final program = lead['program'];
-                      if (leadsByProgram.containsKey(program)) {
-                        final index = leadsByProgram[program]!.indexWhere(
-                          (l) => l['id'] == lead['id'],
-                        );
-                        if (index != -1) {
-                          leadsByProgram[program]![index]['role'] =
-                              selectedRole;
-                        }
-                      }
-                    });
+                  onPressed: () async {
                     Navigator.pop(context);
+
+                    // Show loading feedback — same pattern as assign_leads.dart
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${lead['name']} updated to $selectedRole',
-                        ),
-                        backgroundColor: Colors.green,
+                      const SnackBar(
+                        content: Text('Updating role...'),
+                        duration: Duration(seconds: 1),
                       ),
                     );
+
+                    final result = await AdminApiService.updateRole(
+                      lead['id'] ?? '',
+                      selectedRole,
+                    );
+
+                    if (!mounted) return;
+
+                    if (result['success'] == true) {
+                      setState(() {
+                        final program = lead['program'];
+                        if (leadsByProgram.containsKey(program)) {
+                          final index = leadsByProgram[program]!
+                              .indexWhere((l) => l['id'] == lead['id']);
+                          if (index != -1) {
+                            leadsByProgram[program]![index]['role'] = selectedRole;
+                          }
+                        }
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${lead['name']} updated to $selectedRole'),
+                          backgroundColor: Colors.green,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: ${result['message'] ?? 'Failed to update role'}'),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     'Save',
@@ -250,223 +322,256 @@ class _AdminHomePageState extends State<AdminHomePage> {
         imageName: "unnatiLogoColourFix.png",
       ),
       backgroundColor: const Color.fromARGB(255, 9, 12, 19),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Admin Dashboard",
-              style: GoogleFonts.oswald(
-                fontSize: 28,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-            SizedBox(height: 6.h),
-
-            Text(
-              "Manage volunteers and leads",
-              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
-            ),
-
-            SizedBox(height: 28.h),
-
-            Row(
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: const Color.fromARGB(255, 9, 75, 128),
+          backgroundColor: const Color.fromARGB(255, 14, 22, 33),
+          onRefresh: _refreshData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 180.h,
-                    width: MediaQuery.of(context).size.width / 2 - 30.w,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AdminFileUploadPage(),
+                Text(
+                  "Admin Dashboard",
+                  style: GoogleFonts.oswald(
+                    fontSize: 28,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+        
+                SizedBox(height: 6.h),
+        
+                Text(
+                  "Manage volunteers and leads",
+                  style: GoogleFonts.nunito(color: Colors.white70, fontSize: 14),
+                ),
+        
+                SizedBox(height: 28.h),
+        
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 180.h,
+                        width: MediaQuery.of(context).size.width / 2 - 30.w,
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AdminFileUploadPage(),
+                              ),
+                            );
+                          },
+                          child: _AdminActionCard(
+                            icon: Icons.file_copy,
+                            title: "Upload Files",
+                            subtitle: "Provide students with study materials.",
                           ),
-                        );
-                      },
-                      child: _AdminActionCard(
-                        icon: Icons.file_copy,
-                        title: "Upload Files",
-                        subtitle: "Provide students with study materials.",
+                        ),
                       ),
+                    ),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: SizedBox(
+                        height: 180.h,
+                        width: MediaQuery.of(context).size.width / 2 - 30.w,
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AssignLeadsPage(),
+                              ),
+                            );
+                            if (mounted) {
+                              _loadCurrentLeads();
+                            }
+                          },
+                          child: _AdminActionCard(
+                            icon: Icons.admin_panel_settings_outlined,
+                            title: "Assign Leads",
+                            subtitle: "Promote & change roles",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+        
+                SizedBox(height: 20.h),
+        
+                SizedBox(
+                  height: 180.h,
+                  width: double.infinity,
+                  child: InkWell(
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ViewVolunteersPage(),
+                        ),
+                      );
+                      if (mounted) {
+                        _loadCurrentLeads();
+                      }
+                    },
+                    child: _AdminActionCard(
+                      icon: Icons.people_outline,
+                      title: "View Unnati Volunteers",
+                      subtitle: "Browse all volunteers and their details",
                     ),
                   ),
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: SizedBox(
-                    height: 180.h,
-                    width: MediaQuery.of(context).size.width / 2 - 30.w,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AssignLeadsPage(),
-                          ),
-                        );
-                      },
-                      child: _AdminActionCard(
-                        icon: Icons.admin_panel_settings_outlined,
-                        title: "Assign Leads",
-                        subtitle: "Promote & change roles",
+        
+                SizedBox(height: 40.h),
+        
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Current Leads",
+                      style: GoogleFonts.oswald(
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20.h),
-
-            SizedBox(
-              height: 180.h,
-              width: double.infinity,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ViewVolunteersPage(),
+                    IconButton(
+                      tooltip: "Refresh Leads",
+                      icon: _isLoadingLeads
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.lightBlueAccent,
+                              ),
+                            )
+                          : const Icon(Icons.refresh, color: Colors.white70, size: 22),
+                      onPressed: _isLoadingLeads ? null : _loadCurrentLeads,
                     ),
-                  );
-                },
-                child: _AdminActionCard(
-                  icon: Icons.people_outline,
-                  title: "View Unnati Volunteers",
-                  subtitle: "Browse all volunteers and their details",
+                  ],
                 ),
-              ),
-            ),
-
-            SizedBox(height: 40.h),
-
-            Text(
-              "Current Leads",
-              style: GoogleFonts.oswald(
-                fontSize: 22,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            _isLoadingLeads
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
-                    children: programs.map((program) {
-                      final leads = leadsByProgram[program] ?? [];
-                      final isExpanded = expandedPrograms[program] ?? false;
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                expandedPrograms[program] = !isExpanded;
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 9, 75, 128),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        isExpanded
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 12),
-                                      Text(
-                                        program,
-                                        style: GoogleFonts.oswald(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+        
+                SizedBox(height: 16.h),
+        
+              _isLoadingLeads
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: programs.map((program) {
+                        final leads = leadsByProgram[program] ?? [];
+                        final isExpanded = expandedPrograms[program] ?? false;
+        
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  expandedPrograms[program] = !isExpanded;
+                                });
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 9, 75, 128),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.white10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          isExpanded
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
                                           color: Colors.white,
-                                          letterSpacing: 0.5,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 12),
+                                        Text(
+                                          program,
+                                          style: GoogleFonts.oswald(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.lightBlueAccent.withOpacity(
+                                          0.2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        '${leads.length}',
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.lightBlueAccent,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlueAccent.withOpacity(
-                                        0.2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      '${leads.length}',
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.lightBlueAccent,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          if (isExpanded && leads.isNotEmpty) ...[
+                            if (isExpanded && leads.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              ...leads.map((lead) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: LeadCard(
+                                    name: lead['name'],
+                                    role: lead['role'],
+                                    onEdit: () => _editLead(lead),
+                                    onDelete: () => _deleteLead(lead),
+                                  ),
+                                );
+                              }),
+                            ],
+                            if (isExpanded && leads.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Text(
+                                  'No leads assigned in $program',
+                                  style: GoogleFonts.nunito(
+                                    color: Colors.white54,
+                                    fontSize: 13,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
                             const SizedBox(height: 12),
-                            ...leads.map((lead) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: LeadCard(
-                                  name: lead['name'],
-                                  role: lead['role'],
-                                  onEdit: () => _editLead(lead),
-                                  onDelete: () => _deleteLead(lead),
-                                ),
-                              );
-                            }),
                           ],
-                          if (isExpanded && leads.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: Text(
-                                'No leads assigned in $program',
-                                style: GoogleFonts.nunito(
-                                  color: Colors.white54,
-                                  fontSize: 13,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ),
-                          const SizedBox(height: 12),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-          ],
+                        );
+                      }).toList(),
+                    ),
+            ],
+          ),
         ),
+            ),
       ),
-    );
+  );
   }
 }
 

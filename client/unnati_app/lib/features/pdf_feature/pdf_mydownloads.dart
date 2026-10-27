@@ -8,6 +8,8 @@ import 'package:unnati_app/components/pdf_components/pdf_downloadcard.dart';
 import 'package:unnati_app/components/pdf_components/pdf_viewer_page.dart';
 import 'package:unnati_app/services/download_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class PdfMydownloads extends ConsumerStatefulWidget {
   const PdfMydownloads({super.key});
 
@@ -24,21 +26,32 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:
-          PdfAppBar(imageName: "unnatiLogoColourFix.png", name: "My Downloads"),
+      appBar: PdfAppBar(
+        imageName: "unnatiLogoColourFix.png",
+        name: "My Downloads",
+      ),
       body: downloads.isEmpty
-          ? Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 200,
-            width: 200,
-            child: Lottie.asset("assets/lottie/empty.json")),
-          Text('No downloads yet',style: GoogleFonts.oswald(fontSize: 20,fontWeight: FontWeight.bold),),
-        ],
-      ))
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Lottie.asset("assets/lottie/empty.json"),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.nodownloadsyet,
+                    style: GoogleFonts.oswald(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )
           : GridView.builder(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
@@ -63,10 +76,8 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PdfViewerPage(
-                  pdfPath: item.path,
-                  title: item.title,
-                ),
+                builder: (context) =>
+                    PdfViewerPage(pdfPath: item.path, title: item.title),
               ),
             );
           },
@@ -77,10 +88,8 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PdfViewerPage(
-                    pdfPath: item.path,
-                    title: item.title,
-                  ),
+                  builder: (context) =>
+                      PdfViewerPage(pdfPath: item.path, title: item.title),
                 ),
               );
             },
@@ -92,13 +101,13 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
           right: 8,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.9),
+              color: Colors.red.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.red.withOpacity(0.3),
+                  color: Colors.red.withValues(alpha: 0.3),
                   blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -108,12 +117,8 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
                 onTap: () => _showDeleteConfirmation(context, item),
                 borderRadius: BorderRadius.circular(20),
                 child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                    size: 18,
-                  ),
+                  padding: EdgeInsets.all(6),
+                  child: Icon(Icons.delete, color: Colors.white, size: 18),
                 ),
               ),
             ),
@@ -130,7 +135,7 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            'Delete Download?',
+            AppLocalizations.of(context)!.deletedownload,
             style: GoogleFonts.nunito(
               fontWeight: FontWeight.w700,
               fontSize: 18,
@@ -138,20 +143,17 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
           ),
           content: Text(
             'Are you sure you want to delete "${item.title}"?\n\nThis action cannot be undone.',
-            style: GoogleFonts.nunito(
-              fontSize: 14,
-              color: const Color(0xFF6B7280),
-            ),
+            style: GoogleFonts.nunito(fontSize: 14, color: Color(0xFF6B7280)),
           ),
           actions: [
             // Cancel Button
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'Cancel',
+                AppLocalizations.of(context)!.cancel,
                 style: GoogleFonts.nunito(
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF6B7280),
+                  color: Color(0xFF6B7280),
                   fontSize: 14,
                 ),
               ),
@@ -163,7 +165,7 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
                 await _deleteDownload(item);
               },
               child: Text(
-                'Delete',
+                AppLocalizations.of(context)!.delete,
                 style: GoogleFonts.nunito(
                   fontWeight: FontWeight.w700,
                   color: Colors.red,
@@ -187,19 +189,17 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
       await _downloadService.deleteFile(item.path);
 
       // Remove from provider and database
-      await ref.read(dP.notifier).removeDownload(
-            item.id,
-            item.title,
-            item.path,
-          );
+      await ref
+          .read(dP.notifier)
+          .removeDownload(item.id, item.title, item.path);
 
       // Show success message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${item.title} deleted successfully'),
+            content: Text("${item.title} deleted successfully"),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
+            duration: Duration(seconds: 2),
           ),
         );
       }
@@ -208,9 +208,9 @@ class _PdfMydownloadsState extends ConsumerState<PdfMydownloads> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error deleting file: $e'),
+            content: Text("Error deleting file: $e"),
             backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
+            duration: Duration(seconds: 3),
           ),
         );
       }

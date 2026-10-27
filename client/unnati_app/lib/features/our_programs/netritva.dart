@@ -1,227 +1,277 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class NetritvaPage extends StatelessWidget {
   const NetritvaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 280.h,
             pinned: true,
+            elevation: 2,
+            backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+            leading: Padding(
+              padding: EdgeInsets.all(8.r),
+              child: CircleAvatar(
+                backgroundColor: Colors.black.withOpacity(0.35),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                ),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFFFFA726), Color(0xFFFF8A00)],
+                    colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.trending_up, size: 80, color: Colors.white),
-                    SizedBox(height: 16),
-                    Text(
-                      'Netritva',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10.h),
+                      // Logo Badge
+                      Container(
+                        height: 84.h,
+                        width: 84.h,
+                        padding: EdgeInsets.all(10.r),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 16,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          'assets/images/netrilogo.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Career Guidance & Mentorship Program',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                        fontStyle: FontStyle.italic,
+                      SizedBox(height: 14.h),
+                      Text(
+                        l10n.netritvaNetritva,
+                        style: GoogleFonts.oswald(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 6.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: Text(
+                          l10n.netritvaCareerGuidanceMentorshipProgram,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.roboto(
+                            color: Colors.grey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Netritva'),
-                  SizedBox(height: 12),
+                  _buildSectionTitle(l10n.netritvaAboutNetritva),
+                  SizedBox(height: 12.h),
                   _buildDescriptionCard(
-                    'Netritva is UNNATI\'s career guidance and mentorship program designed for underprivileged students focused on career awareness, self-development, and helping them discover their potential.',
-                    Icons.info_outline,
+                    l10n.netritvaNetritvaIsUNNATISocietySCareerGuidanceAndMentorshipProgramDesignedForUnderprivilegedStudentsFocusedOnCareerAwarenessSelfDevelopmentAndHelpingThemDiscoverTheirPotential,
+                    Icons.explore_rounded,
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Our Purpose'),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaOurPurpose),
+                  SizedBox(height: 12.h),
                   _buildFeaturesList([
-                    'Help students make informed career choices',
-                    'Provide mentorship support',
-                    'Develop leadership qualities',
-                    'Build self-confidence',
-                    'Increase awareness about higher education and careers',
+                    l10n.netritvaHelpStudentsMakeInformedAndConfidentCareerChoices,
+                    l10n.netritvaProvideDedicatedPersonalizedMentorshipSupport,
+                    l10n.netritvaDevelopEssentialLeadershipAndCommunicationQualities,
+                    l10n.netritvaBuildSelfConfidenceSelfEsteemAndResilience,
+                    l10n.netritvaIncreaseAwarenessAboutHigherEducationCompetitiveExamsAndCareers,
                   ]),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Who We Serve'),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaWhoWeServe),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       _buildBeneficiaryCard(
-                        'Underprivileged\nStudents',
-                        Icons.person,
+                        l10n.netritvaUnderprivilegedStudents,
+                        Icons.person_rounded,
                       ),
-                      SizedBox(width: 12),
-                      _buildBeneficiaryCard('Rural\nLearners', Icons.map),
-                      SizedBox(width: 12),
+                      SizedBox(width: 10.w),
                       _buildBeneficiaryCard(
-                        'First-Generation\nLearners',
-                        Icons.family_restroom,
+                        l10n.netritvaRuralLearners,
+                        Icons.map_rounded,
+                      ),
+                      SizedBox(width: 10.w),
+                      _buildBeneficiaryCard(
+                        l10n.netritvaFirstGenerationLearners,
+                        Icons.family_restroom_rounded,
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Program Features'),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaProgramFeatures),
+                  SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Career Guidance',
-                    'Expert counseling for career path selection',
-                    Icons.compass_calibration,
-                    Color(0xFFFFA726),
+                    l10n.netritvaCareerGuidance,
+                    l10n.netritvaExpertCounselingForCareerPathSelectionAndStreamChoices,
+                    Icons.explore_rounded,
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Mentorship Sessions',
-                    'One-to-one interactions with experienced mentors',
-                    Icons.people,
-                    Color(0xFFFFB74D),
+                    l10n.netritvaMentorshipSessions,
+                    l10n.netritvaOneToOneInteractionsWithExperiencedAcademicAndProfessionalMentors,
+                    Icons.groups_rounded,
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Skill Development',
-                    'Workshops focused on practical skill enhancement',
-                    Icons.school,
-                    Color(0xFFFFC95D),
+                    l10n.netritvaSkillDevelopment,
+                    l10n.netritvaWorkshopsFocusedOnPracticalSkillEnhancementResumeWritingAndInterviews,
+                    Icons.school_rounded,
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _buildFeatureCard(
-                    'Leadership Training',
-                    'Develop leadership qualities and self-belief',
-                    Icons.star,
-                    Color(0xFFFFD54F),
+                    l10n.netritvaLeadershipTraining,
+                    l10n.netritvaCultivateLeadershipQualitiesTeamCoordinationAndSelfBelief,
+                    Icons.military_tech_rounded,
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('How Netritva Works'),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaHowNetritvaWorks),
+                  SizedBox(height: 12.h),
                   _buildProcessStep(
                     '1',
-                    'Workshops',
-                    'Interactive career and skill workshops',
-                    Colors.orange,
+                    l10n.netritvaInteractiveWorkshops,
+                    l10n.netritvaComprehensiveCareerAndSkillAwarenessWorkshops,
                   ),
+                  SizedBox(height: 10.h),
                   _buildProcessStep(
                     '2',
-                    'Counseling',
-                    'Personalized career counseling sessions',
-                    Colors.deepOrange,
+                    l10n.netritvaPersonalCounseling,
+                    l10n.netritvaOneOnOnePersonalizedCareerMappingAndCounselingSessions,
                   ),
+                  SizedBox(height: 10.h),
                   _buildProcessStep(
                     '3',
-                    'Mentorship',
-                    'Connect with mentors and industry professionals',
-                    Colors.deepOrangeAccent,
+                    l10n.netritvaLongTermMentorship,
+                    l10n.netritvaContinuousGuidanceFromCollegeStudentsAndIndustryProfessionals,
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Our Impact'),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaOurImpact),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
                         child: _buildImpactCard(
-                          'Career',
-                          'Clarity Gained',
-                          Color(0xFFFFA726),
+                          l10n.netritvaCareerClarity,
+                          l10n.netritvaGainedByHundreds,
+                          Colors.blue,
                         ),
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: _buildImpactCard(
-                          'Exam',
-                          'Awareness',
-                          Color(0xFFFFB74D),
+                          l10n.netritvaExamGuidance,
+                          l10n.netritvaHigherEducationPaths,
+                          Colors.black,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
                         child: _buildImpactCard(
-                          'Education',
-                          'Pathways Clear',
-                          Color(0xFFFFC95D),
+                          l10n.netritvaClearDirection,
+                          l10n.netritvaPathwaysMappedOut,
+                          Colors.black,
                         ),
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: _buildImpactCard(
-                          'Confusion',
-                          'Overcome',
-                          Color(0xFFFFD54F),
+                          l10n.netritvaConfidence,
+                          l10n.netritvaConfusionOvercome,
+                          Colors.blue,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Personal Development Impact'),
-                  SizedBox(height: 12),
-                  _buildImpactListCard('Overcome confusion', Icons.check_box),
-                  SizedBox(height: 12),
-                  _buildImpactListCard('Build ambition and goals', Icons.flag),
-                  SizedBox(height: 12),
-                  _buildImpactListCard('Develop confidence', Icons.verified),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaPersonalDevelopmentImpact),
+                  SizedBox(height: 12.h),
                   _buildImpactListCard(
-                    'Create goal-oriented mindsets',
-                    Icons.trending_up,
+                    l10n.netritvaOvercomeCareerConfusionAnxietyAndPeerPressure,
+                    Icons.check_circle_outline_rounded,
                   ),
-                  SizedBox(height: 30),
-                  _buildSectionTitle('Future Plans'),
-                  SizedBox(height: 12),
-                  _buildFutureCard(
-                    'Create a structured mentorship network',
-                    Icons.hub,
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaBuildClearAcademicAmbitionAndActionableCareerGoals,
+                    Icons.flag_outlined,
                   ),
-                  SizedBox(height: 12),
-                  _buildFutureCard(
-                    'Connect with industry professionals',
-                    Icons.business,
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaDevelopStrongInterpersonalConfidenceAndPublicSpeaking,
+                    Icons.verified_outlined,
                   ),
-                  SizedBox(height: 12),
-                  _buildFutureCard(
-                    'Connect with alumni network',
-                    Icons.people_alt,
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaCreateGoalOrientedMindsetsWithPositiveWorkEthic,
+                    Icons.trending_up_rounded,
                   ),
-                  SizedBox(height: 12),
-                  _buildFutureCard(
-                    'Provide scholarship guidance',
-                    Icons.card_giftcard,
+                  SizedBox(height: 28.h),
+                  _buildSectionTitle(l10n.netritvaFuturePlans),
+                  SizedBox(height: 12.h),
+                  _buildImpactListCard(
+                    l10n.netritvaExpandMentorNetworkAcrossCollegesAndCorporateAlumni,
+                    Icons.hub_outlined,
                   ),
-                  SizedBox(height: 12),
-                  _buildFutureCard(
-                    'Offer internship opportunities',
-                    Icons.work,
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaIntegrateVocationalGuidanceApprenticeshipsAndJobPreparation,
+                    Icons.work_outline_rounded,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaConnectDeservingStudentsWithScholarshipAndHigherEdFunding,
+                    Icons.card_giftcard_rounded,
+                  ),
+                  SizedBox(height: 10.h),
+                  _buildImpactListCard(
+                    l10n.netritvaBuildPeerMentorshipEcosystemsWithinSchoolAlumniCommunities,
+                    Icons.diversity_3_outlined,
+                  ),
+                  SizedBox(height: 30.h),
                 ],
               ),
             ),
@@ -231,91 +281,143 @@ class NetritvaPage extends StatelessWidget {
     );
   }
 
+  // Section title matching lines 74-88 of volunteer_home_page.dart
   static Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFFFF8A00),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Container(height: 25.h, width: 7.h, color: Colors.black),
+        ),
+        SizedBox(width: 10.w),
+        Text(
+          title.toUpperCase(),
+          style: GoogleFonts.oswald(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      ],
     );
   }
 
   static Widget _buildDescriptionCard(String text, IconData icon) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color(0xFFFFA726).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFFFA726), width: 1),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Color(0xFFFFA726), size: 24),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.5,
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(16.r),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Icon(icon, color: Colors.black87, size: 24),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Text(
+                text,
+                style: GoogleFonts.roboto(
+                  fontSize: 13,
+                  color: Colors.grey.shade700,
+                  height: 1.4,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   static Widget _buildFeaturesList(List<String> features) {
-    return Column(
-      children: features
-          .map(
-            (feature) => Padding(
-              padding: EdgeInsets.only(bottom: 12),
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(16.r),
+        child: Column(
+          children: features.map((feature) {
+            final isLast = features.last == feature;
+            return Padding(
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 12.h),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.check_circle, color: Color(0xFFFFA726), size: 20),
-                  SizedBox(width: 12),
+                  const Icon(
+                    Icons.check_circle,
+                    color: Colors.black87,
+                    size: 20,
+                  ),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       feature,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      style: GoogleFonts.roboto(
+                        fontSize: 13,
+                        color: Colors.grey.shade800,
+                        height: 1.35,
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-          )
-          .toList(),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
   static Widget _buildBeneficiaryCard(String title, IconData icon) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Color(0xFFFFA726).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
+      child: Card(
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Column(
-          children: [
-            Icon(icon, color: Color(0xFFFFA726), size: 32),
-            SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFF8A00),
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 48.h,
+                width: 48.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: Colors.grey.shade100,
+                ),
+                padding: EdgeInsets.all(6.r),
+                child: Icon(icon, color: Colors.black87, size: 26),
               ),
-            ),
-          ],
+              SizedBox(height: 10.h),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.oswald(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  height: 1.2,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -325,40 +427,54 @@ class NetritvaPage extends StatelessWidget {
     String title,
     String description,
     IconData icon,
-    Color color,
   ) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 32),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-              ],
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(14.r),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              height: 48.h,
+              width: 48.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.r),
+                color: Colors.grey.shade100,
+              ),
+              padding: EdgeInsets.all(6.r),
+              child: Icon(icon, color: Colors.black87, size: 24),
             ),
-          ),
-        ],
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.oswald(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    description,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -367,44 +483,128 @@ class NetritvaPage extends StatelessWidget {
     String number,
     String title,
     String description,
-    Color color,
   ) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16),
-      child: Row(
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(14.r),
+        child: Row(
+          children: [
+            Container(
+              width: 44.r,
+              height: 44.r,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF111212), Color(0xFF2B3D54)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  number,
+                  style: GoogleFonts.oswald(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.oswald(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    description,
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Exact matching VolunteerCardUtil from homescreen
+  static Widget _buildImpactCard(
+    String subtitle,
+    String title,
+    Color curvedColor,
+  ) {
+    return Container(
+      height: 120.h,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Stack(
         children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            child: Center(
-              child: Text(
-                number,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+          // Top curved border like VolunteerCardUtil
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 7.h,
+              decoration: BoxDecoration(
+                color: curvedColor,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(18),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 16),
-          Expanded(
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
+                  style: GoogleFonts.roboto(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(255, 113, 113, 113),
+                    height: 1.2,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
-                  description,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  subtitle,
+                  style: GoogleFonts.oswald(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
                 ),
               ],
             ),
@@ -414,84 +614,37 @@ class NetritvaPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildImpactCard(String number, String label, Color color) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [color, color.withOpacity(0.7)]),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(
-            number,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-
   static Widget _buildImpactListCard(String text, IconData icon) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Color(0xFFFFA726), size: 28),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.4,
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(14.r),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Icon(icon, color: Colors.black87, size: 20),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Text(
+                text,
+                style: GoogleFonts.roboto(
+                  fontSize: 13,
+                  color: Colors.grey.shade800,
+                  height: 1.35,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget _buildFutureCard(String text, IconData icon) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color(0xFFFFA726).withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFFFA726).withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Color(0xFFFFA726), size: 28),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

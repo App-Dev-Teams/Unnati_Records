@@ -30,10 +30,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
   lottie: ^3.3.2
   font_awesome_flutter: ^11.0.0
   pdfx: ^2.9.2
   flutter_riverpod: ^3.0.3
+  intl: ^0.20.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -54,6 +58,8 @@ dependencies:
   path: ^1.9.1
   fl_chart: ^1.2.0
   image_picker: ^1.2.2
+  zego_express_engine: ^3.25.0
+  permission_handler: ^12.0.1
   
 
 dev_dependencies:
@@ -71,8 +77,8 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: true
-  ios: ture
-  image_path: "assets/images/unnatiLogoColourFix.png"
+  ios: true
+  image_path: "assets/images/u_connect_logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -84,12 +90,13 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/lottie/
     - assets/images/
-    - assets/pdfs/
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

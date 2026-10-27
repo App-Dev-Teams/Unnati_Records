@@ -8,6 +8,8 @@ import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class SignupStudent extends StatefulWidget {
   const SignupStudent({super.key});
 
@@ -22,7 +24,7 @@ class _SignupStudentState extends State<SignupStudent> {
   final TextEditingController phoneController = TextEditingController();
   // final TextEditingController classController = TextEditingController();
   // final TextEditingController schoolController = TextEditingController();
-  List<int> selectClass = [5,6,7,8,9,10,11,12];
+  List<int> selectClass = [5, 6, 7, 8, 9, 10, 11, 12];
   List<String> schools = [];
   int? selectedClass;
   String? selectedSchool;
@@ -67,8 +69,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your name"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryourname),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -78,8 +80,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (name.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Name must be at least 3 characters"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.namemustbeatleast3characters,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -89,8 +93,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your email"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryouremail),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -100,8 +104,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (!email.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a valid email"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteravalidemail),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -111,8 +115,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a password"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenterapassword),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -122,8 +126,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (password.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password must be at least 6 characters"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.passwordmustbeatleast6characters,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -133,8 +139,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (phoneNo.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your phone number"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pleaseenteryourphonenumber,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -144,8 +152,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (phoneNo.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Phone number must be 10 digits"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.phonenumbermustbe10digits,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -155,8 +165,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (selectedClass == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select your class"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseselectyourclass),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -166,8 +176,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
     if (school.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your school name"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pleaseenteryourschoolname,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -197,7 +209,7 @@ class _SignupStudentState extends State<SignupStudent> {
         SnackBar(
           content: Text(result['message'] ?? 'Signup successful'),
           backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
       // Save role and user data if returned by server (defensive)
@@ -253,7 +265,7 @@ class _SignupStudentState extends State<SignupStudent> {
       });
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        MaterialPageRoute(builder: (_) => AuthCheck()),
         (route) => false, // Remove all previous routes
       );
     } else {
@@ -274,7 +286,7 @@ class _SignupStudentState extends State<SignupStudent> {
         SnackBar(
           content: Text(errorMessage),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }
@@ -337,10 +349,10 @@ class _SignupStudentState extends State<SignupStudent> {
 
               SizedBox(height: 10.h, width: double.infinity),
               Text(
-                'Student',
+                AppLocalizations.of(context)!.student,
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 30.sp,
-                  color: const Color.fromARGB(255, 9, 75, 128),
+                  color: Color.fromARGB(255, 9, 75, 128),
                 ),
               ),
               SizedBox(height: 10.h, width: double.infinity),
@@ -348,7 +360,7 @@ class _SignupStudentState extends State<SignupStudent> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Username',
+                  title: AppLocalizations.of(context)!.username,
                   controller: usernameController,
                 ),
               ),
@@ -357,7 +369,7 @@ class _SignupStudentState extends State<SignupStudent> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Email',
+                  title: AppLocalizations.of(context)!.email,
                   controller: emailController,
                 ),
               ),
@@ -366,7 +378,7 @@ class _SignupStudentState extends State<SignupStudent> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Password',
+                  title: AppLocalizations.of(context)!.password,
                   controller: passwordController,
                 ),
               ),
@@ -375,7 +387,7 @@ class _SignupStudentState extends State<SignupStudent> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Phone Number',
+                  title: AppLocalizations.of(context)!.phonenumber,
                   controller: phoneController,
                 ),
               ),
@@ -383,8 +395,8 @@ class _SignupStudentState extends State<SignupStudent> {
 
               SizedBox(
                 width: 300.w,
-                child:DropdownButtonFormField(
-                  value: selectedClass,
+                child: DropdownButtonFormField(
+                  initialValue: selectedClass,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -402,14 +414,17 @@ class _SignupStudentState extends State<SignupStudent> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     hint: Text(
-                      "Select Class",
+                      AppLocalizations.of(context)!.selectclass,
                       style: GoogleFonts.oswald(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
                   items: selectClass.map((sc) {
-                    return DropdownMenuItem(value: sc, child: Text(sc.toString()));
+                    return DropdownMenuItem(
+                      value: sc,
+                      child: Text(sc.toString()),
+                    );
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
@@ -423,7 +438,7 @@ class _SignupStudentState extends State<SignupStudent> {
               SizedBox(
                 width: 300.w,
                 child: DropdownButtonFormField(
-                  value: selectedSchool,
+                  initialValue: selectedSchool,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -441,9 +456,9 @@ class _SignupStudentState extends State<SignupStudent> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     hint: Text(
-                      "Select School",
+                      AppLocalizations.of(context)!.selectschool,
                       style: GoogleFonts.oswald(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
@@ -462,7 +477,7 @@ class _SignupStudentState extends State<SignupStudent> {
               ElevatedButton(
                 onPressed: isLoading ? null : handleSignup,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                  backgroundColor: Color.fromARGB(255, 9, 75, 128),
                   padding: EdgeInsets.symmetric(
                     horizontal: 50.w,
                     vertical: 15.h,
@@ -472,7 +487,7 @@ class _SignupStudentState extends State<SignupStudent> {
                   ),
                 ),
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
@@ -483,7 +498,7 @@ class _SignupStudentState extends State<SignupStudent> {
                         ),
                       )
                     : Text(
-                        'Sign Up',
+                        AppLocalizations.of(context)!.signup,
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
               ),

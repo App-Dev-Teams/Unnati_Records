@@ -7,23 +7,25 @@ class StudentCardsUtil extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color iconColor;
-  final Widget nextPage ;
-    const StudentCardsUtil({
+  final Widget nextPage;
+  const StudentCardsUtil({
     super.key,
     required this.icon,
     required this.iconColor,
     required this.title,
     required this.subtitle,
     required this.nextPage,
-
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         print("Navigate to $title page");
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>nextPage));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => nextPage),
+        );
       },
       child: SizedBox(
         height: 180.h,
@@ -51,14 +53,14 @@ class StudentCardsUtil extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(8.r),
                   decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.10),
+                    color: iconColor.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(icon, color: iconColor, size: 15),
                 ),
-      
+
                 SizedBox(height: 12.h),
-      
+
                 //title
                 Text(
                   title,
@@ -68,9 +70,9 @@ class StudentCardsUtil extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-      
+
                 SizedBox(height: 6.h),
-      
+
                 //subtitle
                 Text(
                   subtitle,

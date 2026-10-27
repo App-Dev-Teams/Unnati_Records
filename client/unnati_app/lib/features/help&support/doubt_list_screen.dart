@@ -8,11 +8,14 @@ import 'package:unnati_app/features/help&support/create_doubt_screen.dart';
 import 'package:unnati_app/features/help&support/doubt_thread_screen.dart';
 import 'package:unnati_app/models/doubt.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class DoubtListScreen extends ConsumerStatefulWidget {
   final bool showOpenDoubts;
   final bool showClosedDoubts;
   final bool readOnly;
   final String title;
+  final bool hideAppBar;
 
   const DoubtListScreen({
     super.key,
@@ -20,6 +23,7 @@ class DoubtListScreen extends ConsumerStatefulWidget {
     this.showClosedDoubts = false,
     this.readOnly = false,
     this.title = 'My Doubts',
+    this.hideAppBar = false,
   });
 
   @override
@@ -32,7 +36,7 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
   @override
   void initState() {
     super.initState();
-    _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    _autoRefreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
       if (!mounted) return;
       _refresh();
     });
@@ -65,21 +69,21 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
         : ref.watch(myDoubtsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: widget.hideAppBar ? null : AppBar(title: Text(widget.title)),
       floatingActionButton: (widget.showOpenDoubts || widget.showClosedDoubts)
           ? null
           : FloatingActionButton.extended(
               onPressed: () async {
                 final created = await Navigator.push<bool>(
                   context,
-                  MaterialPageRoute(builder: (_) => const CreateDoubtScreen()),
+                  MaterialPageRoute(builder: (_) => CreateDoubtScreen()),
                 );
                 if (created == true) {
                   _refresh();
                 }
               },
-              icon: const Icon(Icons.add),
-              label: const Text('Add Doubt'),
+              icon: Icon(Icons.add),
+              label: Text(AppLocalizations.of(context)!.adddoubt),
             ),
       body: doubtsAsync.when(
         data: (doubts) {
@@ -105,7 +109,7 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
           return RefreshIndicator(
             onRefresh: _refresh,
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               itemBuilder: (context, index) {
                 final doubt = doubts[index];
                 return _DoubtCard(
@@ -127,28 +131,31 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
                   },
                 );
               },
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              separatorBuilder: (_, __) => SizedBox(height: 10),
               itemCount: doubts.length,
             ),
           );
         },
         error: (error, _) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Failed to load doubts: $error',
+                  "Failed to load doubts: $error",
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10),
-                ElevatedButton(onPressed: _refresh, child: const Text('Retry')),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: _refresh,
+                  child: Text(AppLocalizations.of(context)!.retry),
+                ),
               ],
             ),
           ),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -177,7 +184,7 @@ class _DoubtCard extends StatelessWidget {
       child: Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -195,12 +202,9 @@ class _DoubtCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.12),
+                      color: statusColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -213,14 +217,14 @@ class _DoubtCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
-                'Subject: ${doubt.subject.isEmpty ? 'General' : doubt.subject}',
+                "Subject: ${doubt.subject.isEmpty ? 'General' : doubt.subject}",
               ),
               if (showStudentName)
-                Text('Student: ${doubt.studentName ?? 'Unknown'}'),
-              const SizedBox(height: 6),
-              Text('Created: $createdAtText'),
+                Text("Student: ${doubt.studentName ?? 'Unknown'}"),
+              SizedBox(height: 6),
+              Text("Created: $createdAtText"),
             ],
           ),
         ),

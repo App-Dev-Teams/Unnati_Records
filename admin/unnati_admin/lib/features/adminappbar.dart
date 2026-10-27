@@ -30,6 +30,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
       shadowColor: Colors.black54,
       toolbarHeight: 70,
       titleSpacing: 20,
+      iconTheme: const IconThemeData(color: Colors.white),
 
       title: Padding(
         padding: EdgeInsets.only(left: 12.w),

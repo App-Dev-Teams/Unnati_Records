@@ -6,11 +6,17 @@ import 'package:pinput/pinput.dart';
 import 'package:unnati_app/features/forgot_pass/pass_reset_screen.dart';
 import 'package:unnati_app/services/api_service.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class OtpVerification extends StatefulWidget {
   final String emailSent;
   final String accountType;
 
-  const OtpVerification({super.key, required this.emailSent, required this.accountType});
+  const OtpVerification({
+    super.key,
+    required this.emailSent,
+    required this.accountType,
+  });
 
   @override
   State<OtpVerification> createState() => _OtpVerificationState();
@@ -41,7 +47,7 @@ class _OtpVerificationState extends State<OtpVerification> {
             children: [
               Center(
                 //lottie
-                child: Container(
+                child: SizedBox(
                   height: 200.h,
                   width: 200.w,
                   child: Lottie.asset(
@@ -52,14 +58,14 @@ class _OtpVerificationState extends State<OtpVerification> {
               SizedBox(height: 30.h),
               //otp sent statement
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
+                padding: EdgeInsets.only(left: 30, right: 30),
                 child: Center(
                   child: Text(
-                    'OTP sent to : ${widget.emailSent}',
+                    "OTP sent to : ${widget.emailSent}",
                     style: GoogleFonts.oswald(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
-                      color: const Color.fromARGB(255, 118, 118, 118),
+                      color: Color.fromARGB(255, 118, 118, 118),
                     ),
                   ),
                 ),
@@ -68,7 +74,7 @@ class _OtpVerificationState extends State<OtpVerification> {
 
               Center(
                 child: Text(
-                  'Enter OTP',
+                  AppLocalizations.of(context)!.enteroTP,
                   style: GoogleFonts.oswald(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -103,7 +109,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7),
                     ),
-                    backgroundColor: const Color.fromARGB(255, 9, 75, 128),
+                    backgroundColor: Color.fromARGB(255, 9, 75, 128),
                   ),
 
                   onPressed: _isVerifying
@@ -112,8 +118,12 @@ class _OtpVerificationState extends State<OtpVerification> {
                           final otp = _otp.trim();
                           if (otp.length != 6) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a 6-digit OTP'),
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.pleaseentera6digitoTP,
+                                ),
                               ),
                             );
                             return;
@@ -144,7 +154,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                               MaterialPageRoute(
                                 builder: (context) => PasswordResetScreen(
                                   email: widget.emailSent,
-                                  accountType: widget.accountType, 
+                                  accountType: widget.accountType,
                                 ),
                               ),
                             );
@@ -152,9 +162,9 @@ class _OtpVerificationState extends State<OtpVerification> {
                         },
                   child: Center(
                     child: _isVerifying
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            'Verify OTP',
+                            AppLocalizations.of(context)!.verifyoTP,
                             style: GoogleFonts.cormorantSc(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
@@ -173,7 +183,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                   style: GoogleFonts.oswald(
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
-                    color: const Color.fromARGB(255, 118, 118, 118),
+                    color: Color.fromARGB(255, 118, 118, 118),
                   ),
                 ),
               ),
@@ -183,9 +193,9 @@ class _OtpVerificationState extends State<OtpVerification> {
                     //resend logic
                   },
                   child: Text(
-                    "Resend",
+                    AppLocalizations.of(context)!.resend,
                     style: TextStyle(
-                      color: const Color.fromARGB(255, 118, 118, 118),
+                      color: Color.fromARGB(255, 118, 118, 118),
                       decoration: TextDecoration.underline,
                     ),
                   ),

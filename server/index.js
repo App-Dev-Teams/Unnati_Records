@@ -13,6 +13,7 @@ const doubtRouter = require('./routes/doubt.routes.js');
 const liveDoubtRouter=require('./routes/liveDoubt.routes.js');
 const schoolRouter = require('./routes/school.routes.js');
 const profileRouter = require('./routes/profile.routes.js');
+const quizRouter = require('./routes/quiz.routes.js');
 require("dotenv").config();
 
 
@@ -44,6 +45,7 @@ app.use('/api/doubts', doubtRouter);
 app.use("/api/schools",schoolRouter);
 app.use("/api",profileRouter);
 app.use("/api/live-doubts",liveDoubtRouter);
+app.use('/api/quizzes', quizRouter);
 
 //app.use("/api/otp", require("./routes/otp.routes"));
 

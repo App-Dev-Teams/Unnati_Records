@@ -8,6 +8,8 @@ import 'package:unnati_app/components/textfield_util.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class SignUpVolunteer extends StatefulWidget {
   const SignUpVolunteer({super.key});
 
@@ -52,8 +54,8 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your name"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryourname),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -63,8 +65,10 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (name.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Name must be at least 3 characters"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.namemustbeatleast3characters,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -74,8 +78,10 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (!isValidVolunteerEmail(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a valid IIITBH email"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pleaseenteravalidiIITBHemail,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -85,8 +91,8 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a password"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenterapassword),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -96,8 +102,10 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (password.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Password must be at least 6 characters"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.passwordmustbeatleast6characters,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -107,8 +115,10 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your phone number"),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pleaseenteryourphonenumber,
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -118,8 +128,8 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
     if (selectedProgram == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select a program"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseselectaprogram),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -149,7 +159,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
         SnackBar(
           content: Text(result['message'] ?? 'Signup successful'),
           backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
       // Save role if returned by server (defensive)
@@ -208,7 +218,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        MaterialPageRoute(builder: (_) => AuthCheck()),
         (route) => false, // Remove all previous routes
       );
     } else {
@@ -231,7 +241,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
         SnackBar(
           content: Text(errorMessage),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }
@@ -292,7 +302,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
               SizedBox(height: 20.h),
               SizedBox(height: 10.h, width: double.infinity),
               Text(
-                'Volunteer',
+                AppLocalizations.of(context)!.volunteer,
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 30.sp,
                   color: Color.fromARGB(255, 9, 75, 128),
@@ -302,7 +312,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Username',
+                  title: AppLocalizations.of(context)!.username,
                   controller: usernameController,
                 ),
               ),
@@ -318,7 +328,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Password',
+                  title: AppLocalizations.of(context)!.password,
                   controller: passwordController,
                 ),
               ),
@@ -326,7 +336,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Phone Number',
+                  title: AppLocalizations.of(context)!.phonenumber,
                   controller: phoneController,
                 ),
               ),
@@ -336,21 +346,21 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                 child: InputDecorator(
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                         color: Color.fromARGB(255, 72, 160, 248),
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                         color: Color.fromARGB(255, 152, 199, 246),
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    labelText: 'Select Program',
+                    labelText: AppLocalizations.of(context)!.selectprogram,
                     labelStyle: GoogleFonts.oswald(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -359,20 +369,23 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                   child: DropdownButton<String>(
                     value: selectedProgram,
                     hint: Text(
-                      'Select Program',
+                      AppLocalizations.of(context)!.selectprogram,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     isExpanded: true,
-                    underline: const SizedBox.shrink(),
-                    items: const [
+                    underline: SizedBox.shrink(),
+                    items: [
                       DropdownMenuItem(
                         value: 'DigiXplore',
-                        child: Text('DigiXplore'),
+                        child: Text(AppLocalizations.of(context)!.digiXplore),
                       ),
-                      DropdownMenuItem(value: 'Akshar', child: Text('Akshar')),
+                      DropdownMenuItem(
+                        value: 'Akshar',
+                        child: Text(AppLocalizations.of(context)!.akshar),
+                      ),
                       DropdownMenuItem(
                         value: 'Netritva',
-                        child: Text('Netritva'),
+                        child: Text(AppLocalizations.of(context)!.netritva),
                       ),
                     ],
                     onChanged: (value) {
@@ -397,7 +410,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                   ),
                 ),
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
@@ -408,7 +421,7 @@ class _SignUpVolunteerState extends State<SignUpVolunteer> {
                         ),
                       )
                     : Text(
-                        'Sign Up',
+                        AppLocalizations.of(context)!.signup,
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
               ),

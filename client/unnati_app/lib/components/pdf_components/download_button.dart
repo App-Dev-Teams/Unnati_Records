@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/services/download_service.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mydownloads.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class DownloadButton extends StatefulWidget {
   final String fileUrl;
   final String fileName;
@@ -12,14 +14,14 @@ class DownloadButton extends StatefulWidget {
   final VoidCallback? onDownloadStart;
 
   const DownloadButton({
-    Key? key,
+    super.key,
     required this.fileUrl,
     required this.fileName,
     required this.fileType,
     required this.onDownloadComplete,
     required this.onError,
     this.onDownloadStart,
-  }) : super(key: key);
+  });
 
   @override
   State<DownloadButton> createState() => _DownloadButtonState();
@@ -41,16 +43,12 @@ class _DownloadButtonState extends State<DownloadButton> {
       onTap: _handleDownload,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFF4A7CF7).withOpacity(0.1),
+          color: Color(0xFF4A7CF7).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Icon(
-          Icons.download_rounded,
-          color: Color(0xFF4A7CF7),
-          size: 20,
-        ),
+        child: Icon(Icons.download_rounded, color: Color(0xFF4A7CF7), size: 20),
       ),
     );
   }
@@ -58,9 +56,9 @@ class _DownloadButtonState extends State<DownloadButton> {
   /// Build downloading state with progress indicator
   Widget _buildDownloadingState() {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: const Color(0xFF4A7CF7).withOpacity(0.1),
+        color: Color(0xFF4A7CF7).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: SizedBox(
@@ -76,16 +74,16 @@ class _DownloadButtonState extends State<DownloadButton> {
                 value: downloadProgress,
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  const Color(0xFF4A7CF7).withOpacity(0.8),
+                  Color(0xFF4A7CF7).withValues(alpha: 0.8),
                 ),
               ),
             ),
             Text(
-              '${(downloadProgress * 100).toInt()}%',
+              "${(downloadProgress * 100).toInt()}%",
               style: GoogleFonts.nunito(
                 fontSize: 8,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF4A7CF7),
+                color: Color(0xFF4A7CF7),
               ),
             ),
           ],
@@ -249,7 +247,7 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
       _updateStatus('Download complete!');
 
       if (mounted) {
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future.delayed(Duration(milliseconds: 500));
         widget.onDownloadComplete(downloadPdf);
         Navigator.of(context).pop();
       }
@@ -279,7 +277,7 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Download Progress',
+        AppLocalizations.of(context)!.downloadprogress,
         style: GoogleFonts.nunito(fontWeight: FontWeight.w700, fontSize: 18),
       ),
       content: Column(
@@ -289,31 +287,23 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
             widget.fileName,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.nunito(
-              fontSize: 14,
-              color: const Color(0xFF6B7280),
-            ),
+            style: GoogleFonts.nunito(fontSize: 14, color: Color(0xFF6B7280)),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: _progress,
               minHeight: 8,
-              backgroundColor: const Color(0xFFE5E7EB),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                const Color(0xFF4A7CF7),
-              ),
+              backgroundColor: Color(0xFFE5E7EB),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4A7CF7)),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
             _status,
             textAlign: TextAlign.center,
-            style: GoogleFonts.nunito(
-              fontSize: 12,
-              color: const Color(0xFF6B7280),
-            ),
+            style: GoogleFonts.nunito(fontSize: 12, color: Color(0xFF6B7280)),
           ),
         ],
       ),
@@ -323,11 +313,9 @@ class _DownloadProgressDialogState extends State<_DownloadProgressDialog> {
               ? () => Navigator.of(context).pop()
               : null,
           child: Text(
-            'Close',
+            AppLocalizations.of(context)!.close,
             style: GoogleFonts.nunito(
-              color: _progress == 1.0
-                  ? const Color(0xFF4A7CF7)
-                  : const Color(0xFFB0B9C1),
+              color: _progress == 1.0 ? Color(0xFF4A7CF7) : Color(0xFFB0B9C1),
             ),
           ),
         ),

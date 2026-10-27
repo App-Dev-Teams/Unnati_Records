@@ -18,16 +18,18 @@ class DownloadProvider extends StateNotifier<List<DownloadPdf>> {
     try {
       final downloads = await _dbService.getAllDownloads();
       final downloadPdfs = downloads
-          .map((download) => DownloadPdf(
-                id: download.id,
-                title: download.title,
-                path: download.filePath,
-                fileUrl: download.fileUrl,
-                fileType: download.fileType,
-                downloadedAt: download.downloadedAt,
-                fileSize: download.fileSize,
-                isLocal: true,
-              ))
+          .map(
+            (download) => DownloadPdf(
+              id: download.id,
+              title: download.title,
+              path: download.filePath,
+              fileUrl: download.fileUrl,
+              fileType: download.fileType,
+              downloadedAt: download.downloadedAt,
+              fileSize: download.fileSize,
+              isLocal: true,
+            ),
+          )
           .toList();
 
       state = downloadPdfs;
@@ -72,7 +74,9 @@ class DownloadProvider extends StateNotifier<List<DownloadPdf>> {
       }
 
       // Update state
-      state = state.where((e) => !(e.title == title && e.path == path)).toList();
+      state = state
+          .where((e) => !(e.title == title && e.path == path))
+          .toList();
     } catch (e) {
       print('Error removing download: $e');
     }
@@ -88,16 +92,18 @@ class DownloadProvider extends StateNotifier<List<DownloadPdf>> {
     try {
       final downloads = await _dbService.getDownloadsByType(fileType);
       return downloads
-          .map((download) => DownloadPdf(
-                id: download.id,
-                title: download.title,
-                path: download.filePath,
-                fileUrl: download.fileUrl,
-                fileType: download.fileType,
-                downloadedAt: download.downloadedAt,
-                fileSize: download.fileSize,
-                isLocal: true,
-              ))
+          .map(
+            (download) => DownloadPdf(
+              id: download.id,
+              title: download.title,
+              path: download.filePath,
+              fileUrl: download.fileUrl,
+              fileType: download.fileType,
+              downloadedAt: download.downloadedAt,
+              fileSize: download.fileSize,
+              isLocal: true,
+            ),
+          )
           .toList();
     } catch (e) {
       print('Error getting downloads by type: $e');
@@ -110,16 +116,18 @@ class DownloadProvider extends StateNotifier<List<DownloadPdf>> {
     try {
       final downloads = await _dbService.searchDownloads(query);
       return downloads
-          .map((download) => DownloadPdf(
-                id: download.id,
-                title: download.title,
-                path: download.filePath,
-                fileUrl: download.fileUrl,
-                fileType: download.fileType,
-                downloadedAt: download.downloadedAt,
-                fileSize: download.fileSize,
-                isLocal: true,
-              ))
+          .map(
+            (download) => DownloadPdf(
+              id: download.id,
+              title: download.title,
+              path: download.filePath,
+              fileUrl: download.fileUrl,
+              fileType: download.fileType,
+              downloadedAt: download.downloadedAt,
+              fileSize: download.fileSize,
+              isLocal: true,
+            ),
+          )
           .toList();
     } catch (e) {
       print('Error searching downloads: $e');

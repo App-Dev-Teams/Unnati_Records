@@ -22,7 +22,7 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
   //   state = subjects;
   // }
 
-//load folders(subjects)
+  //load folders(subjects)
   Future<void> loadSubjects() async {
     if (_hasLoadedSubjects) return;
     try {
@@ -41,7 +41,7 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     }
   }
 
-//add subject to backend
+  //add subject to backend
   Future<void> createSubject({
     required String name,
     required String className,
@@ -95,7 +95,6 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
 
     state = state.where((subject) => subject.id != folderId).toList();
   }
-
 
   //upload file--
   Future<void> uploadFile({
@@ -188,32 +187,26 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
 
   //load files for a subject--
   Future<void> loadFiles(String folderId) async {
-  final files = await ApiService.fetchFilesByFolder(folderId);
+    final files = await ApiService.fetchFilesByFolder(folderId);
 
-  final loadedFiles =
-      files.map((f) {
-        return FileItem(
-          id: f['_id'],
-          name: f['displayName'],
-          extension: f['type'],
-          path: '',
-          url: f['link'],
-          imagekitFileId: f['imagekitFileId'],
-        );
-      }).toList();
+    final loadedFiles = files.map((f) {
+      return FileItem(
+        id: f['_id'],
+        name: f['displayName'],
+        extension: f['type'],
+        path: '',
+        url: f['link'],
+        imagekitFileId: f['imagekitFileId'],
+      );
+    }).toList();
 
     state = [
       for (final s in state)
-        if (s.id == folderId)
-          s.copyWith(
-            files: loadedFiles,
-          )
-        else
-          s,
+        if (s.id == folderId) s.copyWith(files: loadedFiles) else s,
     ];
   }
 
-//rename file--
+  //rename file--
   Future<void> renameFile({
     required String subjectName,
     required String className,
@@ -227,10 +220,7 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
 
     state = [
       for (final subject in state)
-        if (
-          subject.name == subjectName &&
-          subject.className == className
-        )
+        if (subject.name == subjectName && subject.className == className)
           Subject(
             id: subject.id,
             name: subject.name,
@@ -255,38 +245,27 @@ class SubjectNotifier extends StateNotifier<List<Subject>> {
     ];
   }
 
-
-//delete file--
+  //delete file--
   Future<void> deleteFile({
     required String subjectName,
     required String className,
     required FileItem file,
   }) async {
-    await ApiService.deleteFile(
-      file.id!,
-    );
+    await ApiService.deleteFile(file.id!);
 
     state = [
       for (final subject in state)
-        if (
-          subject.name == subjectName &&
-          subject.className == className
-        )
+        if (subject.name == subjectName && subject.className == className)
           Subject(
             id: subject.id,
             name: subject.name,
             className: subject.className,
-            files: subject.files
-                .where(
-                  (f) => f.id != file.id,
-                )
-                .toList(),
+            files: subject.files.where((f) => f.id != file.id).toList(),
           )
         else
           subject,
     ];
   }
-
 }
 
 final subjectProvider = StateNotifierProvider<SubjectNotifier, List<Subject>>(

@@ -7,16 +7,19 @@ class Volunteer {
   final String name;
   final String program;
 
-  Volunteer({required this.id, required this.email, required this.name, required this.program});
+  Volunteer({
+    required this.id,
+    required this.email,
+    required this.name,
+    required this.program,
+  });
 
-  factory Volunteer.fromJson(
-      Map<String,dynamic> json){
-
+  factory Volunteer.fromJson(Map<String, dynamic> json) {
     return Volunteer(
       id: json["_id"],
       name: json["name"],
       email: json["email"],
-      program: json["program"]??"none",
+      program: json["program"] ?? "none",
     );
   }
 }

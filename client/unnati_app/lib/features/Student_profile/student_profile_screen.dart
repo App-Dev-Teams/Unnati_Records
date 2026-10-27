@@ -7,6 +7,8 @@ import 'package:unnati_app/features/volunteer_profile/Volunteer_profile_listtile
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class StudedntProfileScreen extends StatefulWidget {
   const StudedntProfileScreen({super.key});
 
@@ -202,21 +204,21 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
-          backgroundColor: const Color(0xFFF5F5F5),
+          backgroundColor: Color(0xFFF5F5F5),
           surfaceTintColor: Colors.transparent,
           elevation: 12,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-          contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+          titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 8),
+          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 8),
+          actionsPadding: EdgeInsets.fromLTRB(24, 8, 24, 20),
 
-          title: const Column(
+          title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Edit Profile',
+                AppLocalizations.of(context)!.editprofile,
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.w900,
@@ -226,7 +228,7 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
               ),
               SizedBox(height: 6),
               Text(
-                'Update your personal information',
+                AppLocalizations.of(context)!.updateyourpersonalinformation,
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.black54,
@@ -252,18 +254,18 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: const TextStyle(
+                      labelText: AppLocalizations.of(context)!.name,
+                      labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF52616B),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.person_outline_rounded,
                         color: Color(0xFF147DAD),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 17,
                       ),
@@ -273,11 +275,11 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: Color(0xFF29B6F6),
                           width: 2,
                         ),
@@ -294,24 +296,24 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   TextFormField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      labelText: 'Phone',
-                      labelStyle: const TextStyle(
+                      labelText: AppLocalizations.of(context)!.phone,
+                      labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF52616B),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.phone_outlined,
                         color: Color(0xFF147DAD),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 17,
                       ),
@@ -321,11 +323,11 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: Color(0xFF29B6F6),
                           width: 2,
                         ),
@@ -342,23 +344,23 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   DropdownButtonFormField<int>(
-                    value: selectedClass,
+                    initialValue: selectedClass,
                     decoration: InputDecoration(
-                      labelText: 'Class',
-                      labelStyle: const TextStyle(
+                      labelText: AppLocalizations.of(context)!.classLabel,
+                      labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF52616B),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.school_outlined,
                         color: Color(0xFF147DAD),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 17,
                       ),
@@ -368,11 +370,11 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: Color(0xFF29B6F6),
                           width: 2,
                         ),
@@ -399,24 +401,24 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   DropdownButtonFormField<String>(
                     isExpanded: true,
-                    value: selectedSchool,
+                    initialValue: selectedSchool,
                     decoration: InputDecoration(
-                      labelText: 'School',
-                      labelStyle: const TextStyle(
+                      labelText: AppLocalizations.of(context)!.school,
+                      labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF52616B),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.apartment_rounded,
                         color: Color(0xFF147DAD),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 17,
                       ),
@@ -426,11 +428,11 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFFE0E6E9)),
+                        borderSide: BorderSide(color: Color(0xFFE0E6E9)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: Color(0xFF29B6F6),
                           width: 2,
                         ),
@@ -477,8 +479,8 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
               height: 50,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF29B6F6),
-                  foregroundColor: const Color(0xFF061A22),
+                  backgroundColor: Color(0xFF29B6F6),
+                  foregroundColor: Color(0xFF061A22),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -524,7 +526,11 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     Navigator.of(dialogContext).pop();
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Profile updated')),
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.profileupdated,
+                        ),
+                      ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -534,8 +540,8 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
                     );
                   }
                 },
-                child: const Text(
-                  'Save Changes',
+                child: Text(
+                  AppLocalizations.of(context)!.savechanges,
                   style: TextStyle(
                     color: Color(0xFF061A22),
                     fontSize: 16,
@@ -551,131 +557,114 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
   }
 
   Future<void> _handleLogout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Color(0xFFF5F5F5),
+        surfaceTintColor: Colors.transparent,
+        elevation: 12,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 8),
+        contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 20),
+        actionsPadding: EdgeInsets.fromLTRB(24, 0, 24, 20),
 
-showDialog(
-  context: context,
-  builder: (BuildContext context) => AlertDialog(
-    backgroundColor: const Color(0xFFF5F5F5),
-    surfaceTintColor: Colors.transparent,
-    elevation: 12,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(24),
-    ),
-    titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-    contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
-    actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-
-    title: const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.logout_rounded,
-              color: Color(0xFF147DAD),
-              size: 27,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Confirm Logout',
-                style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFF061A22),
-                  letterSpacing: -0.5,
+            Row(
+              children: [
+                Icon(Icons.logout_rounded, color: Color(0xFF147DAD), size: 27),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.confirmlogout,
+                    style: TextStyle(
+                      fontSize: 23,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF061A22),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
+            SizedBox(height: 14),
+            Divider(
+              color: Color(0xFF29B6F6),
+              thickness: 3,
+              height: 3,
+              endIndent: 180,
             ),
           ],
         ),
-        SizedBox(height: 14),
-        Divider(
-          color: Color(0xFF29B6F6),
-          thickness: 3,
-          height: 3,
-          endIndent: 180,
-        ),
-      ],
-    ),
 
-    content: const Text(
-      'Are you sure you want to logout?',
-      style: TextStyle(
-        fontSize: 15,
-        height: 1.5,
-        color: Color(0xFF52616B),
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-
-    actions: [
-      Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF061A22),
-                side: const BorderSide(
-                  color: Color(0xFFD5DEE3),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+        content: Text(
+          AppLocalizations.of(context)!.areyousureyouwanttologout,
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.5,
+            color: Color(0xFF52616B),
+            fontWeight: FontWeight.w500,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFF29B6F6),
-                foregroundColor: const Color(0xFF061A22),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
+        ),
 
-                // Clear all stored data
-                await ApiService.clearAllData();
-
-                // Navigate to auth check (which will route to login)
-                if (context.mounted) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AuthCheck(),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Color(0xFF061A22),
+                    side: BorderSide(color: Color(0xFFD5DEE3)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                    (route) => false,
-                  );
-                }
-              },
-              child: const Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
-            ),
+              SizedBox(width: 12),
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Color(0xFF29B6F6),
+                    foregroundColor: Color(0xFF061A22),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+
+                    // Clear all stored data
+                    await ApiService.clearAllData();
+
+                    // Navigate to auth check (which will route to login)
+                    if (context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => AuthCheck()),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.logout,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
-    ],
-  ),
-);
+    );
   }
 
   @override
@@ -725,10 +714,10 @@ showDialog(
 
           appBar: AppBar(
             elevation: 2,
-            backgroundColor: const Color.fromARGB(255, 9, 12, 19),
+            backgroundColor: Color.fromARGB(255, 9, 12, 19),
             foregroundColor: Colors.white,
             title: Text(
-              'Profile',
+              AppLocalizations.of(context)!.profile,
               style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
             ),
             automaticallyImplyLeading: true,
@@ -736,7 +725,7 @@ showDialog(
             // edit button
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit),
+                icon: Icon(Icons.edit),
                 onPressed: () => _editProfile(
                   currentName: name,
                   currentPhone: phoneLocal,
@@ -751,7 +740,7 @@ showDialog(
             child: Center(
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   // avatar
                   
@@ -856,7 +845,7 @@ showDialog(
                       ],
                     ),
                   ),
-
+                    
 
                   const SizedBox(height: 10),
 
@@ -869,28 +858,30 @@ showDialog(
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
 
                   // CONTACT INFORMATION CONTAINER
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Text(
-                                'Contact Information',
+                                AppLocalizations.of(
+                                  context,
+                                )!.contactinformation,
                                 style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -901,14 +892,14 @@ showDialog(
 
                             VolunteerProfileListtile(
                               title: email,
-                              subtitle: 'email',
+                              subtitle: 'Email',
                               icon: Icons.email,
                               iconColor: Colors.green,
                             ),
 
                             VolunteerProfileListtile(
                               title: phoneLocal,
-                              subtitle: 'phone',
+                              subtitle: 'Phone',
                               icon: Icons.phone,
                               iconColor: Colors.green,
                             ),
@@ -920,24 +911,24 @@ showDialog(
 
                   // MORE DETAILS CONTAINER
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           colors: [Color(0xFF111212), Color(0xFF2B3D54)],
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Text(
-                                'More Details',
+                                AppLocalizations.of(context)!.moredetails,
                                 style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -948,21 +939,21 @@ showDialog(
 
                             VolunteerProfileListtile(
                               title: roleLocal,
-                              subtitle: 'role',
+                              subtitle: 'Role',
                               icon: Icons.assignment_ind,
                               iconColor: Colors.white,
                             ),
 
                             VolunteerProfileListtile(
                               title: classLocal,
-                              subtitle: 'class',
+                              subtitle: 'Class',
                               icon: Icons.school,
                               iconColor: Colors.white,
                             ),
 
                             VolunteerProfileListtile(
                               title: schoolLocal,
-                              subtitle: 'school',
+                              subtitle: 'School',
                               icon: Icons.location_city,
                               iconColor: Colors.white,
                             ),
@@ -974,17 +965,17 @@ showDialog(
 
                   // LOGOUT BUTTON
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: _handleLogout,
-                        icon: const Icon(Icons.logout),
-                        label: const Text('Logout'),
+                        icon: Icon(Icons.logout),
+                        label: Text(AppLocalizations.of(context)!.logout),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: EdgeInsets.symmetric(vertical: 12),
                         ),
                       ),
                     ),

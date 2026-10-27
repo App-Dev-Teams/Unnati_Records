@@ -126,6 +126,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 9, 12, 19),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'Admin Profile',
           style: GoogleFonts.oswald(

@@ -7,6 +7,8 @@ import 'package:unnati_app/features/forgot_pass/email_verification.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/main.dart';
 
+import 'package:unnati_app/l10n/app_localizations.dart';
+
 class LoginPageStudent extends StatefulWidget {
   const LoginPageStudent({super.key});
 
@@ -25,8 +27,8 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your email"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryouremail),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -36,8 +38,8 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
 
     if (!email.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a valid email"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteravalidemail),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -47,8 +49,8 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
 
     if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter your password"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseenteryourpassword),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -74,7 +76,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
         SnackBar(
           content: Text(result['message'] ?? 'Login successful'),
           backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
 
@@ -93,7 +95,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const AuthCheck()),
+        MaterialPageRoute(builder: (_) => AuthCheck()),
         (route) => false, // Remove all previous routes
       );
     } else {
@@ -101,7 +103,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
         SnackBar(
           content: Text(result['message'] ?? 'Login failed'),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }
@@ -133,7 +135,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                 'Student',
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 30.sp,
-                  color: const Color.fromARGB(255, 9, 75, 128),
+                  color: Color.fromARGB(255, 9, 75, 128),
                 ),
               ),
               SizedBox(height: 10.h, width: double.infinity),
@@ -141,7 +143,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                 //textfields
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Email',
+                  title: AppLocalizations.of(context)!.email,
                   controller: emailController,
                 ), //email textfield
               ),
@@ -149,7 +151,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
               SizedBox(
                 width: 300.w,
                 child: TextfieldUtil(
-                  title: 'Password',
+                  title: AppLocalizations.of(context)!.password,
                   controller: passwordController,
                 ), //password textfield
               ),
@@ -159,12 +161,13 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EmailVerification(accountType: 'student'),
+                      builder: (context) =>
+                          EmailVerification(accountType: 'student'),
                     ),
                   );
                 },
                 child: Text(
-                  'Forgot password?',
+                  AppLocalizations.of(context)!.forgotpassword,
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
@@ -174,17 +177,14 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                 //login button
                 onPressed: isLoading ? null : handleLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 9, 75, 128),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 15,
-                  ),
+                  backgroundColor: Color.fromARGB(255, 9, 75, 128),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
@@ -195,7 +195,7 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
                         ),
                       )
                     : Text(
-                        'Login',
+                        AppLocalizations.of(context)!.login,
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
               ),
