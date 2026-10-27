@@ -8,10 +8,12 @@ class BottomNavBar extends ConsumerWidget {
   final IconData navIcon1;
   final IconData navIcon2;
   final IconData navIcon3;
+  final IconData? navIcon4;
 
   final String labelName1;
   final String labelName2;
   final String labelName3;
+  final String? labelName4;
 
   final Color navColor;
   final Color navBackgroundColor;
@@ -22,9 +24,11 @@ class BottomNavBar extends ConsumerWidget {
     required this.navIcon1,
     required this.navIcon2,
     required this.navIcon3,
+    this.navIcon4,
     required this.labelName1,
     required this.labelName2,
     required this.labelName3,
+    this.labelName4,
     this.navColor = Colors.white,
     this.navBackgroundColor = Colors.transparent,
     this.navButtonColor = const Color.fromARGB(255, 114, 155, 208),
@@ -32,19 +36,24 @@ class BottomNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(bottomNavIndexProvider); //change listener
+    final currentIndex = ref.watch(bottomNavIndexProvider);
+
+    final items = [
+      CurvedNavigationBarItem(child: Icon(navIcon1), label: labelName1),
+      CurvedNavigationBarItem(child: Icon(navIcon2), label: labelName2),
+      CurvedNavigationBarItem(child: Icon(navIcon3), label: labelName3),
+      if (navIcon4 != null && labelName4 != null)
+        CurvedNavigationBarItem(child: Icon(navIcon4), label: labelName4),
+    ];
+
+    final safeIndex = currentIndex < items.length ? currentIndex : 0;
 
     return CurvedNavigationBar(
       color: navColor,
-      index: currentIndex,
-      items: [
-        CurvedNavigationBarItem(child: Icon(navIcon1), label: labelName1),
-        CurvedNavigationBarItem(child: Icon(navIcon2), label: labelName2),
-        CurvedNavigationBarItem(child: Icon(navIcon3), label: labelName3),
-      ],
+      index: safeIndex,
+      items: items,
       backgroundColor: navBackgroundColor,
       buttonBackgroundColor: navButtonColor,
-
       onTap: (index) {
         ref.read(bottomNavIndexProvider.notifier).state = index;
       },

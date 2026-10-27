@@ -15,6 +15,7 @@ class DoubtListScreen extends ConsumerStatefulWidget {
   final bool showClosedDoubts;
   final bool readOnly;
   final String title;
+  final bool hideAppBar;
 
   const DoubtListScreen({
     super.key,
@@ -22,6 +23,7 @@ class DoubtListScreen extends ConsumerStatefulWidget {
     this.showClosedDoubts = false,
     this.readOnly = false,
     this.title = 'My Doubts',
+    this.hideAppBar = false,
   });
 
   @override
@@ -67,7 +69,7 @@ class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
         : ref.watch(myDoubtsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: widget.hideAppBar ? null : AppBar(title: Text(widget.title)),
       floatingActionButton: (widget.showOpenDoubts || widget.showClosedDoubts)
           ? null
           : FloatingActionButton.extended(

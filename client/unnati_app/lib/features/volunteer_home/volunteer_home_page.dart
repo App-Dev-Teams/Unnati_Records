@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unnati_app/components/app_bar.dart';
-import 'package:unnati_app/features/developer/developers.dart';
-import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/our_programs/akshar.dart';
 import 'package:unnati_app/features/our_programs/digixplore.dart';
 import 'package:unnati_app/features/our_programs/netritva.dart';
@@ -116,65 +114,7 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   // VolunteerHomeCard2(),
                   SizedBox(height: 10.h),
 
-                  //developers
-                  Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(16.r),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.r),
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF111212), Color(0xFF2B3D54)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HelpSupport()),
-                          );
-                        },
-                        child: ListTile(
-                          leading: Container(
-                            padding: EdgeInsets.all(8.r),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Icon(
-                              Icons.support_agent,
-                              color: Colors.orange,
-                              size: 15,
-                            ),
-                          ),
-                          title: Text(
-                            AppLocalizations.of(context)!.helpsupport,
-                            style: GoogleFonts.oswald(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.openandresolvestudentdoubts,
-                            style: GoogleFonts.oswald(color: Colors.grey),
-                          ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
+                  
 
                   // Card(
                   //   elevation: 8,
