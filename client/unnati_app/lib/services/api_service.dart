@@ -8,6 +8,12 @@ class ApiService {
       'https://unnati-records-qhgb.onrender.com/api/auth';
   static const String coreBaseUrl =
       'https://unnati-records-qhgb.onrender.com/api';
+  // Live Video Doubt & Conference (Connect) runs locally until deployed to Render
+  static const bool useLocalLiveDoubtBackend = true;
+  static const String localServerHost = 'localhost:3000';
+  static const String liveDoubtBaseUrl = useLocalLiveDoubtBackend
+      ? 'http://$localServerHost/api/live-doubts'
+      : 'https://unnati-records-qhgb.onrender.com/api/live-doubts';
   static const Duration _timeout = Duration(seconds: 30);
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -1144,4 +1150,157 @@ class ApiService {
       throw Exception('Error fetching schools: $e');
     }
   }
+
+  // ================== LIVE VIDEO DOUBTS & CONFERENCES ==================
+
+  static Map<String, dynamic> _safeDecode(http.Response response) {
+    try {
+      final body = response.body.trim();
+      if (body.isEmpty) return {'success': false, 'error': 'Empty response from server'};
+      if (body.startsWith('{') || body.startsWith('[')) {
+        return json.decode(body) as Map<String, dynamic>;
+      }
+      return {'success': false, 'error': body};
+    } catch (e) {
+      return {'success': false, 'error': 'Invalid JSON: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> requestLiveCall({
+    required String subject,
+    required String topic,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/request'),
+            headers: headers,
+            body: json.encode({
+              'subject': subject,
+              'topic': topic,
+            }),
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to request live call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getLiveQueue() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$liveDoubtBaseUrl/queue'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to fetch queue: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> acceptLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/accept'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to accept call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> checkMyLiveStatus() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .get(
+            Uri.parse('$liveDoubtBaseUrl/my-status'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'active': false, 'error': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> cancelLiveRequest() async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/cancel'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  static Future<void> endLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      await http.post(
+        Uri.parse('$liveDoubtBaseUrl/$sessionId/end'),
+        headers: headers,
+      ).timeout(_timeout);
+    } catch (_) {}
+  }
+
+  static Future<Map<String, dynamic>> scheduleLiveCall(
+    String sessionId,
+    DateTime startTime, {
+    int durationMinutes = 30,
+  }) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .put(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/schedule'),
+            headers: headers,
+            body: json.encode({
+              'scheduledStartTime': startTime.toIso8601String(),
+              'durationMinutes': durationMinutes,
+            }),
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to schedule call: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> startLiveCall(String sessionId) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .post(
+            Uri.parse('$liveDoubtBaseUrl/$sessionId/start'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      return _safeDecode(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Failed to join/start call: $e'};
+    }
+  }
+
 }

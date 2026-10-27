@@ -6,7 +6,6 @@ import 'package:unnati_app/components/app_bar.dart';
 import 'package:unnati_app/components/carousel_slider.dart';
 import 'package:unnati_app/features/about_us/about.dart';
 import 'package:unnati_app/features/developer/developers.dart';
-import 'package:unnati_app/features/help&support/help_support.dart';
 import 'package:unnati_app/features/pdf_feature/pdf_mainscreen.dart';
 import 'package:unnati_app/l10n/app_localizations.dart';
 //import 'package:unnati_app/components/pdf_components/pdf_navbar.dart';
@@ -170,7 +169,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 StudentCardsUtil(
                   // quiz
                   icon: Icons.fact_check_outlined,
-                  iconColor: Color(0xFF74ee15),
+                  iconColor: const Color(0xFF74ee15),
                   title: AppLocalizations.of(context)!.quiz,
                   subtitle: AppLocalizations.of(
                     context,
@@ -178,17 +177,19 @@ class _StudentHomePageState extends State<StudentHomePage> {
                   nextPage: StudentQuizScreen(),
                 ),
                 StudentCardsUtil(
-                  // help and support
-                  icon: Icons.support_agent,
-                  iconColor: Color.fromARGB(255, 255, 120, 47),
-                  title: AppLocalizations.of(context)!.helpsupport,
+                  // about us
+                  icon: Icons.info,
+                  iconColor: Colors.white,
+                  title: AppLocalizations.of(context)!.aboutus,
                   subtitle: AppLocalizations.of(
                     context,
-                  )!.assistanceatyourfingertips,
-                  nextPage: HelpSupport(),
+                  )!.ourstoryandvision,
+                  nextPage: AboutPage(),
                 ),
               ],
             ),
+
+            const SizedBox(height: 12),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -196,19 +197,12 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 StudentCardsUtil(
                   // developers
                   icon: Icons.computer,
-                  iconColor: Color.fromARGB(255, 244, 94, 255),
+                  iconColor: const Color.fromARGB(255, 244, 94, 255),
                   title: AppLocalizations.of(context)!.developers,
                   subtitle: AppLocalizations.of(context)!.meetourdevelopers,
                   nextPage: DevelopersPage(),
                 ),
-                StudentCardsUtil(
-                  // about us
-                  icon: Icons.info,
-                  iconColor: Colors.white,
-                  title: AppLocalizations.of(context)!.aboutus,
-                  subtitle: AppLocalizations.of(context)!.ourstoryandvision,
-                  nextPage: AboutPage(),
-                ),
+                SizedBox(width: 170.w),
               ],
             ),
             // SizedBox(height: 30.h,)

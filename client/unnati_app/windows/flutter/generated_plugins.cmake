@@ -4,8 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   pdfx
+  permission_handler_windows
   syncfusion_pdfviewer_windows
   url_launcher_windows
+  zego_express_engine
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
