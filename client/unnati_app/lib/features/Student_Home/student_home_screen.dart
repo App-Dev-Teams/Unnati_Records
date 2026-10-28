@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unnati_app/Providers/bottom_nav_provider.dart';
 import 'package:unnati_app/components/bottom_nav_bar.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 import 'package:unnati_app/features/Student_quiz/student_quiz_screen.dart';
 import 'package:unnati_app/features/Student_profile/student_profile_screen.dart';
 import 'package:unnati_app/features/Student_Home/student_home_page.dart';
@@ -29,12 +30,13 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(bottomNavIndexProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     final pages = [
-      const StudentHomePage(),          // 0: Home
-      const StudentConnectTab(),        // 1: Connect (Video Conference + Doubts)
-      const StudentQuizScreen(),        // 2: Quiz
-      const StudedntProfileScreen(),    // 3: Profile
+      const StudentHomePage(), // 0: Home
+      const StudentConnectTab(), // 1: Connect (Video Conference + Doubts)
+      const StudentQuizScreen(), // 2: Quiz
+      const StudedntProfileScreen(), // 3: Profile
     ];
 
     final safeIndex = currentIndex < pages.length ? currentIndex : 0;
@@ -42,21 +44,18 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        
-        body: IndexedStack(
-          index: safeIndex,
-          children: pages,
-        ),
 
-        bottomNavigationBar: const BottomNavBar(
+        body: IndexedStack(index: safeIndex, children: pages),
+
+        bottomNavigationBar: BottomNavBar(
           navIcon1: Icons.home_outlined,
           navIcon2: Icons.phone_in_talk_outlined,
           navIcon3: Icons.fact_check_outlined,
           navIcon4: Icons.person_outline,
-          labelName1: "Home",
-          labelName2: "Connect",
-          labelName3: "Quiz",
-          labelName4: "Profile",
+          labelName1: l10n.home,
+          labelName2: l10n.connect,
+          labelName3: l10n.quiz,
+          labelName4: l10n.profile,
         ),
       ),
     );

@@ -191,20 +191,20 @@ class _StudentHomePageState extends State<StudentHomePage> {
 
             const SizedBox(height: 12),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                StudentCardsUtil(
-                  // developers
-                  icon: Icons.computer,
-                  iconColor: const Color.fromARGB(255, 244, 94, 255),
-                  title: AppLocalizations.of(context)!.developers,
-                  subtitle: AppLocalizations.of(context)!.meetourdevelopers,
-                  nextPage: DevelopersPage(),
-                ),
-                SizedBox(width: 170.w),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     StudentCardsUtil(
+            //       // developers
+            //       icon: Icons.computer,
+            //       iconColor: const Color.fromARGB(255, 244, 94, 255),
+            //       title: AppLocalizations.of(context)!.developers,
+            //       subtitle: AppLocalizations.of(context)!.meetourdevelopers,
+            //       nextPage: DevelopersPage(),
+            //     ),
+            //     SizedBox(width: 170.w),
+            //   ],
+            // ),
             // SizedBox(height: 30.h,)
           ],
         ),

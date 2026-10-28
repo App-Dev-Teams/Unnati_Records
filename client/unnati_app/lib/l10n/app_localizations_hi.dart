@@ -270,6 +270,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get youhaventtakenanyquizzesyet => 'आपने अभी तक कोई प्रश्नोत्तरी नहीं दी है';
 
   @override
+  String get home => 'होम';
+
+  @override
   String get resources => 'संसाधन';
 
   @override
@@ -1238,12 +1241,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get noQuestionsFound => 'कोई प्रश्न नहीं मिला';
 
-  // @override
-  // String get retry => 'पुनः प्रयास करें';
-
-  // @override
-  // String get email => 'ईमेल';
-
   @override
   String get quizzes => 'प्रश्नोत्तरी';
 
@@ -1255,4 +1252,85 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpAndSupport => 'सहायता और समर्थन';
+
+  @override
+  String get programDigixploreSubtitle => 'डिजिटल शिक्षा पहल';
+
+  @override
+  String get programDigixploreDescription => 'साप्ताहिक संवादात्मक सत्रों के माध्यम से वंचित छात्रों को तकनीक से परिचित कराना और डिजिटल अंतर को कम करना।';
+
+  @override
+  String get programAksharSubtitle => 'बुनियादी शिक्षा पहल';
+
+  @override
+  String get programAksharDescription => 'औपचारिक स्कूल जाने में असमर्थ वंचित बच्चों को बुनियादी साक्षरता और संख्यात्मक ज्ञान प्रदान करना।';
+
+  @override
+  String get programNetritvaSubtitle => 'करियर मार्गदर्शन और मेंटरशिप';
+
+  @override
+  String get programNetritvaDescription => 'करियर मार्गदर्शन, मेंटरशिप और नेतृत्व विकास के माध्यम से वंचित छात्रों को उनकी क्षमता पहचानने में मदद करना।';
+
+  @override
+  String get aboutUnnatiTitle => 'उन्नति के बारे में';
+
+  @override
+  String get parentInstitutionTitle => 'मूल संस्थान';
+
+  @override
+  String get ourMissionTitle => 'हमारा मिशन';
+
+  @override
+  String get contactUsTitle => 'संपर्क करें';
+
+  @override
+  String get educationalEmpowermentDesc => 'साक्षरता, डिजिटल और करियर मार्गदर्शन';
+
+  @override
+  String get socialEmpowermentDesc => 'असमानता को कम करना और हाशिए पर मौजूद समुदायों का समर्थन करना';
+
+  @override
+  String get youthDevelopmentDesc => 'नेतृत्व, कौशल विकास और आत्मविश्वास निर्माण';
+
+  @override
+  String get communityImpactDesc => 'शैक्षणिक और डिजिटल अंतर को पाटना';
+
+  @override
+  String get askDoubtsAnytimeTitle => '24/7 कभी भी संदेह पूछें';
+
+  @override
+  String get askDoubtsAnytimeSubtitle => 'अब अपना संदेह अनुरोध सबमिट करें। एक अधिकृत लीड मेंटर आपकी 1:1 वीडियो कॉन्फ्रेंस के लिए अपॉइंटमेंट का समय निर्धारित करेंगे।';
+
+  @override
+  String get selectSubject => 'विषय चुनें';
+
+  @override
+  String get enterSubjectName => 'विषय का नाम दर्ज करें';
+
+  @override
+  String get customSubjectHint => 'जैसे: हिंदी, संस्कृत, पर्यावरण अध्ययन';
+
+  @override
+  String get describeYourDoubt => 'अपने संदेह का वर्णन करें';
+
+  @override
+  String get describeYourDoubtHint => 'उस अवधारणा या प्रश्न की व्याख्या करें जिसमें आपको सहायता चाहिए...';
+
+  @override
+  String get describeDoubtValidation => 'कृपया अपने संदेह का स्पष्ट वर्णन करें (कम से कम 3 अक्षर)।';
+
+  @override
+  String get specifySubjectValidation => 'कृपया एक मान्य विषय नाम निर्दिष्ट करें।';
+
+  @override
+  String get requestLiveCall => '1:1 लाइव कॉल का अनुरोध करें';
+
+  @override
+  String get submitting => 'सबमिट हो रहा है...';
+
+  @override
+  String get doubtRequestSubmittedSuccess => 'संदेह अनुरोध सबमिट हो गया! एक लीड आपके सत्र का समय निर्धारित करेंगे।';
+
+  @override
+  String get liveVideoDoubtSolving => 'लाइव वीडियो संदेह समाधान';
 }

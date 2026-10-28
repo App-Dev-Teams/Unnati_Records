@@ -270,6 +270,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youhaventtakenanyquizzesyet => 'You haven’t taken any quizzes yet';
 
   @override
+  String get home => 'Home';
+
+  @override
   String get resources => 'Resources';
 
   @override
@@ -405,7 +408,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get holisticmentorshipdoubtsessionsforholisticgrowth => 'Holistic mentorship & doubt sessions for holistic growth';
 
   @override
-  String get nukkadclasses => 'Nukkad classes';
+  String get nukkadclasses => 'Nukkad Classes';
 
   @override
   String get viewyourattendance2 => 'View  Your Attendance';
@@ -1238,12 +1241,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noQuestionsFound => 'No questions found';
 
-  // @override
-  // String get retry => 'Retry';
-
-  // @override
-  // String get email => 'Email';
-
   @override
   String get quizzes => 'Quizzes';
 
@@ -1255,4 +1252,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpAndSupport => 'Help & Support';
+
+  @override
+  String get programDigixploreSubtitle => 'Digital Education Initiative';
+
+  @override
+  String get programDigixploreDescription => 'Introducing underprivileged students to technology and bridging the digital divide through interactive sessions.';
+
+  @override
+  String get programAksharSubtitle => 'Foundational Education Initiative';
+
+  @override
+  String get programAksharDescription => 'Providing foundational literacy and numeracy to underprivileged children unable to attend formal schooling.';
+
+  @override
+  String get programNetritvaSubtitle => 'Career Guidance & Mentorship';
+
+  @override
+  String get programNetritvaDescription => 'Helping underprivileged students discover their potential through career guidance, mentorship, and leadership development.';
+
+  @override
+  String get aboutUnnatiTitle => 'About Unnati';
+
+  @override
+  String get parentInstitutionTitle => 'Parent Institution';
+
+  @override
+  String get ourMissionTitle => 'Our Mission';
+
+  @override
+  String get contactUsTitle => 'Contact Us';
+
+  @override
+  String get educationalEmpowermentDesc => 'Literacy, digital, and career guidance';
+
+  @override
+  String get socialEmpowermentDesc => 'Reducing inequality & supporting marginalized communities';
+
+  @override
+  String get youthDevelopmentDesc => 'Leadership, skill development & confidence building';
+
+  @override
+  String get communityImpactDesc => 'Bridging educational & digital divides';
+
+  @override
+  String get askDoubtsAnytimeTitle => 'Ask Doubts Anytime 24/7';
+
+  @override
+  String get askDoubtsAnytimeSubtitle => 'Submit your doubt request now. An authorized Lead Mentor will set an appointment time for your 1:1 video conference.';
+
+  @override
+  String get selectSubject => 'Select Subject';
+
+  @override
+  String get enterSubjectName => 'Enter Subject Name';
+
+  @override
+  String get customSubjectHint => 'e.g. Hindi, Sanskrit, Environmental Studies';
+
+  @override
+  String get describeYourDoubt => 'Describe your doubt';
+
+  @override
+  String get describeYourDoubtHint => 'Explain the concept or question you need help with...';
+
+  @override
+  String get describeDoubtValidation => 'Please describe your doubt clearly (at least 3 characters).';
+
+  @override
+  String get specifySubjectValidation => 'Please specify a valid subject name.';
+
+  @override
+  String get requestLiveCall => 'Request 1:1 Live Call';
+
+  @override
+  String get submitting => 'Submitting...';
+
+  @override
+  String get doubtRequestSubmittedSuccess => 'Doubt request submitted! A Lead will schedule your session.';
+
+  @override
+  String get liveVideoDoubtSolving => 'Live Video Doubt Solving';
 }

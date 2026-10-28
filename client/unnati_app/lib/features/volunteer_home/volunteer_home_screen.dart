@@ -6,12 +6,14 @@ import 'package:unnati_app/features/volunteer_profile/volunteer_profile_page.dar
 import 'package:unnati_app/features/volunteer_home/volunteer_home_page.dart';
 import 'package:unnati_app/features/volunteer_resources/volunteer_resources_page.dart';
 import 'package:unnati_app/features/connect/volunteer_connect_tab.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class VolunteerHomeScreen extends ConsumerStatefulWidget {
   const VolunteerHomeScreen({super.key});
 
   @override
-  ConsumerState<VolunteerHomeScreen> createState() => _VolunteerHomeScreenState();
+  ConsumerState<VolunteerHomeScreen> createState() =>
+      _VolunteerHomeScreenState();
 }
 
 class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
@@ -29,31 +31,29 @@ class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(bottomNavIndexProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     final pages = [
-      const VolunteerHomePage(),          // 0: Home
-      const VolunteerConnectTab(),        // 1: Connect (Video Conference for leads + Doubts for all)
-      const VolunteerResourcesPage(),     // 2: Resources
-      const VolunteerProfilePage(),       // 3: Profile
+      const VolunteerHomePage(), // 0: Home
+      const VolunteerConnectTab(), // 1: Connect (Video Conference for leads + Doubts for all)
+      const VolunteerResourcesPage(), // 2: Resources
+      const VolunteerProfilePage(), // 3: Profile
     ];
 
     final safeIndex = currentIndex < pages.length ? currentIndex : 0;
 
     return SafeArea(
       child: Scaffold(
-        body: IndexedStack(
-          index: currentIndex,
-          children: pages,
-        ),
-        bottomNavigationBar: const BottomNavBar(
+        body: IndexedStack(index: currentIndex, children: pages),
+        bottomNavigationBar: BottomNavBar(
           navIcon1: Icons.home_outlined,
           navIcon2: Icons.phone_in_talk_outlined,
           navIcon3: Icons.add_to_photos_outlined,
           navIcon4: Icons.person_outline,
-          labelName1: "Home",
-          labelName2: "Connect",
-          labelName3: "Resources",
-          labelName4: "Profile",
+          labelName1: l10n.home,
+          labelName2: l10n.connect,
+          labelName3: l10n.resources,
+          labelName4: l10n.profile,
           navColor: Color.fromARGB(255, 211, 211, 211),
         ),
       ),
