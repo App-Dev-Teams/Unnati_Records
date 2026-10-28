@@ -1595,7 +1595,9 @@ class ApiService {
             Uri.parse('$liveDoubtBaseUrl/$sessionId/schedule'),
             headers: headers,
             body: json.encode({
-              'scheduledStartTime': startTime.toIso8601String(),
+              // Include the offset so the server stores the selected local
+              // appointment time as the same instant for every client.
+              'scheduledStartTime': startTime.toUtc().toIso8601String(),
               'durationMinutes': durationMinutes,
             }),
           )

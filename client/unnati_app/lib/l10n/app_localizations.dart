@@ -617,6 +617,12 @@ abstract class AppLocalizations {
   /// **'You haven’t taken any quizzes yet'**
   String get youhaventtakenanyquizzesyet;
 
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
   /// No description provided for @resources.
   ///
   /// In en, this message translates to:
@@ -890,7 +896,7 @@ abstract class AppLocalizations {
   /// No description provided for @nukkadclasses.
   ///
   /// In en, this message translates to:
-  /// **'Nukkad classes'**
+  /// **'Nukkad Classes'**
   String get nukkadclasses;
 
   /// No description provided for @viewyourattendance2.
@@ -2099,88 +2105,647 @@ abstract class AppLocalizations {
   /// **'Introduce life-skills and hygiene education'**
   String get aksharIntroduceLifeSkillsAndHygieneEducation;
 
+  /// No description provided for @connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
   String get connect;
+
+  /// No description provided for @videoConference.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Conference'**
   String get videoConference;
+
+  /// No description provided for @doubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Doubts'**
   String get doubts;
+
+  /// No description provided for @openDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Doubts'**
   String get openDoubts;
+
+  /// No description provided for @closedDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed Doubts'**
   String get closedDoubts;
+
+  /// No description provided for @myDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'My Doubts'**
   String get myDoubts;
+
+  /// No description provided for @quizzesAndTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quizzes & Tests'**
   String get quizzesAndTests;
+
+  /// No description provided for @refreshQuizzes.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Quizzes'**
   String get refreshQuizzes;
+
+  /// No description provided for @testYourKnowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'TEST YOUR KNOWLEDGE'**
   String get testYourKnowledge;
+
+  /// No description provided for @quizBannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Participate in curated quizzes to evaluate and strengthen your subject concepts.'**
   String get quizBannerSubtitle;
+
+  /// No description provided for @availableQuizzes.
+  ///
+  /// In en, this message translates to:
+  /// **'AVAILABLE QUIZZES'**
   String get availableQuizzes;
+
+  /// No description provided for @totalQuizzesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
   String get totalQuizzesCount;
+
+  /// No description provided for @myQuizStats.
+  ///
+  /// In en, this message translates to:
+  /// **'MY QUIZ STATS'**
   String get myQuizStats;
+
+  /// No description provided for @completedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
   String get completedCount;
+
+  /// No description provided for @quizzesGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Quizzes Given'**
   String get quizzesGiven;
+
+  /// No description provided for @avgScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Score'**
   String get avgScore;
+
+  /// No description provided for @bestScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Score'**
   String get bestScore;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
   String get tryAgain;
+
+  /// No description provided for @noQuizzesAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Quizzes Available'**
   String get noQuizzesAvailableTitle;
+
+  /// No description provided for @noQuizzesAvailableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New quizzes uploaded for your class will appear right here.'**
   String get noQuizzesAvailableSubtitle;
+
+  /// No description provided for @questionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
   String get questionsCount;
+
+  /// No description provided for @notAttemptedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not attempted yet'**
   String get notAttemptedYet;
+
+  /// No description provided for @quizManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Management'**
   String get quizManagement;
+
+  /// No description provided for @uploadQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Quiz'**
   String get uploadQuiz;
+
+  /// No description provided for @createQuizNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Quiz Now'**
   String get createQuizNow;
+
+  /// No description provided for @noQuizzesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Quizzes Found'**
   String get noQuizzesFound;
+
+  /// No description provided for @noQuizzesCreatedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No quizzes have been created yet. Tap \'+ Upload Quiz\' to create your first quiz.'**
   String get noQuizzesCreatedYet;
+
+  /// No description provided for @noQuizzesFoundForClass.
+  ///
+  /// In en, this message translates to:
+  /// **'No quizzes found for this class.'**
   String get noQuizzesFoundForClass;
+
+  /// No description provided for @preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
   String get preview;
+
+  /// No description provided for @submissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Submissions'**
   String get submissions;
+
+  /// No description provided for @quizSubmissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Submissions'**
   String get quizSubmissions;
+
+  /// No description provided for @noSubmissionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Submissions Yet'**
   String get noSubmissionsYet;
+
+  /// No description provided for @noSubmissionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Students who complete this quiz will appear here with their scores.'**
   String get noSubmissionsSubtitle;
+
+  /// No description provided for @viewStats.
+  ///
+  /// In en, this message translates to:
+  /// **'View Stats'**
   String get viewStats;
+
+  /// No description provided for @studentPerformanceProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Performance Profile'**
   String get studentPerformanceProfile;
+
+  /// No description provided for @quizPerformanceAndStats.
+  ///
+  /// In en, this message translates to:
+  /// **'QUIZ PERFORMANCE & STATS'**
   String get quizPerformanceAndStats;
+
+  /// No description provided for @quizzesTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Quizzes Taken'**
   String get quizzesTaken;
+
+  /// No description provided for @averageScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Score'**
   String get averageScore;
+
+  /// No description provided for @highestScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Score'**
   String get highestScore;
+
+  /// No description provided for @assessmentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment History'**
   String get assessmentHistory;
+
+  /// No description provided for @noQuizzesAttemptedByStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'No quizzes attempted yet by this student.'**
   String get noQuizzesAttemptedByStudent;
+
+  /// No description provided for @studentAndSchoolDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'STUDENT & SCHOOL DETAILS'**
   String get studentAndSchoolDetails;
+
+  /// No description provided for @enrolledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrolled On'**
   String get enrolledOn;
+
+  /// No description provided for @quizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Title'**
   String get quizTitle;
+
+  /// No description provided for @enterQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter quiz title'**
   String get enterQuizTitle;
+
+  /// No description provided for @targetClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Class'**
   String get targetClass;
+
+  /// No description provided for @quizStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Status'**
   String get quizStatus;
+
+  /// No description provided for @published.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
   String get published;
+
+  /// No description provided for @draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
   String get draft;
+
+  /// No description provided for @addQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Question'**
   String get addQuestion;
+
+  /// No description provided for @questionText.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Text'**
   String get questionText;
+
+  /// No description provided for @enterQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter question text'**
   String get enterQuestion;
+
+  /// No description provided for @correctAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answer'**
   String get correctAnswer;
+
+  /// No description provided for @selectCorrectOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Select correct option'**
   String get selectCorrectOption;
+
+  /// No description provided for @deleteQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Question'**
   String get deleteQuestion;
+
+  /// No description provided for @uploadingQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading Quiz...'**
   String get uploadingQuiz;
+
+  /// No description provided for @quizUploadedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz uploaded successfully!'**
   String get quizUploadedSuccess;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all required fields'**
   String get pleaseFillAllFields;
+
+  /// No description provided for @atLeastTwoOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Each question must have at least 2 options'**
   String get atLeastTwoOptions;
+
+  /// No description provided for @selectCorrectAnswerForQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select the correct option for each question'**
   String get selectCorrectAnswerForQuestion;
+
+  /// No description provided for @submitQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Quiz'**
   String get submitQuiz;
+
+  /// No description provided for @submitConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to submit your answers?'**
   String get submitConfirmation;
+
+  /// No description provided for @quizSubmittedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz submitted successfully!'**
   String get quizSubmittedSuccess;
+
+  /// No description provided for @yourScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Score'**
   String get yourScore;
+
+  /// No description provided for @questionOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Overview'**
   String get questionOverview;
+
+  /// No description provided for @answered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
   String get answered;
+
+  /// No description provided for @unanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
   String get unanswered;
+
+  /// No description provided for @reviewAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Answers'**
   String get reviewAnswers;
+
+  /// No description provided for @backToQuizzes.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Quizzes'**
   String get backToQuizzes;
+
+  /// No description provided for @timeTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Taken'**
   String get timeTaken;
+
+  /// No description provided for @accuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
   String get accuracy;
+
+  /// No description provided for @selectAnOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an option'**
   String get selectAnOption;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
   String get previous;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
   String get next;
+
+  /// No description provided for @tapToPreviewQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to preview questions'**
   String get tapToPreviewQuestions;
+
+  /// No description provided for @noQuestionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions found'**
   String get noQuestionsFound;
-  // String get retry;
-  // String get email;
+
+  /// No description provided for @quizzes.
+  ///
+  /// In en, this message translates to:
+  /// **'Quizzes'**
   String get quizzes;
+
+  /// No description provided for @viewAndUploadStudentAssessments.
+  ///
+  /// In en, this message translates to:
+  /// **'View and upload student assessments'**
   String get viewAndUploadStudentAssessments;
+
+  /// No description provided for @openAndResolveStudentDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Open and resolve student doubts'**
   String get openAndResolveStudentDoubts;
+
+  /// No description provided for @helpAndSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
   String get helpAndSupport;
+
+  /// No description provided for @programDigixploreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Education Initiative'**
+  String get programDigixploreSubtitle;
+
+  /// No description provided for @programDigixploreDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Introducing underprivileged students to technology and bridging the digital divide through interactive sessions.'**
+  String get programDigixploreDescription;
+
+  /// No description provided for @programAksharSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Foundational Education Initiative'**
+  String get programAksharSubtitle;
+
+  /// No description provided for @programAksharDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Providing foundational literacy and numeracy to underprivileged children unable to attend formal schooling.'**
+  String get programAksharDescription;
+
+  /// No description provided for @programNetritvaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Career Guidance & Mentorship'**
+  String get programNetritvaSubtitle;
+
+  /// No description provided for @programNetritvaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Helping underprivileged students discover their potential through career guidance, mentorship, and leadership development.'**
+  String get programNetritvaDescription;
+
+  /// No description provided for @aboutUnnatiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Unnati'**
+  String get aboutUnnatiTitle;
+
+  /// No description provided for @parentInstitutionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent Institution'**
+  String get parentInstitutionTitle;
+
+  /// No description provided for @ourMissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Mission'**
+  String get ourMissionTitle;
+
+  /// No description provided for @contactUsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUsTitle;
+
+  /// No description provided for @educationalEmpowermentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Literacy, digital, and career guidance'**
+  String get educationalEmpowermentDesc;
+
+  /// No description provided for @socialEmpowermentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reducing inequality & supporting marginalized communities'**
+  String get socialEmpowermentDesc;
+
+  /// No description provided for @youthDevelopmentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Leadership, skill development & confidence building'**
+  String get youthDevelopmentDesc;
+
+  /// No description provided for @communityImpactDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridging educational & digital divides'**
+  String get communityImpactDesc;
+
+  /// No description provided for @askDoubtsAnytimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubts Anytime 24/7'**
+  String get askDoubtsAnytimeTitle;
+
+  /// No description provided for @askDoubtsAnytimeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit your doubt request now. An authorized Lead Mentor will set an appointment time for your 1:1 video conference.'**
+  String get askDoubtsAnytimeSubtitle;
+
+  /// No description provided for @selectSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Subject'**
+  String get selectSubject;
+
+  /// No description provided for @enterSubjectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Subject Name'**
+  String get enterSubjectName;
+
+  /// No description provided for @customSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Hindi, Sanskrit, Environmental Studies'**
+  String get customSubjectHint;
+
+  /// No description provided for @describeYourDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your doubt'**
+  String get describeYourDoubt;
+
+  /// No description provided for @describeYourDoubtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain the concept or question you need help with...'**
+  String get describeYourDoubtHint;
+
+  /// No description provided for @describeDoubtValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe your doubt clearly (at least 3 characters).'**
+  String get describeDoubtValidation;
+
+  /// No description provided for @specifySubjectValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please specify a valid subject name.'**
+  String get specifySubjectValidation;
+
+  /// No description provided for @requestLiveCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Request 1:1 Live Call'**
+  String get requestLiveCall;
+
+  /// No description provided for @submitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting...'**
+  String get submitting;
+
+  /// No description provided for @doubtRequestSubmittedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Doubt request submitted! A Lead will schedule your session.'**
+  String get doubtRequestSubmittedSuccess;
+
+  /// No description provided for @liveVideoDoubtSolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Video Doubt Solving'**
+  String get liveVideoDoubtSolving;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

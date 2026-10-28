@@ -105,6 +105,12 @@ const scheduleLiveCall = async (req, res) => {
             return res.status(400).json({ error: "Scheduled start time is required." });
         }
 
+        if (typeof scheduledStartTime !== 'string' || !/(?:[zZ]|[+-]\d{2}:\d{2})$/.test(scheduledStartTime)) {
+            return res.status(400).json({
+                error: "Scheduled start time must include a timezone offset."
+            });
+        }
+
         const start = new Date(scheduledStartTime);
         const end = scheduledEndTime ? new Date(scheduledEndTime) : new Date(start.getTime() + durationMinutes * 60000);
 
@@ -138,7 +144,7 @@ const scheduleLiveCall = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: `Conference scheduled for ${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`,
+            message: "Conference scheduled successfully.",
             session
         });
     } catch (err) {

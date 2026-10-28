@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/features/live_doubt/live_video_conference_screen.dart';
+import 'package:unnati_app/l10n/app_localizations.dart';
 
 class StudentLiveDoubtTab extends StatefulWidget {
   final bool hideAppBar;
@@ -66,9 +67,11 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
         ? _customSubjectController.text.trim()
         : _selectedSubject;
 
+    final l10n = AppLocalizations.of(context)!;
+
     if (effectiveSubject.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please specify a valid subject name.')),
+        SnackBar(content: Text(l10n.specifySubjectValidation)),
       );
       return;
     }
@@ -76,7 +79,7 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
     final topic = _topicController.text.trim();
     if (topic.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe your doubt clearly (at least 3 characters).')),
+        SnackBar(content: Text(l10n.describeDoubtValidation)),
       );
       return;
     }
@@ -94,7 +97,7 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
       _checkActiveSession();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doubt request submitted! A Lead will schedule your session.')),
+        SnackBar(content: Text(l10n.doubtRequestSubmittedSuccess)),
       );
     } else {
       if (!mounted) return;
@@ -198,6 +201,7 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context)!;
     if (_isLoading && _activeSession == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -468,22 +472,22 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.indigo.shade100),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.schedule, color: Color(0xFF4F46E5), size: 28),
-                  SizedBox(width: 12),
+                  const Icon(Icons.schedule, color: Color(0xFF4F46E5), size: 28),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Ask Doubts Anytime 24/7',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF4F46E5)),
+                          l10n.askDoubtsAnytimeTitle,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF4F46E5)),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
-                          'Submit your doubt request now. An authorized Lead Mentor will set an appointment time for your 1:1 video conference.',
-                          style: TextStyle(fontSize: 12, color: Colors.black87, height: 1.3),
+                          l10n.askDoubtsAnytimeSubtitle,
+                          style: const TextStyle(fontSize: 12, color: Colors.black87, height: 1.3),
                         ),
                       ],
                     ),
@@ -494,9 +498,9 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
             const SizedBox(height: 24),
 
             // Subject Selector
-            const Text(
-              'Select Subject',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              l10n.selectSubject,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
             Container(
@@ -522,15 +526,15 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
             // Custom Subject Input if "Others" is selected
             if (_selectedSubject == 'Others') ...[
               const SizedBox(height: 14),
-              const Text(
-                'Enter Subject Name',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              Text(
+                l10n.enterSubjectName,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               const SizedBox(height: 6),
               TextField(
                 controller: _customSubjectController,
                 decoration: InputDecoration(
-                  hintText: 'e.g. Hindi, Sanskrit, Environmental Studies',
+                  hintText: l10n.customSubjectHint,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                   filled: true,
                   fillColor: Colors.grey.shade50,
@@ -542,9 +546,9 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
             const SizedBox(height: 20),
 
             // Topic Description
-            const Text(
-              'Describe your doubt',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              l10n.describeYourDoubt,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
             TextField(
@@ -552,7 +556,7 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
               maxLines: 4,
               maxLength: 250,
               decoration: InputDecoration(
-                hintText: 'Explain the concept or question you need help with...',
+                hintText: l10n.describeYourDoubtHint,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 filled: true,
                 fillColor: Colors.grey.shade50,
@@ -578,7 +582,7 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
                       )
                     : const Icon(Icons.video_call, color: Colors.white),
                 label: Text(
-                  _isLoading ? 'Submitting...' : 'Request 1:1 Live Call',
+                  _isLoading ? l10n.submitting : l10n.requestLiveCall,
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
@@ -595,9 +599,10 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
       return _buildBody();
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Live Video Doubt Solving'),
+        title: Text(l10n.liveVideoDoubtSolving),
         elevation: 0,
       ),
       body: _buildBody(),
