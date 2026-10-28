@@ -105,7 +105,12 @@ class _QuizViewPageState extends State<QuizViewPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => _QuizPreviewSheet(quizId: quizId, title: title),
+      builder: (ctx) => _QuizPreviewSheet(
+        quizId: quizId,
+        title: title,
+        canManage: _hasManagePermission,
+        onDelete: () => _confirmDeleteQuiz(quiz),
+      ),
     );
   }
 
@@ -119,6 +124,111 @@ class _QuizViewPageState extends State<QuizViewPage> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => _QuizSubmissionsSheet(quizId: quizId, title: title),
     );
+  }
+
+  Future<void> _confirmDeleteQuiz(Map<String, dynamic> quiz) async {
+    final quizId = quiz['id']?.toString() ?? '';
+    final title = quiz['title']?.toString() ?? 'Quiz';
+    final l10n = AppLocalizations.of(context)!;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.delete_forever_rounded, color: Colors.red.shade600, size: 24.r),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                l10n.delete,
+                style: GoogleFonts.oswald(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to delete "$title"? This will permanently remove the quiz and all associated student submissions.',
+          style: GoogleFonts.roboto(fontSize: 14.sp),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              l10n.cancel,
+              style: GoogleFonts.roboto(
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              l10n.delete,
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 16.r,
+                height: 16.r,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Text('Deleting "$title"...'),
+              ),
+            ],
+          ),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+
+      final res = await ApiService.deleteQuiz(quizId);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (res['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green.shade700,
+            content: Text(res['message'] ?? 'Quiz deleted successfully'),
+          ),
+        );
+        _checkPermissionAndLoadQuizzes();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red.shade700,
+            content: Text(res['message'] ?? 'Failed to delete quiz'),
+          ),
+        );
+      }
+    }
   }
 
   String _formatClassDisplay(String rawClass) {
@@ -445,27 +555,46 @@ class _QuizViewPageState extends State<QuizViewPage> {
                         ),
                       ],
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 2.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: status == 'published'
-                            ? Colors.green.shade50
-                            : Colors.orange.shade50,
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      child: Text(
-                        status.toUpperCase(),
-                        style: GoogleFonts.roboto(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.bold,
-                          color: status == 'published'
-                              ? Colors.green.shade800
-                              : Colors.orange.shade800,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 2.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: status == 'published'
+                                ? Colors.green.shade50
+                                : Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                          child: Text(
+                            status.toUpperCase(),
+                            style: GoogleFonts.roboto(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.bold,
+                              color: status == 'published'
+                                  ? Colors.green.shade800
+                                  : Colors.orange.shade800,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (_hasManagePermission) ...[
+                          SizedBox(width: 4.w),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: Icon(
+                              Icons.delete_outline_rounded,
+                              color: Colors.red.shade600,
+                              size: 20.r,
+                            ),
+                            tooltip: l10n.delete,
+                            onPressed: () => _confirmDeleteQuiz(quiz),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
@@ -545,10 +674,14 @@ class _QuizViewPageState extends State<QuizViewPage> {
 class _QuizPreviewSheet extends StatelessWidget {
   final String quizId;
   final String title;
+  final bool canManage;
+  final VoidCallback? onDelete;
 
   const _QuizPreviewSheet({
     required this.quizId,
     required this.title,
+    this.canManage = false,
+    this.onDelete,
   });
 
   @override
@@ -596,6 +729,20 @@ class _QuizPreviewSheet extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (canManage) ...[
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_outline_rounded,
+                        color: Colors.red.shade600,
+                        size: isTablet ? 24.r : 22.r,
+                      ),
+                      tooltip: l10n.delete,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onDelete?.call();
+                      },
+                    ),
+                  ],
                   IconButton(
                     icon: const Icon(Icons.close_rounded),
                     onPressed: () => Navigator.pop(context),

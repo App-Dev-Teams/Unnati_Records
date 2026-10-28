@@ -1375,6 +1375,37 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> deleteQuiz(String id) async {
+    try {
+      final headers = await _authHeaders();
+      final response = await http
+          .delete(
+            Uri.parse('$coreBaseUrl/quizzes/delete_quiz/$id'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Quiz deleted successfully',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Failed to delete quiz',
+        };
+      }
+    } catch (e) {
+      print('deleteQuiz error: $e');
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
   static Future<void> saveLocalQuizAttempt(
     String quizId,
     int score,

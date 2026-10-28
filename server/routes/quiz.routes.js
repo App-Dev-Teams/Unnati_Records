@@ -8,7 +8,8 @@ const {
   submitQuiz,
   getMyAttempts,
   getQuizAttempts,
-  getStudentQuizStats
+  getStudentQuizStats,
+  deleteQuiz
 } = require("../controllers/quiz.controller");
 
 const quizRouter = express.Router();
@@ -18,6 +19,20 @@ quizRouter.post(
   requireLogin,
   authorize("MANAGE_QUIZZES"),
   uploadQuiz
+);
+
+quizRouter.delete(
+  "/delete_quiz/:id",
+  requireLogin,
+  authorize("MANAGE_QUIZZES"),
+  deleteQuiz
+);
+
+quizRouter.delete(
+  "/:id",
+  requireLogin,
+  authorize("MANAGE_QUIZZES"),
+  deleteQuiz
 );
 
 quizRouter.get("/get_quizzes", requireLogin, getQuizzes);
