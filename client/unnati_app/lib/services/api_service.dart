@@ -10,9 +10,6 @@ class ApiService {
   static const String coreBaseUrl =
       'https://unnati-records-qhgb.onrender.com/api';
 
-//   static const String baseUrl = 'http://192.168.1.24:3000/api/auth';
-// static const String coreBaseUrl = 'http://192.168.1.24:3000/api';
-
 
   static const Duration _timeout = Duration(seconds: 30);
   static const String liveDoubtBaseUrl =
