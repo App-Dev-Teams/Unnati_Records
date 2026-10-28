@@ -13,9 +13,45 @@ function isLeadOrAdminUser(user, userType) {
     return role === 'admin' || role.includes('lead') || role.startsWith('js-') || role.includes('secretary');
 }
 
+// Helper: Auto-expire scheduled conferences that are more than 1 hour past scheduled start time
+const cleanExpiredScheduledConferences = async () => {
+    try {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        await LiveDoubtSession.updateMany(
+            {
+                status: 'scheduled',
+                scheduledStartTime: { $lt: oneHourAgo }
+            },
+            {
+                $set: {
+                    status: 'expired',
+                    endedAt: new Date()
+                }
+            }
+        );
+
+        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+        await LiveDoubtSession.updateMany(
+            {
+                status: 'ongoing',
+                startedAt: { $lt: twoHoursAgo }
+            },
+            {
+                $set: {
+                    status: 'completed',
+                    endedAt: new Date()
+                }
+            }
+        );
+    } catch (e) {
+        console.error('Clean Expired Conferences Error:', e);
+    }
+};
+
 // 1. Student requests a live video doubt session (Anytime 24/7)
 const requestLiveCall = async (req, res) => {
     try {
+        await cleanExpiredScheduledConferences();
         if (req.userType !== 'student') {
             return res.status(403).json({ error: "Only students can request live doubt calls." });
         }
@@ -65,6 +101,7 @@ const requestLiveCall = async (req, res) => {
 // 2. Leads get the live queue (Leads & Admin only)
 const getLiveQueue = async (req, res) => {
     try {
+        await cleanExpiredScheduledConferences();
         if (!isLeadOrAdminUser(req.user, req.userType)) {
             return res.status(403).json({
                 success: false,
@@ -156,6 +193,7 @@ const scheduleLiveCall = async (req, res) => {
 // 4. Start / Join a scheduled call (Leads & Student, within appointed time window)
 const startLiveCall = async (req, res) => {
     try {
+        await cleanExpiredScheduledConferences();
         const sessionId = req.params.id;
         const session = await LiveDoubtSession.findById(sessionId);
 
@@ -223,6 +261,7 @@ const startLiveCall = async (req, res) => {
 // 5. Student checks current live status & receives appointment/connection info
 const checkMyStatus = async (req, res) => {
     try {
+        await cleanExpiredScheduledConferences();
         const session = await LiveDoubtSession.findOne({
             studentId: req.user._id,
             status: { $in: ['waiting', 'scheduled', 'ongoing'] }

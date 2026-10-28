@@ -78,7 +78,6 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
 
       final myRole = widget.isLead ? 'lead' : 'student';
       final myStreamId = '${widget.channelName}_$myRole';
-      final expectedRemoteStreamId = '${widget.channelName}_${widget.isLead ? 'student' : 'lead'}';
 
       // 3. Register Event Callbacks
       ZegoExpressEngine.onRoomStreamUpdate = (
