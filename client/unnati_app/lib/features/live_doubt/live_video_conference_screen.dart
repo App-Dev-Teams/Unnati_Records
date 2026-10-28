@@ -129,9 +129,6 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
       await ZegoExpressEngine.instance.startPublishingStream(myStreamId);
       debugPrint("ZEGO Started Publishing stream: $myStreamId");
 
-      // 7. Subscribe to expected remote stream as well
-      _startListeningToRemoteStream(expectedRemoteStreamId);
-
       _startCallTimer();
     } catch (e) {
       debugPrint("ZEGOCLOUD initialization error: $e");
