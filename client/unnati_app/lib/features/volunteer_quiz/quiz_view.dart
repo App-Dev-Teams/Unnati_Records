@@ -8,7 +8,9 @@ import 'package:unnati_app/services/api_service.dart';
 import 'package:unnati_app/l10n/app_localizations.dart';
 
 class QuizViewPage extends StatefulWidget {
-  const QuizViewPage({super.key});
+  final String? initialFilter;
+
+  const QuizViewPage({super.key, this.initialFilter});
 
   @override
   State<QuizViewPage> createState() => _QuizViewPageState();
@@ -37,6 +39,9 @@ class _QuizViewPageState extends State<QuizViewPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialFilter != null && _filters.contains(widget.initialFilter)) {
+      _selectedFilter = widget.initialFilter!;
+    }
     _checkPermissionAndLoadQuizzes();
   }
 
@@ -84,15 +89,25 @@ class _QuizViewPageState extends State<QuizViewPage> {
     }).toList();
   }
 
-  void _openUploadPage() async {
+  void _openUploadPage([String? targetClass]) async {
+    final preselectedClass = targetClass ??
+        ((_selectedFilter != 'All' && _selectedFilter != 'All Classes')
+            ? _selectedFilter
+            : null);
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const QuizUploadPage(),
+        builder: (_) => QuizUploadPage(initialClass: preselectedClass),
       ),
     );
 
-    if (result == true) {
+    if (result != null && result != false) {
+      if (result is String && _filters.contains(result)) {
+        setState(() {
+          _selectedFilter = result;
+        });
+      }
       _checkPermissionAndLoadQuizzes();
     }
   }

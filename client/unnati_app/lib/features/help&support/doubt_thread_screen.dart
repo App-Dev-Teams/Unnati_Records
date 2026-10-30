@@ -26,7 +26,8 @@ class DoubtThreadScreen extends ConsumerStatefulWidget {
 
 class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
   final TextEditingController _messageController = TextEditingController();
-  Timer? _autoRefreshTimer;
+  final ScrollController _scrollController = ScrollController();
+  int _previousMessageCount = 0;
   bool _isSending = false;
   bool _isResolving = false;
   bool _isStudent = false;
@@ -63,10 +64,6 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
         }
       }
     });
-    _autoRefreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      if (!mounted) return;
-      _refresh();
-    });
   }
 
   Future<void> _loadAuthContext() async {
@@ -86,8 +83,8 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
 
   @override
   void dispose() {
-    _autoRefreshTimer?.cancel();
     _messageController.dispose();
+    _scrollController.dispose();
     _userSub?.cancel();
     super.dispose();
   }
@@ -97,6 +94,16 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     ref.invalidate(doubtMessagesProvider(widget.doubtId));
     ref.invalidate(myDoubtsProvider);
     ref.invalidate(openDoubtsProvider);
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   Future<void> _sendMessage() async {
@@ -142,6 +149,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
     if (result['success'] == true) {
       _messageController.clear();
       _refresh();
+      _scrollToBottom();
       return;
     }
 
@@ -225,6 +233,12 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
           }
           return messagesAsync.when(
             data: (messages) {
+              if (messages.length != _previousMessageCount) {
+                _previousMessageCount = messages.length;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _scrollToBottom();
+                });
+              }
               return RefreshIndicator(
                 onRefresh: _refresh,
                 child: Column(
@@ -238,6 +252,7 @@ class _DoubtThreadScreenState extends ConsumerState<DoubtThreadScreen> {
                     ),
                     Expanded(
                       child: ListView.builder(
+                        controller: _scrollController,
                         padding: EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,

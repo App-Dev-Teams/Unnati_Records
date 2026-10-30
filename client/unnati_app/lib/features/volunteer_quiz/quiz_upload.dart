@@ -40,7 +40,12 @@ class OptionFormModel {
 }
 
 class QuizUploadPage extends StatefulWidget {
-  const QuizUploadPage({super.key});
+  final String? initialClass;
+
+  const QuizUploadPage({
+    super.key,
+    this.initialClass,
+  });
 
   @override
   State<QuizUploadPage> createState() => _QuizUploadPageState();
@@ -50,7 +55,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
 
-  String? _selectedClass = 'Class 8';
+  String? _selectedClass;
   String _quizStatus = 'published';
   bool _isUploading = false;
 
@@ -71,8 +76,36 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
   @override
   void initState() {
     super.initState();
+    _selectedClass = _resolveInitialClass(widget.initialClass);
     // Start with 1 default question containing 4 options
     _addQuestion();
+  }
+
+  String _resolveInitialClass(String? raw) {
+    if (raw == null || raw.trim().isEmpty) {
+      return 'Class 7';
+    }
+    final trimmed = raw.trim();
+    if (_classOptions.contains(trimmed)) {
+      return trimmed;
+    }
+    for (final opt in _classOptions) {
+      if (opt.toLowerCase() == trimmed.toLowerCase()) {
+        return opt;
+      }
+    }
+    final digits = trimmed.replaceAll(RegExp(r'\D'), '');
+    if (digits.isNotEmpty) {
+      for (final opt in _classOptions) {
+        if (opt.replaceAll(RegExp(r'\D'), '') == digits) {
+          return opt;
+        }
+      }
+    }
+    if (trimmed.toLowerCase().contains('all')) {
+      return 'All Classes';
+    }
+    return 'Class 7';
   }
 
   @override
@@ -133,8 +166,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
     if (question.options.length >= 6) {
       return;
     }
-    final optNum = question.options.length + 1;
-    final optId = 'opt_${question.questionId}_$optNum';
+    final optId = 'opt_${question.questionId}_${DateTime.now().microsecondsSinceEpoch}_${question.options.length + 1}';
     setState(() {
       question.options.add(
         OptionFormModel(
@@ -280,7 +312,7 @@ class _QuizUploadPageState extends State<QuizUploadPage> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context, true);
+        Navigator.pop(context, _selectedClass);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

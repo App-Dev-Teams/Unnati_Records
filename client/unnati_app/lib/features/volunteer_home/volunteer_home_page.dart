@@ -239,6 +239,10 @@ class _VolunteerHomePageState extends State<VolunteerHomePage> {
                   ),
                   SizedBox(height: 10.h),
 
+                  // Quizzes card
+                  
+                  SizedBox(height: 10.h),
+
                   // Card(
                   //   elevation: 8,
                   //   shape: RoundedRectangleBorder(
