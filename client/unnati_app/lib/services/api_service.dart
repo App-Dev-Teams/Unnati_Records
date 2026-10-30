@@ -10,9 +10,6 @@ class ApiService {
   static const String coreBaseUrl =
       'https://unnati-records-qhgb.onrender.com/api';
 
-//   static const String baseUrl = 'http://192.168.1.24:3000/api/auth';
-// static const String coreBaseUrl = 'http://192.168.1.24:3000/api';
-
 
   static const Duration _timeout = Duration(seconds: 30);
   static const String liveDoubtBaseUrl =
@@ -1360,16 +1357,17 @@ class ApiService {
           .timeout(_timeout);
 
       final data = jsonDecode(response.body);
-      if (response.statusCode == 201 && data['success'] == true) {
+      final msg = data['message'] ?? data['error'] ?? 'Failed to upload quiz (${response.statusCode})';
+      if ((response.statusCode == 200 || response.statusCode == 201) && data['success'] == true) {
         return {
           'success': true,
-          'message': data['message'] ?? 'Quiz uploaded successfully',
+          'message': msg,
           'data': data['data'],
         };
       } else {
         return {
           'success': false,
-          'message': data['message'] ?? 'Failed to upload quiz',
+          'message': msg,
         };
       }
     } catch (e) {
@@ -1488,8 +1486,9 @@ class ApiService {
   static Map<String, dynamic> _safeDecode(http.Response response) {
     try {
       final body = response.body.trim();
-      if (body.isEmpty)
+      if (body.isEmpty) {
         return {'success': false, 'error': 'Empty response from server'};
+      }
       if (body.startsWith('{') || body.startsWith('[')) {
         return json.decode(body) as Map<String, dynamic>;
       }
@@ -1624,4 +1623,5 @@ class ApiService {
       return {'success': false, 'error': 'Failed to join/start call: $e'};
     }
   }
+
 }
