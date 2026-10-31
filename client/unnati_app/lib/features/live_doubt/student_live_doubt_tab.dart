@@ -45,9 +45,29 @@ class _StudentLiveDoubtTabState extends State<StudentLiveDoubtTab> {
     if (!mounted) return;
 
     if (status['active'] == true) {
+      final sessionData = status['session'] as Map<String, dynamic>? ?? {};
+      final startStr = sessionData['scheduledStartTime']?.toString();
+      bool isExpired = false;
+      if (startStr != null && (status['status'] == 'scheduled' || sessionData['status'] == 'scheduled')) {
+        try {
+          final start = DateTime.parse(startStr).toLocal();
+          if (DateTime.now().difference(start).inMinutes >= 60) {
+            isExpired = true;
+          }
+        } catch (_) {}
+      }
+
+      if (isExpired) {
+        setState(() {
+          _activeSession = null;
+          _isLoading = false;
+        });
+        return;
+      }
+
       setState(() {
         _activeSession = {
-          ...status['session'] ?? {},
+          ...sessionData,
           'canJoin': status['canJoin'] ?? false,
           'connection': status['connection'],
           'status': status['status'],

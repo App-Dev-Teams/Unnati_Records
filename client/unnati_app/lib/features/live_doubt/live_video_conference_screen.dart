@@ -78,7 +78,6 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
 
       final myRole = widget.isLead ? 'lead' : 'student';
       final myStreamId = '${widget.channelName}_$myRole';
-      final expectedRemoteStreamId = '${widget.channelName}_${widget.isLead ? 'student' : 'lead'}';
 
       // 3. Register Event Callbacks
       ZegoExpressEngine.onRoomStreamUpdate = (
@@ -128,9 +127,6 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
       // 6. Publish Local Video Stream
       await ZegoExpressEngine.instance.startPublishingStream(myStreamId);
       debugPrint("ZEGO Started Publishing stream: $myStreamId");
-
-      // 7. Subscribe to expected remote stream as well
-      _startListeningToRemoteStream(expectedRemoteStreamId);
 
       _startCallTimer();
     } catch (e) {

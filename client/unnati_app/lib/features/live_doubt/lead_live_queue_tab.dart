@@ -67,8 +67,22 @@ class _LeadLiveQueueTabState extends State<LeadLiveQueueTab> {
 
     if (res['success'] == true) {
       setState(() {
+        final rawScheduled = (res['scheduled'] as List<dynamic>?) ?? [];
+        final now = DateTime.now();
+        // Remove scheduled conferences if more than 1 hour has elapsed since scheduled start time
+        final filteredScheduled = rawScheduled.where((item) {
+          final startStr = item['scheduledStartTime']?.toString();
+          if (startStr == null) return false;
+          try {
+            final start = DateTime.parse(startStr).toLocal();
+            return now.difference(start).inMinutes < 60;
+          } catch (_) {
+            return true;
+          }
+        }).toList();
+
         _waitingList = res['waiting'] ?? [];
-        _scheduledList = res['scheduled'] ?? [];
+        _scheduledList = filteredScheduled;
         _ongoingList = res['ongoing'] ?? [];
         _errorMessage = null;
         _isLoading = false;

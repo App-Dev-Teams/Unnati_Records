@@ -658,6 +658,40 @@ const getStudentQuizStats = async (req, res) => {
   }
 };
 
+const deleteQuiz = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid quiz ID"
+      });
+    }
+
+    const quiz = await Quiz.findById(id);
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "Quiz not found"
+      });
+    }
+
+    await Quiz.findByIdAndDelete(id);
+    await QuizAttempt.deleteMany({ quizId: id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Quiz deleted successfully"
+    });
+  } catch (error) {
+    console.error("DELETE QUIZ ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
 module.exports = {
   uploadQuiz,
   validateQuestions,
@@ -666,5 +700,6 @@ module.exports = {
   submitQuiz,
   getMyAttempts,
   getQuizAttempts,
-  getStudentQuizStats
+  getStudentQuizStats,
+  deleteQuiz
 };
