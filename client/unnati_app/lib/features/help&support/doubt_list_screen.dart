@@ -31,22 +31,7 @@ class DoubtListScreen extends ConsumerStatefulWidget {
 }
 
 class _DoubtListScreenState extends ConsumerState<DoubtListScreen> {
-  Timer? _autoRefreshTimer;
 
-  @override
-  void initState() {
-    super.initState();
-    _autoRefreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      if (!mounted) return;
-      _refresh();
-    });
-  }
-
-  @override
-  void dispose() {
-    _autoRefreshTimer?.cancel();
-    super.dispose();
-  }
 
   Future<void> _refresh() async {
     if (widget.showOpenDoubts) {
