@@ -10,7 +10,6 @@ const otpRoutes = require("./routes/otp.routes.js");
 const attendanceRouter = require('./routes/attendance.routes.js');
 const volunteerRouter = require('./routes/volunteer.routes.js');
 const doubtRouter = require('./routes/doubt.routes.js');
-const liveDoubtRouter=require('./routes/liveDoubt.routes.js');
 const schoolRouter = require('./routes/school.routes.js');
 const profileRouter = require('./routes/profile.routes.js');
 const quizRouter = require('./routes/quiz.routes.js');
@@ -47,7 +46,6 @@ app.use("/api/schools",schoolRouter);
 app.use("/api",profileRouter);
 app.use("/api/live-doubts",liveDoubtRouter);
 app.use('/api/quizzes', quizRouter);
-app.use('/api/live-doubts', liveDoubtRouter);
 
 //app.use("/api/otp", require("./routes/otp.routes"));
 
