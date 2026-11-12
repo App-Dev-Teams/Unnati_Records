@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:zego_express_engine/zego_express_engine.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:unnati_app/services/api_service.dart';
 
 class LiveVideoConferenceScreen extends StatefulWidget {
   final String sessionId;
-  final int appId;
-  final String appSign;
-  final String channelName; // Zego roomID
+  final String appId;
+  final String token;
+  final String channelName; // Agora channelId
+  final int uid;
   final String userId;
   final String userName;
   final bool isLead;
@@ -19,8 +20,9 @@ class LiveVideoConferenceScreen extends StatefulWidget {
     super.key,
     required this.sessionId,
     required this.appId,
-    required this.appSign,
+    required this.token,
     required this.channelName,
+    this.uid = 0,
     required this.userId,
     required this.userName,
     required this.isLead,
@@ -33,11 +35,9 @@ class LiveVideoConferenceScreen extends StatefulWidget {
 }
 
 class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
-  Widget? _localVideoWidget;
-  Widget? _remoteVideoWidget;
-  int? _localViewID;
-  int? _remoteViewID;
-  String? _remoteStreamId;
+  RtcEngine? _engine;
+  bool _isJoined = false;
+  int? _remoteUid;
 
   bool _muted = false;
   bool _videoOff = false;
@@ -48,10 +48,10 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
   @override
   void initState() {
     super.initState();
-    _initZego();
+    _initAgora();
   }
 
-  Future<void> _initZego() async {
+  Future<void> _initAgora() async {
     // 1. Request hardware permissions
     final permissions = await [Permission.camera, Permission.microphone].request();
     if (permissions[Permission.camera] != PermissionStatus.granted ||
@@ -66,110 +66,67 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
     }
 
     try {
-      // 2. Initialize ZEGOCLOUD Engine with platform views enabled for native Android SurfaceView
-      await ZegoExpressEngine.createEngineWithProfile(
-        ZegoEngineProfile(
-          widget.appId,
-          ZegoScenario.Default,
-          appSign: widget.appSign,
-          enablePlatformView: true,
+      // 2. Create and initialize Agora RTC Engine
+      _engine = createAgoraRtcEngine();
+      await _engine!.initialize(
+        RtcEngineContext(
+          appId: widget.appId,
+          channelProfile: ChannelProfileType.channelProfileCommunication,
         ),
       );
 
-      final myRole = widget.isLead ? 'lead' : 'student';
-      final myStreamId = '${widget.channelName}_$myRole';
-
-      // 3. Register Event Callbacks
-      ZegoExpressEngine.onRoomStreamUpdate = (
-        String roomID,
-        ZegoUpdateType updateType,
-        List<ZegoStream> streamList,
-        Map<String, dynamic> extendedData,
-      ) {
-        debugPrint("ZEGO STREAM UPDATE: $updateType in room $roomID, count: ${streamList.length}");
-        for (final stream in streamList) {
-          debugPrint("Found stream: ${stream.streamID} from user: ${stream.user.userID}");
-          if (updateType == ZegoUpdateType.Add) {
-            if (stream.streamID != myStreamId) {
-              _startListeningToRemoteStream(stream.streamID);
+      // 3. Register Event Handlers
+      _engine!.registerEventHandler(
+        RtcEngineEventHandler(
+          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+            debugPrint("Agora onJoinChannelSuccess: channel=${connection.channelId}, uid=${connection.localUid}");
+            if (mounted) {
+              setState(() {
+                _isJoined = true;
+              });
+              _startCallTimer();
             }
-          } else if (updateType == ZegoUpdateType.Delete) {
-            if (_remoteStreamId == stream.streamID) {
-              _stopListeningToRemoteStream();
+          },
+          onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+            debugPrint("Agora onUserJoined: remoteUid=$remoteUid");
+            if (mounted) {
+              setState(() {
+                _remoteUid = remoteUid;
+              });
             }
-          }
-        }
-      };
-
-      // 4. Log into Room with isUserStatusNotify = true to receive live stream updates
-      final roomResult = await ZegoExpressEngine.instance.loginRoom(
-        widget.channelName,
-        ZegoUser(widget.userId, widget.userName),
-        config: ZegoRoomConfig(0, true, ''),
+          },
+          onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+            debugPrint("Agora onUserOffline: remoteUid=$remoteUid, reason=$reason");
+            if (mounted) {
+              setState(() {
+                if (_remoteUid == remoteUid) {
+                  _remoteUid = null;
+                }
+              });
+            }
+          },
+          onError: (ErrorCodeType err, String msg) {
+            debugPrint("Agora onError: $err, msg: $msg");
+          },
+        ),
       );
 
-      debugPrint("ZEGO Login Room Result errorCode: ${roomResult.errorCode}");
+      // 4. Enable Video and Start Local Preview
+      await _engine!.enableVideo();
+      await _engine!.startPreview();
 
-      // 5. Create Local Video Preview
-      final localWidget = await ZegoExpressEngine.instance.createCanvasView((viewID) {
-        _localViewID = viewID;
-        ZegoExpressEngine.instance.startPreview(
-          canvas: ZegoCanvas(viewID, viewMode: ZegoViewMode.AspectFill),
-        );
-      });
-
-      if (mounted) {
-        setState(() {
-          _localVideoWidget = localWidget;
-        });
-      }
-
-      // 6. Publish Local Video Stream
-      await ZegoExpressEngine.instance.startPublishingStream(myStreamId);
-      debugPrint("ZEGO Started Publishing stream: $myStreamId");
-
-      _startCallTimer();
+      // 5. Join Channel
+      await _engine!.joinChannel(
+        token: widget.token,
+        channelId: widget.channelName,
+        uid: widget.uid,
+        options: const ChannelMediaOptions(
+          clientRoleType: ClientRoleType.clientRoleBroadcaster,
+          channelProfile: ChannelProfileType.channelProfileCommunication,
+        ),
+      );
     } catch (e) {
-      debugPrint("ZEGOCLOUD initialization error: $e");
-    }
-  }
-
-  Future<void> _startListeningToRemoteStream(String streamID) async {
-    if (_remoteStreamId == streamID && _remoteVideoWidget != null) return;
-
-    try {
-      final remoteWidget = await ZegoExpressEngine.instance.createCanvasView((viewID) {
-        _remoteViewID = viewID;
-        ZegoExpressEngine.instance.startPlayingStream(
-          streamID,
-          canvas: ZegoCanvas(viewID, viewMode: ZegoViewMode.AspectFill),
-        );
-      });
-
-      if (mounted && remoteWidget != null) {
-        setState(() {
-          _remoteStreamId = streamID;
-          _remoteVideoWidget = remoteWidget;
-        });
-        debugPrint("ZEGO Successfully started playing remote stream: $streamID");
-      }
-    } catch (e) {
-      debugPrint("Error starting remote stream playback: $e");
-    }
-  }
-
-  Future<void> _stopListeningToRemoteStream() async {
-    if (_remoteStreamId != null) {
-      await ZegoExpressEngine.instance.stopPlayingStream(_remoteStreamId!);
-      if (_remoteViewID != null) {
-        await ZegoExpressEngine.instance.destroyCanvasView(_remoteViewID!);
-      }
-      if (mounted) {
-        setState(() {
-          _remoteStreamId = null;
-          _remoteVideoWidget = null;
-        });
-      }
+      debugPrint("Agora initialization error: $e");
     }
   }
 
@@ -193,15 +150,14 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
   Future<void> _endCall() async {
     _callTimer?.cancel();
     try {
-      if (_localViewID != null) {
-        await ZegoExpressEngine.instance.destroyCanvasView(_localViewID!);
+      if (_engine != null) {
+        await _engine!.leaveChannel();
+        await _engine!.release();
+        _engine = null;
       }
-      if (_remoteViewID != null) {
-        await ZegoExpressEngine.instance.destroyCanvasView(_remoteViewID!);
-      }
-      await ZegoExpressEngine.instance.logoutRoom(widget.channelName);
-      await ZegoExpressEngine.destroyEngine();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint("Error releasing Agora engine: $e");
+    }
 
     await ApiService.endLiveCall(widget.sessionId);
     if (!mounted) return;
@@ -211,7 +167,11 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
   @override
   void dispose() {
     _callTimer?.cancel();
-    _endCall();
+    if (_engine != null) {
+      _engine!.leaveChannel();
+      _engine!.release();
+      _engine = null;
+    }
     super.dispose();
   }
 
@@ -224,8 +184,14 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
           children: [
             // 1. Remote Video Stream (Full Screen)
             Positioned.fill(
-              child: _remoteVideoWidget != null
-                  ? SizedBox.expand(child: _remoteVideoWidget!)
+              child: _remoteUid != null && _engine != null
+                  ? AgoraVideoView(
+                      controller: VideoViewController.remote(
+                        rtcEngine: _engine!,
+                        canvas: VideoCanvas(uid: _remoteUid),
+                        connection: RtcConnection(channelId: widget.channelName),
+                      ),
+                    )
                   : Container(
                       color: Colors.black,
                       child: Column(
@@ -254,8 +220,13 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   color: Colors.grey.shade900,
-                  child: _localVideoWidget != null && !_videoOff
-                      ? SizedBox.expand(child: _localVideoWidget!)
+                  child: _isJoined && !_videoOff && _engine != null
+                      ? AgoraVideoView(
+                          controller: VideoViewController(
+                            rtcEngine: _engine!,
+                            canvas: const VideoCanvas(uid: 0),
+                          ),
+                        )
                       : const Center(
                           child: Icon(Icons.videocam_off, color: Colors.white54, size: 28),
                         ),
@@ -309,7 +280,7 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
                   IconButton.filledTonal(
                     onPressed: () {
                       setState(() => _muted = !_muted);
-                      ZegoExpressEngine.instance.muteMicrophone(_muted);
+                      _engine?.muteLocalAudioStream(_muted);
                     },
                     icon: Icon(_muted ? Icons.mic_off : Icons.mic),
                   ),
@@ -328,7 +299,7 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
                   IconButton.filledTonal(
                     onPressed: () {
                       setState(() => _videoOff = !_videoOff);
-                      ZegoExpressEngine.instance.enableCamera(!_videoOff);
+                      _engine?.muteLocalVideoStream(_videoOff);
                     },
                     icon: Icon(_videoOff ? Icons.videocam_off : Icons.videocam),
                   ),
@@ -337,7 +308,7 @@ class _LiveVideoConferenceScreenState extends State<LiveVideoConferenceScreen> {
                   IconButton.filledTonal(
                     onPressed: () {
                       setState(() => _useFrontCamera = !_useFrontCamera);
-                      ZegoExpressEngine.instance.useFrontCamera(_useFrontCamera);
+                      _engine?.switchCamera();
                     },
                     icon: const Icon(Icons.switch_camera),
                   ),

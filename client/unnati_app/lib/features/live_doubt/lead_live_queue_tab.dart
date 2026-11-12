@@ -321,8 +321,9 @@ class _LeadLiveQueueTabState extends State<LeadLiveQueueTab> {
         MaterialPageRoute(
           builder: (_) => LiveVideoConferenceScreen(
             sessionId: sessionId,
-            appId: res['appId'] is int ? res['appId'] : int.parse(res['appId'].toString()),
-            appSign: res['appSign']?.toString() ?? '',
+            appId: res['appId']?.toString() ?? '',
+            token: res['token']?.toString() ?? '',
+            uid: res['uid'] is int ? res['uid'] : 0,
             channelName: res['channelName'] ?? '',
             userId: res['userId']?.toString() ?? '',
             userName: res['userName']?.toString() ?? 'Lead Mentor',
