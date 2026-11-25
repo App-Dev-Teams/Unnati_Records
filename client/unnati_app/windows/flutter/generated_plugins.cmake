@@ -4,11 +4,12 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
+  iris_method_channel
+  agora_rtc_engine
   pdfx
   permission_handler_windows
   syncfusion_pdfviewer_windows
   url_launcher_windows
-  zego_express_engine
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

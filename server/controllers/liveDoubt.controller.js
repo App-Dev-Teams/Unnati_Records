@@ -1,10 +1,36 @@
 const LiveDoubtSession = require('../models/liveDoubtSession.model');
+const { RtcTokenBuilder, RtcRole } = require('agora-token');
 
-// ZEGOCLOUD Credentials
-const getZegoConfig = () => ({
-    appId: process.env.ZEGO_APP_ID ? parseInt(process.env.ZEGO_APP_ID) : 175321294,
-    appSign: process.env.ZEGO_APP_SIGN || "a1fd1ccc47c5167af65311d24fc26816f8a6746bfff845dce4c0031009fe4ccc",
-});
+// Agora RTC Credentials & Token Generator
+const getAgoraConfig = (channelName, uid = 0, isPublisher = true) => {
+    const appId = process.env.AGORA_APP_ID || "b4130d2d531a42838a70b119d6c0e790";
+    const appCertificate = process.env.AGORA_APP_CERTIFICATE || "c01befc8ee144707b879e0a710e51170";
+
+    let token = "";
+    if (appId && appCertificate && channelName) {
+        try {
+            const role = isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
+            const expireTime = 7200; // 2 hours validity
+            token = RtcTokenBuilder.buildTokenWithUid(
+                appId,
+                appCertificate,
+                channelName,
+                uid,
+                role,
+                expireTime,
+                expireTime
+            );
+        } catch (err) {
+            console.error("Agora Token Generation Error:", err);
+        }
+    }
+
+    return {
+        appId,
+        token,
+        uid
+    };
+};
 
 // Helper: Check if user is an Admin or any Lead
 function isLeadOrAdminUser(user, userType) {
@@ -238,15 +264,16 @@ const startLiveCall = async (req, res) => {
             await session.save();
         }
 
-        const zego = getZegoConfig();
+        const agora = getAgoraConfig(session.channelName, 0, true);
         const isLead = req.userType === 'volunteer';
 
         res.status(200).json({
             success: true,
             message: "Joining conference room.",
             session,
-            appId: zego.appId,
-            appSign: zego.appSign,
+            appId: agora.appId,
+            token: agora.token,
+            uid: agora.uid,
             channelName: session.channelName,
             userId: req.user._id.toString(),
             userName: req.user.name || (isLead ? "Lead Mentor" : "Student"),
@@ -278,10 +305,11 @@ const checkMyStatus = async (req, res) => {
 
         if (session.status === 'ongoing') {
             canJoin = true;
-            const zego = getZegoConfig();
+            const agora = getAgoraConfig(session.channelName, 0, true);
             connectionData = {
-                appId: zego.appId,
-                appSign: zego.appSign,
+                appId: agora.appId,
+                token: agora.token,
+                uid: agora.uid,
                 channelName: session.channelName,
                 userId: req.user._id.toString(),
                 userName: req.user.name || "Student"
@@ -295,10 +323,11 @@ const checkMyStatus = async (req, res) => {
 
             canJoin = now >= startWindow && now <= endWindow;
             if (canJoin) {
-                const zego = getZegoConfig();
+                const agora = getAgoraConfig(session.channelName, 0, true);
                 connectionData = {
-                    appId: zego.appId,
-                    appSign: zego.appSign,
+                    appId: agora.appId,
+                    token: agora.token,
+                    uid: agora.uid,
                     channelName: session.channelName,
                     userId: req.user._id.toString(),
                     userName: req.user.name || "Student"

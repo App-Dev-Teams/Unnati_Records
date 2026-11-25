@@ -9,12 +9,9 @@
 # Google Play Core / Deferred Components
 -dontwarn com.google.android.play.core.**
 
-# ZEGOCLOUD Express Engine
--keep class **.zego.** { *; }
--keep class im.zego.** { *; }
--dontwarn im.zego.**
--keep class com.zego.** { *; }
--dontwarn com.zego.**
+# Agora RTC Engine
+-keep class io.agora.** { *; }
+-dontwarn io.agora.**
 
 # Permission Handler
 -keep class com.baseflow.permissionhandler.** { *; }
