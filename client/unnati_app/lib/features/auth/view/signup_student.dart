@@ -196,7 +196,7 @@ class _SignupStudentState extends State<SignupStudent> {
       email: email,
       password: password,
       phoneNo: phoneNo,
-      studentClass: studentClass.toString(),
+      studentClass: "Class $studentClass",
       school: school,
     );
 
