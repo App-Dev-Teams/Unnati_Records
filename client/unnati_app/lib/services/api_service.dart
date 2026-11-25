@@ -357,6 +357,34 @@ class ApiService {
     );
   }
 
+  static String normalizeClassFormat(String rawClass) {
+    final trimmed = rawClass.trim();
+    if (trimmed.isEmpty) return '';
+    if (trimmed.toLowerCase().startsWith('class')) {
+      return trimmed;
+    }
+    const romanMap = {
+      'i': '1',
+      'ii': '2',
+      'iii': '3',
+      'iv': '4',
+      'v': '5',
+      'vi': '6',
+      'vii': '7',
+      'viii': '8',
+      'ix': '9',
+      'x': '10',
+      'xi': '11',
+      'xii': '12',
+    };
+    final digits = trimmed.replaceAll(RegExp(r'\D'), '');
+    final numStr = digits.isNotEmpty ? digits : romanMap[trimmed.toLowerCase()];
+    if (numStr != null && numStr.isNotEmpty) {
+      return 'Class $numStr';
+    }
+    return 'Class $trimmed';
+  }
+
   static Future<Map<String, dynamic>> studentSignup({
     required String name,
     required String email,
@@ -372,7 +400,7 @@ class ApiService {
         'email': email,
         'password': password,
         'phoneNo': phoneNo,
-        'studentClass': studentClass,
+        'studentClass': normalizeClassFormat(studentClass),
         'school': school,
       },
       operation: 'STUDENT_SIGNUP',
@@ -520,7 +548,9 @@ class ApiService {
       if (program != null) body['program'] = program;
       if (branch != null) body['branch'] = branch;
       if (batchYear != null) body['batchYear'] = batchYear;
-      if (studentClass != null) body['studentClass'] = studentClass;
+      if (studentClass != null) {
+        body['studentClass'] = normalizeClassFormat(studentClass);
+      }
       if (school != null) body['school'] = school;
 
       final response = await http
@@ -1259,6 +1289,26 @@ class ApiService {
   // ================= QUIZ SERVICES =================
   static Future<List<Map<String, dynamic>>> getQuizzes() async {
     try {
+      final role = await getRole();
+      if (role == 'student') {
+        final user = await getUserData();
+        final rawClass = user?['studentClass']?.toString().trim() ?? '';
+        final normalized = normalizeClassFormat(rawClass);
+
+        if (normalized.isNotEmpty && normalized != rawClass) {
+          try {
+            final updateRes = await updateProfile(studentClass: normalized);
+            if (updateRes['success'] == true) {
+              final updatedUser = Map<String, dynamic>.from(user ?? {});
+              updatedUser['studentClass'] = normalized;
+              await saveUserData(updatedUser);
+            }
+          } catch (e) {
+            print('Auto-normalizing student class in getQuizzes failed: $e');
+          }
+        }
+      }
+
       final headers = await _authHeaders();
       final response = await http
           .get(Uri.parse('$coreBaseUrl/quizzes/get_quizzes'), headers: headers)
@@ -1266,7 +1316,41 @@ class ApiService {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['success'] == true) {
-        return List<Map<String, dynamic>>.from(data['data'] ?? []);
+        final list = List<Map<String, dynamic>>.from(data['data'] ?? []);
+
+        // Fallback: If no quizzes found with "Class X", try fallback to raw digit (e.g. "8")
+        if (list.isEmpty && role == 'student') {
+          final user = await getUserData();
+          final currentClass = user?['studentClass']?.toString().trim() ?? '';
+          final digits = currentClass.replaceAll(RegExp(r'\D'), '');
+          if (digits.isNotEmpty && currentClass != digits) {
+            try {
+              final fallbackRes = await updateProfile(studentClass: digits);
+              if (fallbackRes['success'] == true) {
+                final fallbackResponse = await http
+                    .get(Uri.parse('$coreBaseUrl/quizzes/get_quizzes'), headers: headers)
+                    .timeout(_timeout);
+                final fallbackData = jsonDecode(fallbackResponse.body);
+                if (fallbackResponse.statusCode == 200 && fallbackData['success'] == true) {
+                  final fallbackList = List<Map<String, dynamic>>.from(fallbackData['data'] ?? []);
+                  if (fallbackList.isNotEmpty) {
+                    final updatedUser = Map<String, dynamic>.from(user ?? {});
+                    updatedUser['studentClass'] = digits;
+                    await saveUserData(updatedUser);
+                    return fallbackList;
+                  } else {
+                    // Revert back to normalized format
+                    await updateProfile(studentClass: currentClass);
+                  }
+                }
+              }
+            } catch (e) {
+              print('Fallback getQuizzes error: $e');
+            }
+          }
+        }
+
+        return list;
       } else {
         throw Exception(data['message'] ?? 'Failed to load quizzes');
       }

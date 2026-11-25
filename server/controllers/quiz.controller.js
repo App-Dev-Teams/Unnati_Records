@@ -91,6 +91,19 @@ const getQuizMetadata = (quiz) => ({
 const isAuthenticated = (req) => Boolean(req.user?._id);
 const isStudent = (req) => req.userType === "student" && isAuthenticated(req);
 
+const getTargetClassVariants = (studentClass) => {
+  const rawClass = String(studentClass ?? "").trim();
+  const digits = rawClass.replace(/\D/g, "");
+  const variants = new Set([rawClass]);
+
+  if (digits) {
+    variants.add(digits);
+    variants.add(`Class ${digits}`);
+  }
+
+  return [...variants, "All Classes"];
+};
+
 const getStudentQuiz = async (quizId, studentClass) => {
   if (!mongoose.isValidObjectId(quizId)) {
     return { invalidId: true };
@@ -99,7 +112,7 @@ const getStudentQuiz = async (quizId, studentClass) => {
   const quiz = await Quiz.findOne({
     _id: quizId,
     status: "published",
-    targetClass: studentClass
+    targetClass: { $in: getTargetClassVariants(studentClass) }
   }).select("-questions.correctOptionId -createdBy");
 
   return { quiz };
@@ -129,7 +142,7 @@ const getQuizzes = async (req, res) => {
 
     const query = { status: "published" };
     if (isStudent(req)) {
-      query.targetClass = req.user.studentClass;
+      query.targetClass = { $in: getTargetClassVariants(req.user.studentClass) };
     }
 
     const quizzes = await Quiz.find(query)
@@ -226,7 +239,7 @@ const submitQuiz = async (req, res) => {
     const quiz = await Quiz.findOne({
       _id: req.params.id,
       status: "published",
-      targetClass: req.user.studentClass
+      targetClass: { $in: getTargetClassVariants(req.user.studentClass) }
     });
 
     if (!quiz) {

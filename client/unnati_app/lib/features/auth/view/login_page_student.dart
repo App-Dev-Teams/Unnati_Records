@@ -87,6 +87,14 @@ class _LoginPageStudentState extends State<LoginPageStudent> {
           await ApiService.saveRole(role);
         }
         if (data != null) {
+          final rawClass = data['studentClass']?.toString().trim() ?? '';
+          final normalized = ApiService.normalizeClassFormat(rawClass);
+          if (normalized.isNotEmpty && normalized != rawClass) {
+            data['studentClass'] = normalized;
+            try {
+              await ApiService.updateProfile(studentClass: normalized);
+            } catch (_) {}
+          }
           await ApiService.saveUserData(data);
         }
       } catch (e) {
