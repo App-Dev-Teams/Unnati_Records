@@ -128,7 +128,7 @@ class _LeadLiveQueueTabState extends State<LeadLiveQueueTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Student: ${item['studentName']} (${item['studentClass'] != null ? 'Class ${item['studentClass']}' : ''})',
+                      'Student: ${item['studentName']} (${item['studentClass'] != null ? (item['studentClass'].toString().toLowerCase().startsWith('class') ? item['studentClass'] : 'Class ${item['studentClass']}') : ''})',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     const SizedBox(height: 4),
@@ -559,7 +559,9 @@ class _LeadLiveQueueTabState extends State<LeadLiveQueueTab> {
                                       ),
                                       if (item['studentClass'] != null)
                                         Text(
-                                          'Class: ${item['studentClass']}',
+                                          item['studentClass'].toString().toLowerCase().startsWith('class')
+                                              ? item['studentClass'].toString()
+                                              : 'Class: ${item['studentClass']}',
                                           style: const TextStyle(color: Colors.grey, fontSize: 12),
                                         ),
                                     ],

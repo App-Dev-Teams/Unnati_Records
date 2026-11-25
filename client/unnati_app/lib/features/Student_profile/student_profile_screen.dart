@@ -193,7 +193,8 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: currentName);
     final phoneController = TextEditingController(text: currentPhone);
-    int? selectedClass = int.tryParse(currentClass);
+    int? selectedClass =
+        int.tryParse(currentClass.replaceAll(RegExp(r'\D'), ''));
 
     // Ensure selectedSchool is in the schools list, otherwise set to first available or current value.
     String? selectedSchool = schools.contains(currentSchool)
@@ -493,7 +494,8 @@ class _StudedntProfileScreenState extends State<StudedntProfileScreen> {
 
                   final newName = nameController.text.trim();
                   final newPhone = phoneController.text.trim();
-                  final newClass = selectedClass?.toString() ?? currentClass;
+                  final newClass =
+                      selectedClass != null ? "Class $selectedClass" : currentClass;
                   final newSchool = selectedSchool ?? currentSchool;
 
                   final res = await ApiService.updateProfile(

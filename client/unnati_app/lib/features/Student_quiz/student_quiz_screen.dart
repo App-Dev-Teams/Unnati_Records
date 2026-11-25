@@ -36,8 +36,8 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
     });
 
     try {
-      final user = await ApiService.getUserData();
       final quizzes = await ApiService.getQuizzes();
+      final user = await ApiService.getUserData();
 
       // Fetch attempts from backend stats endpoint
       Map<String, dynamic>? stats;
